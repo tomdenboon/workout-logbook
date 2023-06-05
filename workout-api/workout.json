@@ -1,0 +1,46 @@
+{
+  "id": 1,
+  "name": "Workout 1",
+  "type": "TEMPLATE",
+  "exerciseGroups": [
+    {
+      "id": 1,
+      "exercise": {
+        "name": "Bench press",
+        "exercise_type": {
+          "name": "Reps weight",
+          "fields": [
+            {
+              "id": 1,
+              "name": "weight"
+            },
+            {
+              "id": 2,
+              "name": "reps"
+            }
+          ]
+        }
+      },
+      "exerciseRows": [
+        {
+          "id": 1,
+          "isLifted": false,
+          "exerciseFields": [
+            {
+              "id": 1,
+              "value": 80,
+              "field": {
+                "id": 1,
+                "name": "weight"
+              }
+            },
+            {
+              "id": 2,
+              "value": 10
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
