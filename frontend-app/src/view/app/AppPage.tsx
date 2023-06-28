@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import AppSideBar from './components/AppSideBar';
 
-function AppLayout() {
+function AppPage() {
   return (
     <>
       <Outlet />
@@ -10,4 +10,4 @@ function AppLayout() {
   );
 }
 
-export default AppLayout;
+export default AppPage;

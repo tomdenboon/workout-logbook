@@ -19,11 +19,6 @@ public class ExerciseGroupController {
         return workoutMapper.exerciseGroupToExerciseGroupResponse(exerciseGroupService.addRow(id));
     }
 
-    @PostMapping("/exercise_group/{id}/swap_row")
-    void swapRow(@RequestBody ExerciseRowSwapRequest exerciseRowSwapRequest, @PathVariable Long id) {
-        exerciseGroupService.swapRow(id, exerciseRowSwapRequest);
-    }
-
     @PatchMapping("/exercise_row/{id}")
     ExerciseRowResponse updateRow(@RequestBody ExerciseRowUpdateRequest exerciseRowUpdateRequest,
             @PathVariable Long id) {

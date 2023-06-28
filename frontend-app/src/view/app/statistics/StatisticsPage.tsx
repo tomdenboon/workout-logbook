@@ -6,6 +6,7 @@ import {
   DialogTitle,
   Fab,
   Grid,
+  IconButton,
 } from '@mui/material';
 import { useMemo, useState } from 'react';
 import { FiPlus } from 'react-icons/fi';
@@ -108,14 +109,9 @@ function Statistics() {
       header={
         <Header
           RightButton={
-            <button
-              type="button"
-              onClick={() => {
-                setIsOpen(true);
-              }}
-            >
+            <IconButton onClick={() => setIsOpen(true)} color="inherit">
               <FiPlus />
-            </button>
+            </IconButton>
           }
           title="Statistics"
         />

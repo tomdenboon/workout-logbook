@@ -57,7 +57,7 @@ public class ExerciseRowService {
         if (exerciseGroup.getExerciseRows().size() <= 1) {
             exerciseGroupRepository.delete(exerciseGroup);
         } else {
-            exerciseGroupRepository.save(exerciseGroup);
+            exerciseRowRepository.delete(exerciseRow);
         }
     }
 }

@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import tom.projects.monkeylog.model.user.UserOwned;
 
 import java.time.LocalDateTime;
@@ -22,6 +24,8 @@ public class Workout implements UserOwned {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private Long clonedFromId;
+
     private String name;
 
     private String note;
@@ -35,12 +39,13 @@ public class Workout implements UserOwned {
 
     private LocalDateTime endDate;
 
-    @OneToMany(mappedBy = "workout", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "workout", cascade =  {CascadeType.PERSIST, CascadeType.MERGE })
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @OrderColumn(name = "sort_order")
     private List<ExerciseGroup> exerciseGroups = new ArrayList<>();
 
     @ManyToOne
-    @Column(name = "program_week_id")
+    @JoinColumn(name="program_week_id")
     private ProgramWeek programWeek;
 
     public static Workout clone(Workout workout) {
@@ -49,7 +54,8 @@ public class Workout implements UserOwned {
         newWorkout.setUserId(workout.getUserId());
         newWorkout.setNote(workout.getNote());
         newWorkout.setType(workout.getType());
-        newWorkout.addExerciseGroups(workout.getExerciseGroups().stream().map(ExerciseGroup::clone));
+        newWorkout.setProgramWeek(workout.getProgramWeek());
+        workout.getExerciseGroups().stream().map(ExerciseGroup::clone).forEach(newWorkout::addExerciseGroup);
 
         return newWorkout;
     }
@@ -57,10 +63,6 @@ public class Workout implements UserOwned {
     public void addExerciseGroup(ExerciseGroup exerciseGroup) {
         exerciseGroups.add(exerciseGroup);
         exerciseGroup.setWorkout(this);
-    }
-
-    public void addExerciseGroups(Stream<ExerciseGroup> exerciseGroups) {
-        exerciseGroups.forEach(this::addExerciseGroup);
     }
 
     public enum Type {

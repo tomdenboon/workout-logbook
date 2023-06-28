@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, Typography } from '@mui/material';
 import { Workout } from '../../../../types/Workout';
-import useTimer from '../../hooks/useTimer';
+import useTimer from '../../../../hooks/useTimer';
 import WorkoutActions from './WorkoutActions';
 
 interface WorkoutCompleteCardProps {

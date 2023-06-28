@@ -18,6 +18,7 @@ public class UserSettings implements UserOwned {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String theme;
     private Long userId;
+    private String metric;
+    private String theme;
 }

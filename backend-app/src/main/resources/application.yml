@@ -1,6 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/monkeylog
+    url: jdbc:postgresql://localhost:5433/monkeylog
+    username: postgres
+    password: mysecretpassword
   jpa:
     generate-ddl: true
     hibernate.ddl-auto: create-drop

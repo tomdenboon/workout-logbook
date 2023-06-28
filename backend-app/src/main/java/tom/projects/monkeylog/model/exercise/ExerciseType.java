@@ -26,6 +26,8 @@ public class ExerciseType {
     private List<Exercise> exercises;
 
     @ManyToMany
-    @JoinTable(name = "exercise_type_exercise_field", joinColumns = @JoinColumn(name = "exercise_type_id"), inverseJoinColumns = @JoinColumn(name = "exercise_field_id"))
+    @JoinTable(name = "exercise_type_exercise_field",
+            joinColumns = @JoinColumn(name = "exercise_type_id"),
+            inverseJoinColumns = @JoinColumn(name = "exercise_field_id"))
     private SortedSet<ExerciseField> exerciseFields = new TreeSet<>();
 }

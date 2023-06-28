@@ -16,7 +16,7 @@ public class ProgramService {
     private final ProgramRepository programRepository;
 
     public List<Program> all() {
-        return programRepository.findAllByUserId(AuthenticatedUser.getId());
+        return programRepository.findAllByUserIdAndTemplateIsTrue(AuthenticatedUser.getId());
     }
 
     public Program get(Long id) {

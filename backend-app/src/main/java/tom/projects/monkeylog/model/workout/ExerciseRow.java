@@ -3,6 +3,8 @@ package tom.projects.monkeylog.model.workout;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import tom.projects.monkeylog.model.user.UserOwned;
 
 import java.util.SortedSet;
@@ -23,7 +25,8 @@ public class ExerciseRow implements UserOwned {
     @JoinColumn(name = "exercise_group_id", nullable = false)
     private ExerciseGroup exerciseGroup;
 
-    @OneToMany(mappedBy = "exerciseRow", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "exerciseRow", cascade =  {CascadeType.PERSIST, CascadeType.MERGE })
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private SortedSet<ExerciseRowField> exerciseRowFields = new TreeSet<>();
 
     public static ExerciseRow clone(ExerciseRow exerciseRow) {

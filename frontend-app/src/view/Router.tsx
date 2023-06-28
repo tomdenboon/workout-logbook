@@ -1,6 +1,6 @@
 import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import App from './app/AppLayout';
+import App from './app/AppPage';
 import Exercise from './app/exercises/ExercisePage';
 import Exercises from './app/exercises/ExercisesPage';
 import Profile from './app/profile/ProfilePage';

@@ -37,10 +37,6 @@ public class WorkoutService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, WORKOUT_NOT_FOUND));
     }
 
-    public Object count(LocalDate start, LocalDate end) {
-        return workoutRepository.findByEndDateBetween(start.atStartOfDay(), end.plusDays(1).atStartOfDay());
-    }
-
     public Workout start() {
         Workout workout = new Workout();
         workout.setName("New empty workout");
@@ -49,9 +45,7 @@ public class WorkoutService {
     }
 
     public Workout start(Long id) {
-        Workout newWorkout = Workout.clone(get(id));
-
-        return start(newWorkout);
+        return start(Workout.clone(get(id)));
     }
 
     private Workout start(Workout workout) {

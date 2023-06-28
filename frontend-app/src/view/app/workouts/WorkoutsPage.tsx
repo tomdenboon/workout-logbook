@@ -36,7 +36,7 @@ function Workoutss() {
     >
       <Stack spacing={1}>
         <Button onClick={() => startEmptyWorkout()} variant="contained">
-          START EMPTY WORKOUT
+          Start empty workout
         </Button>
         {workouts && (
           <Box>

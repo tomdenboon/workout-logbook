@@ -6,6 +6,7 @@ import tom.projects.monkeylog.model.workout.Program;
 import java.util.List;
 
 public interface ProgramRepository extends JpaRepository<Program, Long> {
-    List<Program> findAllByUserId(Long userId);
+    List<Program> findAllByUserIdAndTemplateIsTrue(Long userId);
+    List<Program> findAllByUserIdAndTemplateIsFalse(Long userId);
 
 }

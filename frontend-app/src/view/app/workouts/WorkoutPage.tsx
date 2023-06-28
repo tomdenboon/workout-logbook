@@ -11,7 +11,7 @@ import Modal from '../../../components/Modal';
 import { Workout, WorkoutType } from '../../../types/Workout';
 import AppGridContainer from '../components/AppGridContainer';
 import Header from '../components/AppHeader';
-import useTimer from '../hooks/useTimer';
+import useTimer from '../../../hooks/useTimer';
 import ExerciseGroupForm from './components/ExerciseGroupForm';
 
 const TITLE_MAP = {

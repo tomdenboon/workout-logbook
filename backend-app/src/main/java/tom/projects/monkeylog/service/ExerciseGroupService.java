@@ -38,17 +38,10 @@ public class ExerciseGroupService {
         return exerciseGroupRepository.save(exerciseGroup);
     }
 
-    public void swapRow(Long id, ExerciseRowSwapRequest exerciseRowSwapRequest) {
-        ExerciseGroup exerciseGroup = get(id);
-        exerciseGroup.getExerciseRows().add(exerciseRowSwapRequest.getNewIndex(),
-                exerciseGroup.getExerciseRows().remove(exerciseRowSwapRequest.getOldIndex()));
-        exerciseGroupRepository.save(exerciseGroup);
-    }
-
     public void save(ExerciseGroupCreateRequest exerciseGroupCreateRequest, Long workoutId) {
         Workout workout = workoutService.get(workoutId);
 
-        workout.addExerciseGroups(exerciseService.allById(exerciseGroupCreateRequest.getExerciseIds())
+        exerciseService.allById(exerciseGroupCreateRequest.getExerciseIds())
                 .map(exercise -> {
                     ExerciseGroup exerciseGroup = new ExerciseGroup();
                     exerciseGroup.setExercise(exercise);
@@ -56,7 +49,7 @@ public class ExerciseGroupService {
                     exerciseGroup.addExerciseRow(ExerciseRow.first(exerciseGroup, workout.getType() == Type.COMPLETED));
 
                     return exerciseGroup;
-                }));
+                }).forEach(workout::addExerciseGroup);
 
         workoutRepository.save(workout);
     }

@@ -10,7 +10,7 @@ function Section(props: SectionProps) {
   return (
     <Stack>
       <Typography color="text.secondary" variant="caption">
-        {title.toLocaleUpperCase()}
+        {title}
       </Typography>
       {children}
     </Stack>

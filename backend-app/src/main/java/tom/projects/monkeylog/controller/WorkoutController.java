@@ -18,13 +18,6 @@ public class WorkoutController {
     private final WorkoutService workoutService;
     private final WorkoutMapper workoutMapper;
 
-    @GetMapping("/workout/count")
-    Object get(@RequestParam(required = false) LocalDate start, @RequestParam(required = false) LocalDate end) {
-        start = start == null ? LocalDate.now().minusDays(7) : end;
-        end = end == null ? LocalDate.now() : start;
-        return workoutService.count(start, end);
-    }
-
     @GetMapping("/workout/{id}")
     WorkoutFullResponse get(@PathVariable Long id) {
         return workoutMapper.workoutToFullWorkoutResponse(workoutService.get(id));

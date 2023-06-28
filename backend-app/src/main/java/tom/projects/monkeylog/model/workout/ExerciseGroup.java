@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import tom.projects.monkeylog.model.exercise.Exercise;
 import tom.projects.monkeylog.model.user.UserOwned;
 
@@ -28,8 +30,8 @@ public class ExerciseGroup implements UserOwned {
     @JoinColumn(name = "workout_id", nullable = false)
     private Workout workout;
 
-    @OneToMany(mappedBy = "exerciseGroup", cascade = CascadeType.ALL, orphanRemoval = true)
-    @OrderColumn(name = "sort_order")
+    @OneToMany(mappedBy = "exerciseGroup", cascade =  {CascadeType.PERSIST, CascadeType.MERGE })
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<ExerciseRow> exerciseRows = new ArrayList<>();
 
     public static ExerciseGroup clone(ExerciseGroup exerciseGroup) {
