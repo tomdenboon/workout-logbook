@@ -7,7 +7,7 @@ import { useGetExercisesQuery } from '../../../api/exerciseApi';
 import { useAddExerciseGroupsMutation } from '../../../api/monkeylogApi';
 import { Exercise } from '../../../types/Exercise';
 import AppGridContainer from '../components/AppGridContainer';
-import Header from '../components/AppHeader';
+import AppHeader from '../components/AppHeader';
 import ExerciseCard from './components/ExerciseCard';
 import ExerciseForm from './components/ExerciseForm';
 
@@ -43,7 +43,7 @@ function Exercises() {
 
   useEffect(() => {
     if (isSuccess && workoutId) {
-      navigate(`/app/workouts/${workoutId}`);
+      navigate(`/app/training/workouts/${workoutId}`);
     }
   }, [isSuccess]);
 
@@ -58,10 +58,10 @@ function Exercises() {
   return (
     <AppGridContainer
       header={
-        <Header
+        <AppHeader
           LeftTitleButton={
             workoutId && (
-              <Link to={`/app/workouts/${workoutId}`}>
+              <Link to={`/app/training/workouts/${workoutId}`}>
                 <IconButton color="inherit">
                   <ArrowBack />
                 </IconButton>

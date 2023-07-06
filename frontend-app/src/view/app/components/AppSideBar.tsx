@@ -1,11 +1,10 @@
 import { BottomNavigationAction, Paper, BottomNavigation } from '@mui/material';
-import { FiBarChart2, FiFolder, FiPackage, FiUser } from 'react-icons/fi';
+import { FiBarChart2, FiPackage, FiUser } from 'react-icons/fi';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const NAVBAR_LIST = [
   { to: 'profile', text: 'Home', Icon: FiUser },
-  { to: 'workouts', text: 'Workout', Icon: FiPackage },
-  { to: 'exercises', text: 'Exercises', Icon: FiFolder },
+  { to: 'training', text: 'Workout', Icon: FiPackage },
   { to: 'statistics', text: 'Statistics', Icon: FiBarChart2 },
 ];
 

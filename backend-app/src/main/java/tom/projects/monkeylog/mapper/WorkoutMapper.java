@@ -1,6 +1,7 @@
 package tom.projects.monkeylog.mapper;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 import tom.projects.monkeylog.dto.workout.*;
 import tom.projects.monkeylog.model.workout.ExerciseGroup;
@@ -12,10 +13,11 @@ import java.util.List;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface WorkoutMapper {
-    Workout workoutRequestToWorkout(WorkoutRequest workoutRequest);
+    Workout workoutRequestToWorkout(WorkoutCreateRequest workoutRequest);
 
     WorkoutResponse workoutToWorkoutResponse(Workout workout);
 
+    @Mapping(source=".", target="workout")
     WorkoutFullResponse workoutToFullWorkoutResponse(Workout workout);
 
     List<WorkoutFullResponse> workoutsToFullWorkoutResponses(List<Workout> workouts);

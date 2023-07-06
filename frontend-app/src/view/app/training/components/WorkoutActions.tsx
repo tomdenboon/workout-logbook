@@ -1,9 +1,10 @@
 import { useNavigate } from 'react-router-dom';
+import { ContentCopy, Delete, Edit } from '@mui/icons-material';
 import { useCloneWorkoutMutation, useDeleteWorkoutMutation } from '../../../../api/monkeylogApi';
 import ActionDropdown from '../../../../components/ActionDropdown';
-import { Workout } from '../../../../types/Workout';
+import { WorkoutSmall } from '../../../../types/Workout';
 
-function WorkoutActions(props: { workout: Workout }) {
+function WorkoutActions(props: { workout: WorkoutSmall }) {
   const { workout } = props;
   const navigate = useNavigate();
   const [cloneWorkout] = useCloneWorkoutMutation();
@@ -12,13 +13,22 @@ function WorkoutActions(props: { workout: Workout }) {
   return (
     <ActionDropdown
       actions={[
-        { label: 'Edit', action: () => navigate(`/app/workouts/${workout.id}`) },
-        { label: 'Clone', action: () => cloneWorkout(workout.id) },
+        {
+          label: 'Edit',
+          action: () => navigate(`/app/training/workouts/${workout.id}`),
+          icon: <Edit />,
+        },
+        {
+          label: 'Duplicate',
+          action: () => cloneWorkout(workout.id),
+          icon: <ContentCopy />,
+        },
         {
           label: 'Delete',
           action: () => {
             deleteWorkout(workout.id);
           },
+          icon: <Delete />,
         },
       ]}
     />

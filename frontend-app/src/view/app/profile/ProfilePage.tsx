@@ -3,7 +3,7 @@ import { useGetWorkoutsQuery } from '../../../api/monkeylogApi';
 import { WorkoutType } from '../../../types/Workout';
 import AppGridContainer from '../components/AppGridContainer';
 import AppHeader from '../components/AppHeader';
-import WorkoutCompleteCard from '../workouts/components/WorkoutCompleteCard';
+import WorkoutCompleteCard from '../training/components/WorkoutCompleteCard';
 
 function Profile() {
   const { data: workouts } = useGetWorkoutsQuery({ type: WorkoutType.Complete });

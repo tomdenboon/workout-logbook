@@ -17,32 +17,32 @@ public class ExerciseController {
     private final ExerciseService exerciseService;
     private final ExerciseMapper exerciseMapper;
 
-    @GetMapping("/exercise")
+    @GetMapping("/exercises")
     List<ExerciseResponse> all() {
         return exerciseMapper.exercisesToExerciseResponses(exerciseService.all());
     }
 
-    @GetMapping("/exercise/{id}")
+    @GetMapping("/exercises/{id}")
     ExerciseResponse get(@PathVariable Long id) {
         return exerciseMapper.exerciseToExerciseResponse(exerciseService.get(id));
     }
 
-    @PostMapping("/exercise")
+    @PostMapping("/exercises")
     ExerciseResponse save(@RequestBody ExerciseCreateRequest exerciseCreateRequest) {
         return exerciseMapper.exerciseToExerciseResponse(exerciseService.save(exerciseCreateRequest));
     }
 
-    @PatchMapping("/exercise/{id}")
+    @PatchMapping("/exercises/{id}")
     ExerciseResponse update(@RequestBody ExerciseUpdateRequest exerciseUpdateRequest, @PathVariable Long id) {
         return exerciseMapper.exerciseToExerciseResponse(exerciseService.update(exerciseUpdateRequest, id));
     }
 
-    @DeleteMapping("/exercise/{id}")
+    @DeleteMapping("/exercises/{id}")
     void destroy(@PathVariable Long id) {
         exerciseService.delete(id);
     }
 
-    @GetMapping("/exercise_type")
+    @GetMapping("/exercise-types")
     List<ExerciseTypeResponse> getExerciseTypes() {
         return exerciseMapper.exerciseTypesToExerciseTypeResponses(exerciseService.getExerciseTypes());
     }

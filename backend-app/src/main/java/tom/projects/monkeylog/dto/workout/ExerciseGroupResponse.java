@@ -8,8 +8,6 @@ import java.util.List;
 @Data
 public class ExerciseGroupResponse {
     private Long id;
-
     private ExerciseResponse exercise;
-
     private List<ExerciseRowResponse> exerciseRows;
 }

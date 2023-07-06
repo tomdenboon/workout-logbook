@@ -1,4 +1,4 @@
-import { MoreVert } from '@mui/icons-material';
+import { MoreHoriz } from '@mui/icons-material';
 import { Button, Card, Grid, Stack, Typography } from '@mui/material';
 import React from 'react';
 import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
@@ -43,13 +43,13 @@ function ExerciseGroupForm(props: ExerciseGroupProps) {
             <Typography fontWeight={800} color="primary">
               {exerciseGroup.exercise.name}
             </Typography>
-            <Button variant="outlined" sx={{ ml: 'auto', height: 24, minWidth: 36, maxWidth: 36 }}>
-              <MoreVert />
+            <Button variant="outlined" sx={{ ml: 'auto', height: 20, minWidth: 32, maxWidth: 32 }}>
+              <MoreHoriz />
             </Button>
           </Stack>
           <Stack direction="row" spacing={1} sx={{ mb: 1 }}>
             <Typography
-              sx={{ minWidth: 36, maxWidth: 36 }}
+              sx={{ minWidth: 32, maxWidth: 32 }}
               variant="body2"
               fontWeight={800}
               align="center"
@@ -61,7 +61,7 @@ function ExerciseGroupForm(props: ExerciseGroupProps) {
                 {exerciseField.type[0] + exerciseField.type.slice(1).toLowerCase()}
               </Typography>
             ))}
-            <Typography sx={{ minWidth: 36, maxWidth: 36 }} align="center" />
+            <Typography sx={{ minWidth: 32, maxWidth: 32 }} align="center" />
           </Stack>
           <DragDropContext onDragEnd={(a) => onDragEnd(a)}>
             <Droppable droppableId="droppable">
@@ -83,7 +83,7 @@ function ExerciseGroupForm(props: ExerciseGroupProps) {
             </Droppable>
           </DragDropContext>
           <Button
-            sx={{ height: 24 }}
+            sx={{ height: 20 }}
             variant="text"
             onClick={() => addExerciseRow({ id: exerciseGroup.id, workoutId, exerciseGroupIndex })}
           >

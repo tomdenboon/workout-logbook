@@ -9,11 +9,11 @@ public class AuthenticatedUser {
         return 1L;
     }
 
-    public static boolean isOwner(UserOwned resource) {
+    public static boolean isResourceOwner(UserOwned resource) {
         return Objects.equals(resource.getUserId(), getId());
     }
 
     public static boolean isOwnerOrNull(UserOwned resource) {
-        return resource.getUserId() == null || isOwner(resource);
+        return resource.getUserId() == null || isResourceOwner(resource);
     }
 }

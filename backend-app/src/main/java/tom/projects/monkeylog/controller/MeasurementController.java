@@ -14,37 +14,37 @@ public class MeasurementController {
     private final MeasurementService measurementService;
     private final MeasurementMapper measurementMapper;
 
-    @GetMapping("/measurement")
+    @GetMapping("/measurements")
     List<MeasurementFullResponse> all() {
         return measurementMapper.measurementsToMeasurementFullResponses(measurementService.all());
     }
 
-    @PostMapping("/measurement")
+    @PostMapping("/measurements")
     MeasurementResponse create(@RequestBody MeasurementCreateRequest measurementCreateRequest) {
         return measurementMapper.measurementToMeasurementResponse(measurementService.create(measurementCreateRequest));
     }
 
-    @PatchMapping("/measurement/id")
+    @PatchMapping("/measurements/id")
     MeasurementResponse update(@RequestBody MeasurementUpdateRequest measurementUpdateRequest, @PathVariable Long id) {
         return measurementMapper.measurementToMeasurementResponse(measurementService.update(measurementUpdateRequest, id));
     }
 
-    @DeleteMapping("/measurement/{id}")
+    @DeleteMapping("/measurements/{id}")
     void delete(@PathVariable Long id) {
         measurementService.delete(id);
     }
 
-    @PostMapping("/measurement/{id}/measurement_point")
+    @PostMapping("/measurements/{id}/measurement-points")
     MeasurementPointResponse createPoint(@RequestBody MeasurementPointCreateRequest measurementPointCreateRequest, @PathVariable Long id) {
         return measurementMapper.measurementPointToMeasurementPointResponse(measurementService.createPoint(id, measurementPointCreateRequest));
     }
 
-    @PatchMapping("/measurement_point/{id}")
+    @PatchMapping("/measurement-points/{id}")
     MeasurementPointResponse updateField(@RequestBody MeasurementPointUpdateRequest measurementPointUpdateRequest, @PathVariable Long id) {
         return measurementMapper.measurementPointToMeasurementPointResponse(measurementService.updatePoint(id, measurementPointUpdateRequest));
     }
 
-    @DeleteMapping("/measurement_point/{id}")
+    @DeleteMapping("/measurement-points/{id}")
     void destroyPoint(@PathVariable Long id) {
         measurementService.deletePoint(id);
     }

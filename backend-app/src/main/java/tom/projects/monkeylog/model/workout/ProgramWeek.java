@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import tom.projects.monkeylog.model.user.UserOwned;
 
 import java.util.List;
 
@@ -13,11 +14,14 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProgramWeek {
+public class ProgramWeek implements UserOwned {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false)
+    private String name;
     @ManyToOne
-    @JoinColumn(name = "program_id")
+    @JoinColumn(name = "program_id", nullable = false)
     private Program program;
     @OneToMany(mappedBy = "programWeek")
     private List<Workout> workouts;
@@ -32,5 +36,10 @@ public class ProgramWeek {
     public void addWorkout(Workout workout) {
         workout.setProgramWeek(this);
         workouts.add(workout);
+    }
+
+    @Override
+    public Long getUserId() {
+        return program.getUserId();
     }
 }

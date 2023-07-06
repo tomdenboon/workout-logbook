@@ -38,12 +38,12 @@ public class ExerciseService {
 
     public Exercise get(Long id) {
         return exerciseRepository.findById(id)
-                .filter(AuthenticatedUser::isOwner)
+                .filter(AuthenticatedUser::isResourceOwner)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, EXERCISE_NOT_FOUND));
     }
 
     public Stream<Exercise> allById(Set<Long> ids) {
-        return exerciseRepository.findAllById(ids).stream().filter(AuthenticatedUser::isOwner);
+        return exerciseRepository.findAllById(ids).stream().filter(AuthenticatedUser::isResourceOwner);
     }
 
     public Exercise save(ExerciseCreateRequest exerciseCreateRequest) {

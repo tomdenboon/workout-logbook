@@ -14,35 +14,35 @@ public class ExerciseGroupController {
     private final ExerciseRowService exerciseRowService;
     private final WorkoutMapper workoutMapper;
 
-    @PostMapping("/exercise_group/{id}/add_row")
+    @PostMapping("/exercise-groups/{id}/add-row")
     ExerciseGroupResponse addRow(@PathVariable Long id) {
         return workoutMapper.exerciseGroupToExerciseGroupResponse(exerciseGroupService.addRow(id));
     }
 
-    @PatchMapping("/exercise_row/{id}")
+    @PatchMapping("/exercise-rows/{id}")
     ExerciseRowResponse updateRow(@RequestBody ExerciseRowUpdateRequest exerciseRowUpdateRequest,
             @PathVariable Long id) {
         return workoutMapper.exerciseRowToExerciseRowResponse(exerciseRowService.update(exerciseRowUpdateRequest, id));
     }
 
-    @PatchMapping("/exercise_row_field/{exerciseRowFieldId}")
+    @PatchMapping("/exercise-row-fields/{exerciseRowFieldId}")
     ExerciseRowFieldResponse updateRowField(@RequestBody ExerciseRowFieldUpdateRequest exerciseRowFieldUpdateRequest,
             @PathVariable Long exerciseRowFieldId) {
         return workoutMapper.exerciseRowFieldToExerciseRowFieldResponse(
                 exerciseRowService.updateField(exerciseRowFieldUpdateRequest, exerciseRowFieldId));
     }
 
-    @PostMapping("/workout/{workoutId}/exercise_group")
+    @PostMapping("/workouts/{workoutId}/exercise-groups")
     void save(@RequestBody ExerciseGroupCreateRequest exerciseGroupCreateRequest, @PathVariable Long workoutId) {
         exerciseGroupService.save(exerciseGroupCreateRequest, workoutId);
     }
 
-    @DeleteMapping("/exercise_row/{id}")
+    @DeleteMapping("/exercise-rows/{id}")
     void destroyRow(@PathVariable Long id) {
         exerciseRowService.delete(id);
     }
 
-    @DeleteMapping("/exercise_group/{id}")
+    @DeleteMapping("/exercise-groups/{id}")
     void destroy(@PathVariable Long id) {
         exerciseGroupService.delete(id);
     }

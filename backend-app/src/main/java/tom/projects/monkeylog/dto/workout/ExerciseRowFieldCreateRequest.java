@@ -5,6 +5,5 @@ import lombok.Data;
 @Data
 public class ExerciseRowFieldCreateRequest {
     private Long exerciseFieldId;
-
     private String value;
 }

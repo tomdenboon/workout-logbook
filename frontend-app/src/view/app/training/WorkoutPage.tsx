@@ -10,7 +10,7 @@ import {
 import Modal from '../../../components/Modal';
 import { Workout, WorkoutType } from '../../../types/Workout';
 import AppGridContainer from '../components/AppGridContainer';
-import Header from '../components/AppHeader';
+import AppHeader from '../components/AppHeader';
 import useTimer from '../../../hooks/useTimer';
 import ExerciseGroupForm from './components/ExerciseGroupForm';
 
@@ -31,9 +31,9 @@ function WorkoutHeader({ workout }: { workout?: Workout }) {
   }, [isSuccess]);
 
   return (
-    <Header
+    <AppHeader
       LeftTitleButton={
-        <Link to={workout?.type === WorkoutType.Complete ? '/app/profile' : '/app/workouts'}>
+        <Link to={workout?.type === WorkoutType.Complete ? '/app/profile' : '/app/training'}>
           <IconButton color="inherit">
             <ArrowBack />
           </IconButton>
@@ -64,7 +64,7 @@ function Timer(props: { startDate?: string; endDate?: string }) {
   return <Typography>Time: {digitalTimerFormat}</Typography>;
 }
 
-function WorkoutForm() {
+function WorkoutPage() {
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -79,7 +79,7 @@ function WorkoutForm() {
   }, [id]);
 
   return (
-    <AppGridContainer sx={{ px: 0 }} header={<WorkoutHeader workout={workout} />}>
+    <AppGridContainer header={<WorkoutHeader workout={workout} />}>
       {workout && (
         <Stack spacing={2}>
           <Card sx={{ p: 2 }} variant="outlined">
@@ -122,7 +122,7 @@ function WorkoutForm() {
                     variant="text"
                     onClick={() => {
                       deleteWorkout(workout.id);
-                      navigate('/app/workouts');
+                      navigate('/app/training');
                     }}
                   >
                     CONFIRM
@@ -137,4 +137,4 @@ function WorkoutForm() {
   );
 }
 
-export default WorkoutForm;
+export default WorkoutPage;

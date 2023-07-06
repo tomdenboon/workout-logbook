@@ -17,10 +17,9 @@ import {
   useGetMeasurementsQuery,
 } from '../../../api/measurementApi';
 import Section from '../../../components/Section';
-import base from '../../../themes/base';
 import { Measurement } from '../../../types/Measurement';
 import AppGridContainer from '../components/AppGridContainer';
-import Header from '../components/AppHeader';
+import AppHeader from '../components/AppHeader';
 
 interface MeasurementCardProps {
   measurement: Measurement;
@@ -89,7 +88,7 @@ function MeasurementCard(props: MeasurementCardProps) {
                   Math.max(...chartData.map((o) => o.y)),
                 ]}
               />
-              <Line type="monotone" dataKey="y" connectNulls stroke={base.primary} />
+              <Line type="monotone" dataKey="y" connectNulls />
             </LineChart>
           </ResponsiveContainer>
         </div>
@@ -107,7 +106,7 @@ function Statistics() {
   return (
     <AppGridContainer
       header={
-        <Header
+        <AppHeader
           RightButton={
             <IconButton onClick={() => setIsOpen(true)} color="inherit">
               <FiPlus />

@@ -66,7 +66,7 @@ function ExerciseRowFieldForm(props: ExerciseRowFieldProps) {
           '& input': {
             textAlign: 'center',
           },
-          height: 24,
+          height: 20,
         },
       }}
       fullWidth
@@ -106,7 +106,7 @@ function ExerciseRowForm(props: ExerciseRowFormProps) {
             component="div"
             variant="outlined"
             size="small"
-            sx={{ maxHeight: 24, maxWidth: 36, minWidth: 36 }}
+            sx={{ maxHeight: 20, maxWidth: 32, minWidth: 32 }}
             color="info"
             {...draggable.dragHandleProps}
           >
@@ -124,7 +124,7 @@ function ExerciseRowForm(props: ExerciseRowFormProps) {
             />
           ))}
           <Button
-            sx={{ maxHeight: 24, maxWidth: 36, minWidth: 36 }}
+            sx={{ maxHeight: 20, maxWidth: 32, minWidth: 32 }}
             variant="outlined"
             color={exerciseRow.isLifted ? 'success' : 'primary'}
             onClick={() =>

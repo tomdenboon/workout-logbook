@@ -21,9 +21,13 @@ public class Program implements UserOwned {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long userId;
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
     private String description;
-    private boolean isTemplate;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Type type;
 
     @OneToMany(mappedBy = "program", cascade = CascadeType.ALL)
     private List<ProgramWeek> programWeeks = new ArrayList<>();

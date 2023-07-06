@@ -1,9 +1,9 @@
 import React from 'react';
-import { IconButton, Menu, MenuItem } from '@mui/material';
-import { MoreVert } from '@mui/icons-material';
+import { IconButton, Menu, MenuItem, Stack, Typography } from '@mui/material';
+import { MoreHoriz } from '@mui/icons-material';
 
 interface ActionDropdownProps {
-  actions: Array<{ label: string; action: () => void }>;
+  actions: Array<{ label: string; action: () => void; icon?: React.ReactNode }>;
 }
 
 function ActionDropdown(props: ActionDropdownProps) {
@@ -29,7 +29,7 @@ function ActionDropdown(props: ActionDropdownProps) {
         color="inherit"
         onClick={handleClick}
       >
-        <MoreVert />
+        <MoreHoriz />
       </IconButton>
       <Menu
         id="long-menu"
@@ -42,17 +42,24 @@ function ActionDropdown(props: ActionDropdownProps) {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        {actions.map((option) => (
-          <MenuItem
-            key={option.label}
-            onClick={() => {
-              option.action();
-              handleClose();
-            }}
-          >
-            {option.label}
-          </MenuItem>
-        ))}
+        {actions.map((option) => {
+          const { icon } = option;
+          return (
+            <MenuItem
+              dense
+              key={option.label}
+              onClick={() => {
+                option.action();
+                handleClose();
+              }}
+            >
+              <Stack spacing={1} direction="row" alignItems="center">
+                {icon}
+                <Typography>{option.label}</Typography>
+              </Stack>
+            </MenuItem>
+          );
+        })}
       </Menu>
     </>
   );

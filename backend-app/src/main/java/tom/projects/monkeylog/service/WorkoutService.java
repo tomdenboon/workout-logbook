@@ -4,13 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import tom.projects.monkeylog.dto.workout.WorkoutRequest;
+import tom.projects.monkeylog.dto.workout.WorkoutCreateRequest;
 import tom.projects.monkeylog.mapper.WorkoutMapper;
+import tom.projects.monkeylog.model.workout.Type;
 import tom.projects.monkeylog.model.workout.Workout;
 import tom.projects.monkeylog.repository.workout.WorkoutRepository;
 import tom.projects.monkeylog.security.AuthenticatedUser;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -20,19 +20,24 @@ public class WorkoutService {
     private static final String WORKOUT_NOT_FOUND = "Workout not found.";
     private final WorkoutRepository workoutRepository;
     private final WorkoutMapper workoutMapper;
+    private final ProgramService programService;
 
-    public List<Workout> all(Workout.Type type) {
+    public List<Workout> all(Type type) {
         return workoutRepository.findAllByTypeAndUserId(type, AuthenticatedUser.getId());
+    }
+
+    public List<Workout> allByProgramWeekId(Long id) {
+        return programService.getProgramWeek(id).getWorkouts();
     }
 
     public Workout get(Long id) {
         return workoutRepository.findById(id)
-                .filter(AuthenticatedUser::isOwner)
+                .filter(AuthenticatedUser::isResourceOwner)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, WORKOUT_NOT_FOUND));
     }
 
     public Workout getActive() {
-        return workoutRepository.findAllByTypeAndUserId(Workout.Type.ACTIVE, AuthenticatedUser.getId()).stream()
+        return workoutRepository.findAllByTypeAndUserId(Type.ACTIVE, AuthenticatedUser.getId()).stream()
                 .findFirst()
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, WORKOUT_NOT_FOUND));
     }
@@ -50,7 +55,7 @@ public class WorkoutService {
 
     private Workout start(Workout workout) {
         workout.setStartDate(LocalDateTime.now());
-        workout.setType(Workout.Type.ACTIVE);
+        workout.setType(Type.ACTIVE);
         workout.setUserId(AuthenticatedUser.getId());
 
         clearActive();
@@ -60,11 +65,11 @@ public class WorkoutService {
 
     private void clearActive() {
         workoutRepository
-                .deleteAll(workoutRepository.findAllByTypeAndUserId(Workout.Type.ACTIVE, AuthenticatedUser.getId()));
+                .deleteAll(workoutRepository.findAllByTypeAndUserId(Type.ACTIVE, AuthenticatedUser.getId()));
     }
 
     public Workout complete() {
-        Workout workout = workoutRepository.findAllByTypeAndUserId(Workout.Type.ACTIVE, AuthenticatedUser.getId())
+        Workout workout = workoutRepository.findAllByTypeAndUserId(Type.ACTIVE, AuthenticatedUser.getId())
                 .stream().findFirst()
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, WORKOUT_NOT_FOUND));
 
@@ -72,25 +77,26 @@ public class WorkoutService {
                 exerciseGroup -> exerciseGroup.getExerciseRows().removeIf(exerciseRow -> !exerciseRow.getIsLifted()));
         workout.getExerciseGroups().removeIf(exerciseGroup -> exerciseGroup.getExerciseRows().isEmpty());
         workout.setEndDate(LocalDateTime.now());
-        workout.setType(Workout.Type.COMPLETED);
+        workout.setType(Type.COMPLETED);
 
         return workoutRepository.save(workout);
     }
 
-    public Workout clone(Long id) {
+    public Workout cloneToTemplate(Long id) {
         Workout workout = get(id);
         Workout newWorkout = Workout.clone(workout);
         newWorkout.setName(workout.getName() + " - copy");
-        newWorkout.setType(Workout.Type.TEMPLATE);
+        newWorkout.setType(Type.TEMPLATE);
         newWorkout.setUserId(AuthenticatedUser.getId());
 
         return workoutRepository.save(newWorkout);
     }
 
-    public Workout save(WorkoutRequest workoutRequest) {
+    public Workout save(WorkoutCreateRequest workoutRequest) {
         Workout workout = workoutMapper.workoutRequestToWorkout(workoutRequest);
-        workout.setType(Workout.Type.TEMPLATE);
+        workout.setType(Type.TEMPLATE);
         workout.setUserId(AuthenticatedUser.getId());
+        workout.setProgramWeek(workoutRequest.getProgramWeekId() == null ? null : programService.getProgramWeek(workoutRequest.getProgramWeekId()));
 
         return workoutRepository.save(workout);
     }

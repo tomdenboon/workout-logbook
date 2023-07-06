@@ -1,13 +1,13 @@
 import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import App from './app/AppPage';
-import Exercise from './app/exercises/ExercisePage';
-import Exercises from './app/exercises/ExercisesPage';
-import Profile from './app/profile/ProfilePage';
-import Settings from './app/profile/SettingsPage';
-import Statistics from './app/statistics/StatisticsPage';
-import Workout from './app/workouts/WorkoutPage';
-import Workouts from './app/workouts/WorkoutsPage';
+import AppPage from './app/AppPage';
+import ExercisesPage from './app/exercises/ExercisesPage';
+import ProfilePage from './app/profile/ProfilePage';
+import SettingsPage from './app/profile/SettingsPage';
+import StatisticsPage from './app/statistics/StatisticsPage';
+import WorkoutPage from './app/training/WorkoutPage';
+import TrainingPage from './app/training/TrainingPage';
+import ProgramPage from './app/training/ProgramPage';
 
 function Router() {
   // useEffect(() => {
@@ -21,15 +21,14 @@ function Router() {
       <CssBaseline />
       <BrowserRouter>
         <Routes>
-          <Route path="app" element={<App />}>
-            <Route path="profile" element={<Profile />} />
-            <Route path="profile/settings" element={<Settings />} />
-            <Route path="workouts" element={<Workouts />} />
-            <Route path="workouts/:id" element={<Workout />} />
-            <Route path="workouts/:workoutId/exercises" element={<Exercises />} />
-            <Route path="exercises" element={<Exercises />} />
-            <Route path="exercises/:exerciseId" element={<Exercise />} />
-            <Route path="statistics" element={<Statistics />} />
+          <Route path="app" element={<AppPage />}>
+            <Route path="profile" element={<ProfilePage />} />
+            <Route path="profile/settings" element={<SettingsPage />} />
+            <Route path="training" element={<TrainingPage />} />
+            <Route path="training/programs/:id" element={<ProgramPage />} />
+            <Route path="training/workouts/:id" element={<WorkoutPage />} />
+            <Route path="training/workouts/:workoutId/exercises" element={<ExercisesPage />} />
+            <Route path="statistics" element={<StatisticsPage />} />
           </Route>
         </Routes>
       </BrowserRouter>

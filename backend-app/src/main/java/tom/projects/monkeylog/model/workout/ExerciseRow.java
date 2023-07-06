@@ -19,6 +19,7 @@ public class ExerciseRow implements UserOwned {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private Boolean isLifted;
 
     @ManyToOne

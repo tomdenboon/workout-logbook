@@ -5,11 +5,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import tom.projects.monkeylog.dto.workout.ExerciseGroupCreateRequest;
-import tom.projects.monkeylog.dto.workout.ExerciseRowSwapRequest;
 import tom.projects.monkeylog.model.workout.ExerciseGroup;
 import tom.projects.monkeylog.model.workout.ExerciseRow;
+import tom.projects.monkeylog.model.workout.Type;
 import tom.projects.monkeylog.model.workout.Workout;
-import tom.projects.monkeylog.model.workout.Workout.Type;
 import tom.projects.monkeylog.repository.workout.ExerciseGroupRepository;
 import tom.projects.monkeylog.repository.workout.WorkoutRepository;
 import tom.projects.monkeylog.security.AuthenticatedUser;
@@ -24,7 +23,7 @@ public class ExerciseGroupService {
 
     public ExerciseGroup get(Long id) {
         return exerciseGroupRepository.findById(id)
-                .filter(AuthenticatedUser::isOwner)
+                .filter(AuthenticatedUser::isResourceOwner)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Exercise group not found"));
     }
 

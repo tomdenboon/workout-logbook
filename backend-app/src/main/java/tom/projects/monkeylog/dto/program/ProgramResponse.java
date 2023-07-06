@@ -7,8 +7,8 @@ import java.util.List;
 
 @Data
 public class ProgramResponse {
+    private Long id;
     private String name;
     private String description;
-    private boolean isTemplate;
-    List<ProgramWeek> programWeeks;
+    List<ProgramWeekResponse> programWeeks;
 }

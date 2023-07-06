@@ -16,7 +16,7 @@ function WorkoutCard(props: WorkoutCardProps) {
 
   useEffect(() => {
     if (data) {
-      navigate(`/app/workouts/${data.id}`);
+      navigate(`/app/training/workouts/${data.id}`);
     }
   }, [data]);
 
@@ -36,7 +36,9 @@ function WorkoutCard(props: WorkoutCardProps) {
         </CardContent>
       )}
       <CardActions sx={{ pt: 0 }}>
-        <Button onClick={() => startWorkout(workout.id)}>START</Button>
+        <Button variant="contained" size="small" onClick={() => startWorkout(workout.id)}>
+          START
+        </Button>
       </CardActions>
     </Card>
   );

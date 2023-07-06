@@ -11,7 +11,7 @@ function AppGridContainer(props: AppGridContainerProps) {
   return (
     <>
       {header}
-      <Container maxWidth="lg" sx={{ pt: 8, pb: 16, ...sx }}>
+      <Container maxWidth="lg" sx={{ paddingY: 8, ...sx }}>
         {children}
       </Container>
     </>

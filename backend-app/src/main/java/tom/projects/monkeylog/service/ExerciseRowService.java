@@ -24,13 +24,13 @@ public class ExerciseRowService {
 
     public ExerciseRow get(Long id) {
         return exerciseRowRepository.findById(id)
-                .filter(AuthenticatedUser::isOwner)
+                .filter(AuthenticatedUser::isResourceOwner)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ROW_NOT_FOUND));
     }
 
     public ExerciseRowField getField(Long id) {
         return exerciseRowFieldRepository.findById(id)
-                .filter(AuthenticatedUser::isOwner)
+                .filter(AuthenticatedUser::isResourceOwner)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ROW_NOT_FOUND));
     }
 

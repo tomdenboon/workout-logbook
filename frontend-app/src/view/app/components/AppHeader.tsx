@@ -5,7 +5,7 @@ interface HeaderProps {
   LeftTitleButton?: React.ReactNode;
   RightButton?: React.ReactNode;
 }
-function Header(props: HeaderProps) {
+function AppHeader(props: HeaderProps) {
   const { title, LeftTitleButton, RightButton } = props;
 
   return (
@@ -21,4 +21,4 @@ function Header(props: HeaderProps) {
   );
 }
 
-export default Header;
+export default AppHeader;

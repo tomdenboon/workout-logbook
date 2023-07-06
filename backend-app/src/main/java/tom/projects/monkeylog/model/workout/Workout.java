@@ -12,7 +12,6 @@ import tom.projects.monkeylog.model.user.UserOwned;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 @Entity
 @Getter
@@ -50,11 +49,11 @@ public class Workout implements UserOwned {
 
     public static Workout clone(Workout workout) {
         Workout newWorkout = new Workout();
+        newWorkout.setType(Type.TEMPLATE);
         newWorkout.setName(workout.getName());
         newWorkout.setUserId(workout.getUserId());
         newWorkout.setNote(workout.getNote());
         newWorkout.setType(workout.getType());
-        newWorkout.setProgramWeek(workout.getProgramWeek());
         workout.getExerciseGroups().stream().map(ExerciseGroup::clone).forEach(newWorkout::addExerciseGroup);
 
         return newWorkout;
@@ -65,9 +64,4 @@ public class Workout implements UserOwned {
         exerciseGroup.setWorkout(this);
     }
 
-    public enum Type {
-        TEMPLATE,
-        ACTIVE,
-        COMPLETED
-    }
 }

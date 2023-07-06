@@ -32,13 +32,13 @@ public class MeasurementService {
 
     public Measurement get(Long id) {
         return measurementRepository.findById(id)
-                .filter(AuthenticatedUser::isOwner)
+                .filter(AuthenticatedUser::isResourceOwner)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, MEASUREMENT_NOT_FOUND));
     }
 
     public MeasurementPoint getPoint(Long id) {
         return measurementPointRepository.findById(id)
-                .filter(AuthenticatedUser::isOwner)
+                .filter(AuthenticatedUser::isResourceOwner)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, MEASUREMENT_POINT_NOT_FOUND));
     }
 
