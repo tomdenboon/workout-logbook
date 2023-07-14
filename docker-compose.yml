@@ -10,6 +10,8 @@ services:
       - CHOKIDAR_USEPOLLING=true
     networks:
       - proxy-react
+    depends_on:
+      - backend
   backend:
     build:
       context: backend
@@ -36,7 +38,6 @@ services:
     ports:
       - 80:80
     depends_on:
-      - backend
       - frontend
     networks:
       - proxy-spring
