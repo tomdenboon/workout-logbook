@@ -9,7 +9,7 @@ import { monkeylogApi } from './monkeylogApi';
 const measurementApi = monkeylogApi.injectEndpoints({
   endpoints: (builder) => ({
     getMeasurements: builder.query<Array<Measurement>, void>({
-      query: () => `measurement`,
+      query: () => `measurements`,
       providesTags: (result) =>
         result
           ? [
@@ -20,7 +20,7 @@ const measurementApi = monkeylogApi.injectEndpoints({
     }),
     addMeasurement: builder.mutation<Measurement, MeasurementPost>({
       query: (body) => ({
-        url: `measurement`,
+        url: `measurements`,
         method: 'POST',
         body,
       }),
@@ -31,7 +31,7 @@ const measurementApi = monkeylogApi.injectEndpoints({
       { id: number; body: MeasurementPointPost }
     >({
       query: ({ id, body }) => ({
-        url: `measurement/${id}/measurement_point`,
+        url: `measurements/${id}/measurement_points`,
         method: 'POST',
         body,
       }),

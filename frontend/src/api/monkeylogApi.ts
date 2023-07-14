@@ -11,12 +11,12 @@ import {
 
 export const monkeylogApi = createApi({
   reducerPath: 'monkeylogApi',
-  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:8080' }),
+  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost/api' }),
   tagTypes: ['Exercise', 'Workout', 'ExerciseGroup', 'ExerciseRow', 'Measurement'],
   endpoints: (builder) => ({
     getWorkouts: builder.query<Array<Workout>, { type: WorkoutType }>({
       query: (arg) => ({
-        url: `workout`,
+        url: `workouts`,
         params: arg,
       }),
       providesTags: (result, errors, arg) => [
@@ -25,11 +25,11 @@ export const monkeylogApi = createApi({
       ],
     }),
     getWorkout: builder.query<Workout, Workout['id']>({
-      query: (id) => `workout/${id}`,
+      query: (id) => `workouts/${id}`,
       providesTags: (result, error, id) => [{ type: 'Workout', id }],
     }),
     getActiveWorkout: builder.query<WorkoutSmall, void>({
-      query: () => `workout/active`,
+      query: () => `workouts/active`,
       providesTags: (result) => [
         { type: 'Workout', id: result?.id },
         { type: 'Workout', id: 'ACTIVE' },
@@ -37,7 +37,7 @@ export const monkeylogApi = createApi({
     }),
     addWorkout: builder.mutation<WorkoutSmall, Partial<WorkoutSmall>>({
       query: (body) => ({
-        url: `workout`,
+        url: `workouts`,
         method: 'POST',
         body,
       }),
@@ -45,35 +45,35 @@ export const monkeylogApi = createApi({
     }),
     deleteWorkout: builder.mutation<void, Workout['id']>({
       query: (id) => ({
-        url: `workout/${id}`,
+        url: `workouts/${id}`,
         method: 'DELETE',
       }),
       invalidatesTags: (result, error, id) => [{ type: 'Workout', id }],
     }),
     cloneWorkout: builder.mutation<WorkoutSmall, number>({
       query: (id) => ({
-        url: `workout/${id}/clone`,
+        url: `workouts/${id}/duplicate`,
         method: 'POST',
       }),
       invalidatesTags: [{ type: 'Workout', id: `${WorkoutType.Template}_LIST` }],
     }),
     startWorkout: builder.mutation<WorkoutSmall, number>({
       query: (id) => ({
-        url: `workout/${id}/start`,
+        url: `workouts/${id}/start`,
         method: 'POST',
       }),
       invalidatesTags: [{ type: 'Workout', id: 'ACTIVE' }],
     }),
     startEmptyWorkout: builder.mutation<WorkoutSmall, void>({
       query: () => ({
-        url: `workout/start`,
+        url: `workouts/start`,
         method: 'POST',
       }),
       invalidatesTags: [{ type: 'Workout', id: 'ACTIVE' }],
     }),
     completeWorkout: builder.mutation<WorkoutSmall, void>({
       query: () => ({
-        url: `workout/complete`,
+        url: `workouts/complete`,
         method: 'POST',
       }),
       invalidatesTags: (result) => [
@@ -86,18 +86,18 @@ export const monkeylogApi = createApi({
       { workoutId: number; body: { exerciseIds: number[] } }
     >({
       query: (request) => ({
-        url: `workout/${request.workoutId}/exercise_group`,
+        url: `workouts/${request.workoutId}/exercise-groups`,
         method: 'POST',
         body: request.body,
       }),
       invalidatesTags: (result, error, request) => [{ type: 'Workout', id: request.workoutId }],
     }),
     getExerciseGroup: builder.query<ExerciseGroup, ExerciseGroup['id']>({
-      query: (id) => `exercise_group/${id}`,
+      query: (id) => `exercise-groups/${id}`,
       providesTags: (result, error, id) => [{ type: 'ExerciseGroup', id }],
     }),
     getExerciseRow: builder.query<ExerciseRow, ExerciseRow['id']>({
-      query: (id) => `exercise_row/${id}`,
+      query: (id) => `exercise-rows/${id}`,
       providesTags: (result, error, id) => [{ type: 'ExerciseRow', id }],
     }),
     addExerciseRow: builder.mutation<
@@ -105,7 +105,7 @@ export const monkeylogApi = createApi({
       { id: ExerciseGroup['id']; workoutId: number; exerciseGroupIndex: number }
     >({
       query: ({ id }) => ({
-        url: `exercise_group/${id}/add_row`,
+        url: `exercise-groups/${id}/add-row`,
         method: 'POST',
       }),
       async onQueryStarted({ workoutId, exerciseGroupIndex }, { dispatch, queryFulfilled }) {
@@ -115,36 +115,6 @@ export const monkeylogApi = createApi({
             Object.assign(draft.exerciseGroups[exerciseGroupIndex], addedRow);
           })
         );
-      },
-    }),
-    swapExerciseRow: builder.mutation<
-      void,
-      {
-        id: ExerciseGroup['id'];
-        workoutId: number;
-        exerciseGroupIndex: number;
-        oldIndex: number;
-        newIndex: number;
-      }
-    >({
-      query: ({ id, oldIndex, newIndex }) => ({
-        url: `exercise_group/${id}/swap_row`,
-        method: 'POST',
-        body: { oldIndex, newIndex },
-      }),
-      async onQueryStarted(
-        { workoutId, exerciseGroupIndex, oldIndex, newIndex },
-        { dispatch, queryFulfilled }
-      ) {
-        const patchResult = dispatch(
-          monkeylogApi.util.updateQueryData('getWorkout', workoutId, (draft) => {
-            const row = draft.exerciseGroups[exerciseGroupIndex].exerciseRows[oldIndex];
-            draft.exerciseGroups[exerciseGroupIndex].exerciseRows.splice(oldIndex, 1);
-            draft.exerciseGroups[exerciseGroupIndex].exerciseRows.splice(newIndex, 0, row);
-          })
-        );
-
-        queryFulfilled.catch(patchResult.undo);
       },
     }),
     updateExerciseRow: builder.mutation<
@@ -157,7 +127,7 @@ export const monkeylogApi = createApi({
       }
     >({
       query: ({ patch }) => ({
-        url: `exercise_row/${patch.id}`,
+        url: `exercise-rows/${patch.id}`,
         method: 'PATCH',
         body: patch,
       }),
@@ -187,7 +157,7 @@ export const monkeylogApi = createApi({
     >({
       query({ id }) {
         return {
-          url: `exercise_row/${id}`,
+          url: `exercise-rows/${id}`,
           method: 'DELETE',
         };
       },
@@ -218,7 +188,7 @@ export const monkeylogApi = createApi({
       }
     >({
       query: ({ patch }) => ({
-        url: `exercise_row_field/${patch.id}`,
+        url: `exercise-row-fields/${patch.id}`,
         method: 'PATCH',
         body: patch,
       }),
@@ -256,7 +226,6 @@ export const {
   useGetExerciseGroupQuery,
   useGetExerciseRowQuery,
   useAddExerciseRowMutation,
-  useSwapExerciseRowMutation,
   useUpdateExerciseRowMutation,
   useDeleteExerciseRowMutation,
   useUpdateExerciseRowFieldMutation,

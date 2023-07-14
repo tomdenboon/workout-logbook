@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5433/monkeylog
+    url: jdbc:postgresql://db:5432/monkeylog
     username: postgres
     password: mysecretpassword
   jpa:

@@ -1,24 +1,51 @@
 services:
-  frontend-app:
+  frontend:
     build:
-      context: frontend-app
-    ports:
-      - 3000:3000
+      context: frontend
+    restart: always
     volumes:
-      - ./frontend-app:/app
+      - ./frontend:/app
       - /app/node_modules
     environment:
       - CHOKIDAR_USEPOLLING=true
-  postgres-db:
+    networks:
+      - proxy-react
+  backend:
+    build:
+      context: backend
+      target: development
+    networks:
+      - proxy-spring
+      - spring-postgresql
+    depends_on:
+      - db
+  db:
     image: postgres:12-alpine
     restart: always
+    ports:
+      - 5432:5432
     environment:
       - POSTGRES_DB=monkeylog
       - POSTGRES_PASSWORD=mysecretpassword
-    ports:
-      - 5433:5432
     volumes:
       - postgresql-data:/var/lib/postgresql/data
+    networks:
+      - spring-postgresql
+  proxy:
+    build: proxy
+    ports:
+      - 80:80
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - proxy-spring
+      - proxy-react
 
 volumes:
-  postgresql-data: {}
+  postgresql-data:
+
+networks:
+  proxy-react:
+  proxy-spring:
+  spring-postgresql:

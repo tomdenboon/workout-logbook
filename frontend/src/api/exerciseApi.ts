@@ -4,10 +4,10 @@ import { monkeylogApi } from './monkeylogApi';
 const exerciseApi = monkeylogApi.injectEndpoints({
   endpoints: (builder) => ({
     getExerciseTypes: builder.query<Array<ExerciseType>, void>({
-      query: () => `exercise_type`,
+      query: () => `exercise_types`,
     }),
     getExercises: builder.query<Array<Exercise>, void>({
-      query: () => `exercise`,
+      query: () => `exercises`,
       providesTags: (result) =>
         result
           ? [
@@ -17,12 +17,12 @@ const exerciseApi = monkeylogApi.injectEndpoints({
           : [{ type: 'Exercise', id: 'LIST' }],
     }),
     getExercise: builder.query<Exercise, Exercise['id']>({
-      query: (id) => `exercise/${id}`,
+      query: (id) => `exercises/${id}`,
       providesTags: (result, error, id) => [{ type: 'Exercise', id }],
     }),
     addExercise: builder.mutation<Exercise, ExercisePost>({
       query: (body) => ({
-        url: `exercise`,
+        url: `exercises`,
         method: 'POST',
         body,
       }),
@@ -30,7 +30,7 @@ const exerciseApi = monkeylogApi.injectEndpoints({
     }),
     updateExercise: builder.mutation<void, ExercisePatch>({
       query: (patch) => ({
-        url: `exercise/${patch.id}`,
+        url: `exercises/${patch.id}`,
         method: 'PATCH',
         body: patch,
       }),
@@ -39,7 +39,7 @@ const exerciseApi = monkeylogApi.injectEndpoints({
     deleteExercise: builder.mutation<{ success: boolean; id: number }, Exercise['id']>({
       query(id) {
         return {
-          url: `exercise/${id}`,
+          url: `exercises/${id}`,
           method: 'DELETE',
         };
       },
