@@ -11,7 +11,7 @@ import {
 
 export const monkeylogApi = createApi({
   reducerPath: 'monkeylogApi',
-  baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost/api' }),
+  baseQuery: fetchBaseQuery({ baseUrl: '/api' }),
   tagTypes: ['Exercise', 'Workout', 'ExerciseGroup', 'ExerciseRow', 'Measurement'],
   endpoints: (builder) => ({
     getWorkouts: builder.query<Array<Workout>, { type: WorkoutType }>({
