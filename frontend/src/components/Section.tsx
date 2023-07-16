@@ -11,7 +11,7 @@ interface SectionProps {
 
 function Section(props: SectionProps) {
   const { title, collapse, rightNode, children } = props;
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
 
   return (
     <Stack spacing={1}>
