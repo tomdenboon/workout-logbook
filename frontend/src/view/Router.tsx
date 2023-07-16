@@ -1,5 +1,5 @@
 import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import AppPage from './app/AppPage';
 import ExercisesPage from './app/exercises/ExercisesPage';
 import ProfilePage from './app/profile/ProfilePage';
@@ -21,7 +21,8 @@ function Router() {
       <CssBaseline />
       <BrowserRouter>
         <Routes>
-          <Route path="app" element={<AppPage />}>
+          <Route element={<AppPage />}>
+            <Route index element={<Navigate to="/profile" />} />
             <Route path="profile" element={<ProfilePage />} />
             <Route path="profile/settings" element={<SettingsPage />} />
             <Route path="training" element={<TrainingPage />} />
