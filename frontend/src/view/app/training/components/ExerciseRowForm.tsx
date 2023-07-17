@@ -71,6 +71,7 @@ function ExerciseRowFieldForm(props: ExerciseRowFieldProps) {
       }}
       fullWidth
       hiddenLabel
+      inputMode="numeric"
       value={newField.value ?? undefined}
       placeholder={field.value || '0'}
       onChange={(e) => setNewField({ ...newField, value: cleanFieldInput(e.target.value) })}
