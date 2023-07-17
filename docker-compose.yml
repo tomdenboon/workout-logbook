@@ -40,6 +40,7 @@ services:
     ports:
       - 80:80
       - 443:443
+    restart: unless-stopped
     depends_on:
       - backend
     networks:
@@ -52,6 +53,7 @@ services:
     command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
   certbot:
     image: certbot/certbot
+    restart: unless-stopped
     volumes:
       - ./proxy/certbot/conf:/etc/letsencrypt
       - ./proxy/certbot/www:/var/www/certbot
