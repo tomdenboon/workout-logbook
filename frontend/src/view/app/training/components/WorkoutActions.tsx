@@ -15,7 +15,7 @@ function WorkoutActions(props: { workout: WorkoutSmall }) {
       actions={[
         {
           label: 'Edit',
-          action: () => navigate(`/app/training/workouts/${workout.id}`),
+          action: () => navigate(`/training/workouts/${workout.id}`),
           icon: <Edit />,
         },
         {

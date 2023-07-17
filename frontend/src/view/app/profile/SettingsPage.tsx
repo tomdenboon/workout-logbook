@@ -10,7 +10,7 @@ function Settings() {
       header={
         <AppHeader
           LeftTitleButton={
-            <Link to="/app/profile">
+            <Link to="/profile">
               <FiArrowLeft />
             </Link>
           }

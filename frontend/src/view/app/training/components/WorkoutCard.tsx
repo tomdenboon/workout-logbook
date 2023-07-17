@@ -16,7 +16,7 @@ function WorkoutCard(props: WorkoutCardProps) {
 
   useEffect(() => {
     if (data) {
-      navigate(`/app/training/workouts/${data.id}`);
+      navigate(`/training/workouts/${data.id}`);
     }
   }, [data]);
 

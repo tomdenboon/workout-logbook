@@ -43,7 +43,7 @@ function Exercises() {
 
   useEffect(() => {
     if (isSuccess && workoutId) {
-      navigate(`/app/training/workouts/${workoutId}`);
+      navigate(`/training/workouts/${workoutId}`);
     }
   }, [isSuccess]);
 
@@ -61,7 +61,7 @@ function Exercises() {
         <AppHeader
           LeftTitleButton={
             workoutId && (
-              <Link to={`/app/training/workouts/${workoutId}`}>
+              <Link to={`/training/workouts/${workoutId}`}>
                 <IconButton color="inherit">
                   <ArrowBack />
                 </IconButton>

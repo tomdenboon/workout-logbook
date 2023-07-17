@@ -11,7 +11,7 @@ function Exercise() {
         <AppHeader
           title="Exercise"
           LeftTitleButton={
-            <Link to="/app/exercises">
+            <Link to="/exercises">
               <IconButton color="inherit">
                 <ArrowBack />
               </IconButton>

@@ -26,18 +26,20 @@ function WorkoutHeader({ workout }: { workout?: Workout }) {
 
   useEffect(() => {
     if (isSuccess) {
-      navigate('/app/profile');
+      navigate('/profile');
     }
   }, [isSuccess]);
 
   return (
     <AppHeader
       LeftTitleButton={
-        <Link to={workout?.type === WorkoutType.Complete ? '/app/profile' : '/app/training'}>
-          <IconButton color="inherit">
-            <ArrowBack />
-          </IconButton>
-        </Link>
+        <IconButton
+          component={Link}
+          color="inherit"
+          to={workout?.type === WorkoutType.Complete ? '/profile' : '/training'}
+        >
+          <ArrowBack />
+        </IconButton>
       }
       RightButton={
         workout?.type === WorkoutType.Active && (
@@ -122,7 +124,7 @@ function WorkoutPage() {
                     variant="text"
                     onClick={() => {
                       deleteWorkout(workout.id);
-                      navigate('/app/training');
+                      navigate('/training');
                     }}
                   >
                     CONFIRM

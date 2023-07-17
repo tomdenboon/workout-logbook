@@ -9,6 +9,7 @@ import AppHeader from '../components/AppHeader';
 import AddWorkoutModal from './components/AddWorkoutModal';
 import WorkoutCard from './components/WorkoutCard';
 import Section from '../../../components/Section';
+import AddItemCard from '../../../components/AddItemCard';
 
 function TrainingPage() {
   const { data: workouts } = useGetWorkoutsQuery({ type: WorkoutType.Template });
@@ -18,7 +19,7 @@ function TrainingPage() {
 
   useEffect(() => {
     if (data) {
-      navigate(`/app/training/workouts/${data.id}`);
+      navigate(`/training/workouts/${data.id}`);
     }
   }, [data]);
 
@@ -47,6 +48,11 @@ function TrainingPage() {
             {workouts && (
               <Box>
                 <Grid container spacing={1}>
+                  {workouts.length === 0 && (
+                    <Grid item xs={12} sm={6} md={4}>
+                      <AddItemCard onClick={() => setOpen(true)} />
+                    </Grid>
+                  )}
                   {workouts.map((val) => (
                     <Grid item xs={12} sm={6} md={4} key={val.id}>
                       <WorkoutCard key={val.id} workout={val} />
@@ -71,7 +77,11 @@ function TrainingPage() {
               </Button>
             }
           >
-            a
+            <Grid container>
+              <Grid item xs={12} sm={6} md={4}>
+                <AddItemCard onClick={() => setOpen(true)} />
+              </Grid>
+            </Grid>
           </Section>
         </Stack>
       </Stack>
