@@ -1,4 +1,4 @@
-import { Box, Button, Grid, Stack } from '@mui/material';
+import { Button, Grid, Stack } from '@mui/material';
 import { Add } from '@mui/icons-material';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -38,7 +38,7 @@ function TrainingPage() {
                 startIcon={<Add />}
                 onClick={() => setOpen(true)}
                 variant="outlined"
-                sx={{ height: 20, p: 0, px: 1 }}
+                sx={{ height: 20 }}
                 size="small"
               >
                 Create
@@ -46,20 +46,18 @@ function TrainingPage() {
             }
           >
             {workouts && (
-              <Box>
-                <Grid container spacing={1}>
-                  {workouts.length === 0 && (
-                    <Grid item xs={12} sm={6} md={4}>
-                      <AddItemCard onClick={() => setOpen(true)} />
-                    </Grid>
-                  )}
-                  {workouts.map((val) => (
-                    <Grid item xs={12} sm={6} md={4} key={val.id}>
-                      <WorkoutCard key={val.id} workout={val} />
-                    </Grid>
-                  ))}
-                </Grid>
-              </Box>
+              <Grid container spacing={1}>
+                {workouts.length === 0 && (
+                  <Grid item xs={12} sm={6} md={4}>
+                    <AddItemCard onClick={() => setOpen(true)} />
+                  </Grid>
+                )}
+                {workouts.map((val) => (
+                  <Grid item xs={12} sm={6} md={4} key={val.id}>
+                    <WorkoutCard key={val.id} workout={val} />
+                  </Grid>
+                ))}
+              </Grid>
             )}
           </Section>
           <Section

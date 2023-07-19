@@ -39,7 +39,13 @@ function ExerciseGroupForm(props: ExerciseGroupProps) {
               Set
             </Typography>
             {exerciseGroup.exercise.exerciseType.exerciseFields.map((exerciseField) => (
-              <Typography sx={{ flexGrow: 1 }} variant="body2" fontWeight={800} align="center">
+              <Typography
+                key={exerciseField.id}
+                sx={{ flexGrow: 1 }}
+                variant="body2"
+                fontWeight={800}
+                align="center"
+              >
                 {exerciseField.type[0] + exerciseField.type.slice(1).toLowerCase()}
               </Typography>
             ))}

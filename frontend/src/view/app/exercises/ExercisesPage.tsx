@@ -1,5 +1,5 @@
 import { ArrowBack } from '@mui/icons-material';
-import { Divider, Fab, IconButton, List, ListItem, ListItemText } from '@mui/material';
+import { Divider, Fab, IconButton, List, ListSubheader } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { FiPlus } from 'react-icons/fi';
 import { Link, useNavigate, useParams } from 'react-router-dom';
@@ -90,9 +90,7 @@ function Exercises() {
           .map((key) => (
             <>
               <List sx={{ py: 0 }}>
-                <ListItem disablePadding>
-                  <ListItemText sx={{ pl: 2, pt: 2 }} secondary={key.toLocaleUpperCase()} />
-                </ListItem>
+                <ListSubheader>{key.toLocaleUpperCase()}</ListSubheader>
                 <Divider />
                 {groupedExercises[key].map((exercise, index) => (
                   <>
