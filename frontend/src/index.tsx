@@ -2,8 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import { Provider } from 'react-redux';
-import Router from './view/Router';
-import store from './state/store';
+import store from 'store/store';
+import Router from 'routes/Router';
 
 ReactDOM.render(
   <React.StrictMode>
