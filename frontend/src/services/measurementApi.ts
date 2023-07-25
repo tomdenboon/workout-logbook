@@ -31,7 +31,7 @@ const measurementApi = monkeylogApi.injectEndpoints({
       { id: number; body: MeasurementPointPost }
     >({
       query: ({ id, body }) => ({
-        url: `measurements/${id}/measurement_points`,
+        url: `measurements/${id}/measurement-points`,
         method: 'POST',
         body,
       }),

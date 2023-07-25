@@ -1,28 +1,18 @@
 import { Card, CardActionArea, CardContent, CardHeader, Typography } from '@mui/material';
-import WorkoutActions from 'features/workout/components/WorkoutActions';
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useStartWorkoutMutation } from 'services/monkeylogApi';
 import { Workout } from 'features/workout/types';
+import WorkoutActions from 'features/workout/components/WorkoutActions';
 
 interface WorkoutCardProps {
   workout: Workout;
+  onClick: () => void;
 }
 
 function WorkoutCard(props: WorkoutCardProps) {
-  const { workout } = props;
-  const navigate = useNavigate();
-  const [startWorkout, { data }] = useStartWorkoutMutation();
-
-  useEffect(() => {
-    if (data) {
-      navigate(`/training/workouts/${data.id}`);
-    }
-  }, [data]);
+  const { workout, onClick } = props;
 
   return (
     <Card variant="outlined">
-      <CardActionArea component="a" onClick={() => startWorkout(workout.id)}>
+      <CardActionArea component="a" onClick={onClick}>
         <CardHeader
           action={<WorkoutActions workout={workout} />}
           title={<Typography>{workout.name}</Typography>}

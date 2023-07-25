@@ -10,3 +10,7 @@ spring:
   mvc:
     format:
       date-time: iso
+
+springdoc:
+  api-docs:
+    path: /api-docs

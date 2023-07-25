@@ -18,7 +18,7 @@ public class MeasurementPoint implements UserOwned {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer value;
+    private Double value;
 
     @ManyToOne
     @JoinColumn(name = "measurement_id", nullable = false)

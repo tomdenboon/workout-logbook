@@ -65,7 +65,7 @@ function ProgramPage() {
             }
           >
             {week.workouts.map((workout) => (
-              <WorkoutCard workout={workout} />
+              <WorkoutCard onClick={() => null} workout={workout} />
             ))}
           </Section>
         ))}

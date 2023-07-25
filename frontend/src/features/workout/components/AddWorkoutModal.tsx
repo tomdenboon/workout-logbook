@@ -6,27 +6,23 @@ import {
   DialogTitle,
   TextField,
 } from '@mui/material';
+import { IUseModal } from 'hooks/useModal';
 import { useState } from 'react';
 import { useAddWorkoutMutation } from 'services/monkeylogApi';
-
-interface AddWorkoutModalProps {
-  isOpen: boolean;
-  setIsOpen: (open: boolean) => void;
-}
 
 interface AddExerciseForm {
   name: string;
 }
 
-function AddWorkoutModal(props: AddWorkoutModalProps) {
-  const { isOpen, setIsOpen } = props;
+function AddWorkoutModal(props: IUseModal) {
+  const { isOpen, close } = props;
   const [workoutForm, setWorkoutForm] = useState<AddExerciseForm>({
     name: '',
   });
   const [addWorkout] = useAddWorkoutMutation();
 
   return (
-    <Dialog open={isOpen} onClose={() => setIsOpen(false)}>
+    <Dialog open={isOpen} onClose={() => close()}>
       <DialogTitle>Add workout</DialogTitle>
       <DialogContent>
         <TextField
@@ -38,12 +34,13 @@ function AddWorkoutModal(props: AddWorkoutModalProps) {
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={() => setIsOpen(false)}>Cancel</Button>
+        <Button onClick={() => close()}>Cancel</Button>
         <Button
-          onClick={() => {
-            addWorkout(workoutForm);
-            setIsOpen(false);
-          }}
+          onClick={() =>
+            addWorkout(workoutForm)
+              .unwrap()
+              .then(() => close())
+          }
         >
           Add
         </Button>

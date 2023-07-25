@@ -1,7 +1,6 @@
-import { ArrowBack } from '@mui/icons-material';
+import { Add, ArrowBack } from '@mui/icons-material';
 import { Divider, Fab, IconButton, List, ListSubheader } from '@mui/material';
-import { useState, useMemo, useEffect } from 'react';
-import { FiPlus } from 'react-icons/fi';
+import { useState, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useGetExercisesQuery } from 'services/exerciseApi';
 import { useAddExerciseGroupsMutation } from 'services/monkeylogApi';
@@ -15,7 +14,7 @@ function Exercises() {
   const { workoutId } = useParams();
   const navigate = useNavigate();
 
-  const [addExerciseGroups, { isSuccess }] = useAddExerciseGroupsMutation();
+  const [addExerciseGroups] = useAddExerciseGroupsMutation();
   const { data: exercises } = useGetExercisesQuery();
   const [selectedExerciseIds, setSelectedExerciseIds] = useState<Record<string, boolean>>({});
   const [editExercise, setEditExercise] = useState<Exercise>();
@@ -40,12 +39,6 @@ function Exercises() {
       ),
     [exercises]
   );
-
-  useEffect(() => {
-    if (isSuccess && workoutId) {
-      navigate(`/training/workouts/${workoutId}`);
-    }
-  }, [isSuccess]);
 
   const exerciseClicked = (exerciseId: number) => {
     const selectedExercise = selectedExerciseIds[exerciseId];
@@ -74,7 +67,7 @@ function Exercises() {
               }}
               color="inherit"
             >
-              <FiPlus />
+              <Add />
             </IconButton>
           }
           title="Exercises"
@@ -123,10 +116,12 @@ function Exercises() {
                   .map((id) => parseInt(id, 10)),
               },
             })
+              .unwrap()
+              .then(() => navigate(`/training/workouts/${workoutId}`))
           }
           disabled={!hasSelectedExercises}
         >
-          <FiPlus />
+          <Add />
         </Fab>
       )}
 

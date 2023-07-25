@@ -1,5 +1,6 @@
 package tom.projects.monkeylog.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import tom.projects.monkeylog.dto.measurement.*;
@@ -20,12 +21,12 @@ public class MeasurementController {
     }
 
     @PostMapping("/measurements")
-    MeasurementResponse create(@RequestBody MeasurementCreateRequest measurementCreateRequest) {
+    MeasurementResponse create(@RequestBody @Valid MeasurementCreateRequest measurementCreateRequest) {
         return measurementMapper.measurementToMeasurementResponse(measurementService.create(measurementCreateRequest));
     }
 
     @PatchMapping("/measurements/id")
-    MeasurementResponse update(@RequestBody MeasurementUpdateRequest measurementUpdateRequest, @PathVariable Long id) {
+    MeasurementResponse update(@RequestBody @Valid MeasurementUpdateRequest measurementUpdateRequest, @PathVariable Long id) {
         return measurementMapper.measurementToMeasurementResponse(measurementService.update(measurementUpdateRequest, id));
     }
 
@@ -35,12 +36,12 @@ public class MeasurementController {
     }
 
     @PostMapping("/measurements/{id}/measurement-points")
-    MeasurementPointResponse createPoint(@RequestBody MeasurementPointCreateRequest measurementPointCreateRequest, @PathVariable Long id) {
+    MeasurementPointResponse createPoint(@RequestBody @Valid MeasurementPointCreateRequest measurementPointCreateRequest, @PathVariable Long id) {
         return measurementMapper.measurementPointToMeasurementPointResponse(measurementService.createPoint(id, measurementPointCreateRequest));
     }
 
     @PatchMapping("/measurement-points/{id}")
-    MeasurementPointResponse updateField(@RequestBody MeasurementPointUpdateRequest measurementPointUpdateRequest, @PathVariable Long id) {
+    MeasurementPointResponse updateField(@RequestBody @Valid MeasurementPointUpdateRequest measurementPointUpdateRequest, @PathVariable Long id) {
         return measurementMapper.measurementPointToMeasurementPointResponse(measurementService.updatePoint(id, measurementPointUpdateRequest));
     }
 

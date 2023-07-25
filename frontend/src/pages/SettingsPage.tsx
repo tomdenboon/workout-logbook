@@ -1,7 +1,8 @@
+import { ArrowBack } from '@mui/icons-material';
 import AppContainer from 'components/AppContainer';
 import AppHeader from 'components/AppHeader';
 import Section from 'components/Section';
-import { FiArrowLeft } from 'react-icons/fi';
+
 import { Link } from 'react-router-dom';
 
 function Settings() {
@@ -11,7 +12,7 @@ function Settings() {
         <AppHeader
           LeftTitleButton={
             <Link to="/profile">
-              <FiArrowLeft />
+              <ArrowBack />
             </Link>
           }
           title="Settings"
