@@ -1,7 +1,10 @@
 package tom.projects.monkeylog.controller;
 
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import tom.projects.monkeylog.dto.workout.WorkoutCreateRequest;
 import tom.projects.monkeylog.dto.workout.WorkoutFullResponse;
@@ -14,52 +17,55 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name="Workout")
 public class WorkoutController {
     private final WorkoutService workoutService;
     private final WorkoutMapper workoutMapper;
 
     @GetMapping("/workouts/{id}")
-    WorkoutFullResponse get(@PathVariable Long id) {
+    WorkoutFullResponse getWorkout(@PathVariable Long id) {
         return workoutMapper.workoutToFullWorkoutResponse(workoutService.get(id));
     }
 
     @GetMapping("/workouts/active")
-    WorkoutResponse getActive() {
+    WorkoutResponse getActiveWorkout() {
         return workoutMapper.workoutToWorkoutResponse(workoutService.getActive());
     }
 
     @GetMapping("/workouts")
-    List<WorkoutFullResponse> all(@RequestParam Type type) {
+    List<WorkoutFullResponse> allWorkouts(@RequestParam Type type) {
         return workoutMapper.workoutsToFullWorkoutResponses(workoutService.all(type));
     }
 
     @PostMapping("/workouts")
-    WorkoutResponse create(@RequestBody @Valid WorkoutCreateRequest workoutRequest) {
+    WorkoutResponse createWorkout(@RequestBody @Valid WorkoutCreateRequest workoutRequest) {
         return workoutMapper.workoutToWorkoutResponse(workoutService.save(workoutRequest));
     }
 
     @PostMapping("/workouts/{id}/duplicate")
-    WorkoutResponse cloneToTemplate(@PathVariable Long id) {
+    WorkoutResponse duplicateWorkout(@PathVariable Long id) {
         return workoutMapper.workoutToWorkoutResponse(workoutService.cloneToTemplate(id));
     }
 
     @PostMapping("/workouts/start")
-    WorkoutResponse start() {
+    WorkoutResponse startEmptyWorkout() {
         return workoutMapper.workoutToWorkoutResponse(workoutService.start());
     }
 
     @PostMapping("/workouts/{id}/start")
-    WorkoutResponse start(@PathVariable Long id) {
+    WorkoutResponse startWorkout(@PathVariable Long id) {
         return workoutMapper.workoutToWorkoutResponse(workoutService.start(id));
     }
 
     @PostMapping("/workouts/complete")
-    WorkoutResponse complete() {
+    WorkoutResponse completeWorkout() {
         return workoutMapper.workoutToWorkoutResponse(workoutService.complete());
     }
 
     @DeleteMapping("/workouts/{id}")
-    void destroy(@PathVariable Long id) {
+    @ApiResponse(responseCode = "204")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    void deleteWorkout(@PathVariable Long id) {
         workoutService.delete(id);
     }
 }

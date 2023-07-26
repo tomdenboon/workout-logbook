@@ -2,22 +2,24 @@ import { Add, ArrowBack } from '@mui/icons-material';
 import { Divider, Fab, IconButton, List, ListSubheader } from '@mui/material';
 import { useState, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { useGetExercisesQuery } from 'services/exerciseApi';
-import { useAddExerciseGroupsMutation } from 'services/monkeylogApi';
-import { Exercise } from 'features/workout/types';
 import AppContainer from 'components/AppContainer';
 import AppHeader from 'components/AppHeader';
 import ExerciseCard from 'features/workout/components/ExerciseCard';
 import ExerciseForm from 'features/workout/components/ExerciseForm';
+import {
+  ExerciseResponse,
+  useAllExercisesQuery,
+  useSaveExerciseGroupMutation,
+} from 'store/monkeylogApi';
 
 function Exercises() {
   const { workoutId } = useParams();
   const navigate = useNavigate();
 
-  const [addExerciseGroups] = useAddExerciseGroupsMutation();
-  const { data: exercises } = useGetExercisesQuery();
+  const [addExerciseGroups] = useSaveExerciseGroupMutation();
+  const { data: exercises } = useAllExercisesQuery();
   const [selectedExerciseIds, setSelectedExerciseIds] = useState<Record<string, boolean>>({});
-  const [editExercise, setEditExercise] = useState<Exercise>();
+  const [editExercise, setEditExercise] = useState<ExerciseResponse>();
   const [isOpen, setIsOpen] = useState(false);
 
   const hasSelectedExercises = useMemo(
@@ -35,7 +37,7 @@ function Exercises() {
             exercise,
           ],
         }),
-        {} as Record<string, Exercise[]>
+        {} as Record<string, ExerciseResponse[]>
       ),
     [exercises]
   );
@@ -110,7 +112,7 @@ function Exercises() {
           onClick={() =>
             addExerciseGroups({
               workoutId: parseInt(workoutId, 10),
-              body: {
+              exerciseGroupCreateRequest: {
                 exerciseIds: Object.keys(selectedExerciseIds)
                   .filter((id) => selectedExerciseIds[id])
                   .map((id) => parseInt(id, 10)),

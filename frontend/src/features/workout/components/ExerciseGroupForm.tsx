@@ -3,19 +3,18 @@ import { Button, Card, Grid, Stack, Typography } from '@mui/material';
 import ExerciseRowForm from 'features/workout/components/ExerciseRowForm';
 import React from 'react';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
-import { useAddExerciseRowMutation } from 'services/monkeylogApi';
-import { ExerciseGroup, WorkoutType } from 'features/workout/types';
+import { ExerciseGroupResponse, useAddRowMutation } from 'store/monkeylogApi';
 
 interface ExerciseGroupProps {
-  exerciseGroup: ExerciseGroup;
+  exerciseGroup: ExerciseGroupResponse;
   exerciseGroupIndex: number;
   workoutId: number;
-  workoutType: WorkoutType;
+  workoutType: 'COMPLETED' | 'TEMPLATE' | 'ACTIVE';
 }
 
 function ExerciseGroupForm(props: ExerciseGroupProps) {
   const { exerciseGroup, exerciseGroupIndex, workoutId, workoutType } = props;
-  const [addExerciseRow] = useAddExerciseRowMutation();
+  const [addExerciseRow] = useAddRowMutation();
 
   return (
     <Grid item xs={12} sm={6} lg={4}>
@@ -73,7 +72,7 @@ function ExerciseGroupForm(props: ExerciseGroupProps) {
           <Button
             sx={{ height: 20 }}
             variant="text"
-            onClick={() => addExerciseRow({ id: exerciseGroup.id, workoutId, exerciseGroupIndex })}
+            onClick={() => addExerciseRow({ id: exerciseGroup.id })}
           >
             Add exercise set
           </Button>

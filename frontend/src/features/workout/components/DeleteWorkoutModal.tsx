@@ -1,7 +1,7 @@
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
 import { IUseModal } from 'hooks/useModal';
 import { useNavigate } from 'react-router-dom';
-import { useDeleteWorkoutMutation } from 'services/monkeylogApi';
+import { useDeleteWorkoutMutation } from 'store/monkeylogApi';
 
 function DeleteWorkoutModal(
   props: {
@@ -22,7 +22,7 @@ function DeleteWorkoutModal(
         <Button
           variant="text"
           onClick={() => {
-            deleteWorkout(id)
+            deleteWorkout({ id })
               .unwrap()
               .then(() => navigate('/training'));
           }}

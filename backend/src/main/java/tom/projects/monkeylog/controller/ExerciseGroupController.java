@@ -1,6 +1,9 @@
 package tom.projects.monkeylog.controller;
 
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import tom.projects.monkeylog.dto.workout.*;
 import tom.projects.monkeylog.mapper.WorkoutMapper;
@@ -9,6 +12,7 @@ import tom.projects.monkeylog.service.ExerciseRowService;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "Workout")
 public class ExerciseGroupController {
     private final ExerciseGroupService exerciseGroupService;
     private final ExerciseRowService exerciseRowService;
@@ -33,17 +37,20 @@ public class ExerciseGroupController {
     }
 
     @PostMapping("/workouts/{workoutId}/exercise-groups")
-    void save(@RequestBody ExerciseGroupCreateRequest exerciseGroupCreateRequest, @PathVariable Long workoutId) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    void saveExerciseGroup(@RequestBody ExerciseGroupCreateRequest exerciseGroupCreateRequest, @PathVariable Long workoutId) {
         exerciseGroupService.save(exerciseGroupCreateRequest, workoutId);
     }
 
     @DeleteMapping("/exercise-rows/{id}")
-    void destroyRow(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    void deleteRow(@PathVariable Long id) {
         exerciseRowService.delete(id);
     }
 
     @DeleteMapping("/exercise-groups/{id}")
-    void destroy(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    void deleteExerciseGroup(@PathVariable Long id) {
         exerciseGroupService.delete(id);
     }
 }

@@ -5,19 +5,22 @@ import AppHeader from 'components/AppHeader';
 import SimpleTimer from 'components/SimpleTimer';
 import DeleteWorkoutModal from 'features/workout/components/DeleteWorkoutModal';
 import ExerciseGroupForm from 'features/workout/components/ExerciseGroupForm';
-import { WorkoutType, Workout } from 'features/workout/types';
 import useModal from 'hooks/useModal';
 import { useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { useCompleteWorkoutMutation, useLazyGetWorkoutQuery } from 'services/monkeylogApi';
+import {
+  WorkoutResponse,
+  useCompleteWorkoutMutation,
+  useLazyGetWorkoutQuery,
+} from 'store/monkeylogApi';
 
 const TITLE_MAP = {
-  [WorkoutType.Complete]: 'Edit completed workout',
-  [WorkoutType.Template]: 'Edit template',
-  [WorkoutType.Active]: 'Active workout',
+  COMPLETED: 'Edit completed workout',
+  TEMPLATE: 'Edit template',
+  ACTIVE: 'Active workout',
 };
 
-function WorkoutHeader({ workout }: { workout?: Workout }) {
+function WorkoutHeader({ workout }: { workout?: WorkoutResponse }) {
   const [completeWorkout] = useCompleteWorkoutMutation();
   const navigate = useNavigate();
 
@@ -27,13 +30,13 @@ function WorkoutHeader({ workout }: { workout?: Workout }) {
         <IconButton
           component={Link}
           color="inherit"
-          to={workout?.type === WorkoutType.Complete ? '/profile' : '/training'}
+          to={workout?.type === 'COMPLETED' ? '/profile' : '/training'}
         >
           <ArrowBack />
         </IconButton>
       }
       RightButton={
-        workout?.type === WorkoutType.Active && (
+        workout?.type === 'ACTIVE' && (
           <Button
             variant="text"
             color="inherit"
@@ -57,7 +60,7 @@ function WorkoutPage() {
 
   useEffect(() => {
     if (id) {
-      getWorkout(parseInt(id, 10), true);
+      getWorkout({ id: parseInt(id, 10) }, true);
     }
   }, [id]);
 
@@ -69,7 +72,7 @@ function WorkoutPage() {
             <Card sx={{ p: 2 }} variant="outlined">
               <Typography>{workout.name}</Typography>
               <Typography>{workout.note}</Typography>
-              {workout.type !== WorkoutType.Template && (
+              {workout.type !== 'TEMPLATE' && (
                 <SimpleTimer startDate={workout.startDate} endDate={workout.endDate} />
               )}
             </Card>
@@ -90,7 +93,7 @@ function WorkoutPage() {
               <Button variant="outlined" size="small" onClick={() => navigate('exercises')}>
                 Add exercise
               </Button>
-              {workout.type === WorkoutType.Active && (
+              {workout.type === 'ACTIVE' && (
                 <Button
                   variant="outlined"
                   color="error"

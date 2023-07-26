@@ -6,14 +6,17 @@ import {
   Typography,
   DialogContent,
 } from '@mui/material';
-import { Workout } from 'features/workout/types';
 import { IUseModal } from 'hooks/useModal';
 import { useNavigate } from 'react-router-dom';
-import { useStartEmptyWorkoutMutation, useStartWorkoutMutation } from 'services/monkeylogApi';
+import {
+  WorkoutFullResponse,
+  useStartEmptyWorkoutMutation,
+  useStartWorkoutMutation,
+} from 'store/monkeylogApi';
 
 function StartWorkoutModal(
   props: {
-    workout?: Workout;
+    workout?: WorkoutFullResponse;
   } & IUseModal
 ) {
   const { workout, isOpen, close } = props;
@@ -22,7 +25,7 @@ function StartWorkoutModal(
   const [startEmptyWorkout] = useStartEmptyWorkoutMutation();
 
   const startTheWorkout = (id?: number) =>
-    (id ? startWorkout(id) : startEmptyWorkout())
+    (id ? startWorkout({ id }) : startEmptyWorkout())
       .unwrap()
       .then(({ id: finalId }) => navigate(`/training/workouts/${finalId}`));
 

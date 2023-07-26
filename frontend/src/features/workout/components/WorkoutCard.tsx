@@ -1,9 +1,9 @@
 import { Card, CardActionArea, CardContent, CardHeader, Typography } from '@mui/material';
-import { Workout } from 'features/workout/types';
 import WorkoutActions from 'features/workout/components/WorkoutActions';
+import { WorkoutFullResponse } from 'store/monkeylogApi';
 
 interface WorkoutCardProps {
-  workout: Workout;
+  workout: WorkoutFullResponse;
   onClick: () => void;
 }
 

@@ -13,11 +13,11 @@ import AppHeader from 'components/AppHeader';
 import Section from 'components/Section';
 import MeasurementCard from 'features/measurement/components/MeasurementCard';
 import { useState } from 'react';
-import { useGetMeasurementsQuery, useAddMeasurementMutation } from 'services/measurementApi';
+import { useAllMeasurementsQuery, useCreateMeasurementMutation } from 'store/monkeylogApi';
 
 function Statistics() {
-  const { data } = useGetMeasurementsQuery();
-  const [addMeasurement] = useAddMeasurementMutation();
+  const { data } = useAllMeasurementsQuery();
+  const [addMeasurement] = useCreateMeasurementMutation();
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -51,7 +51,9 @@ function Statistics() {
         <DialogActions>
           <Button
             variant="text"
-            onClick={() => addMeasurement({ name: 'measurement', unit: 'KG' })}
+            onClick={() =>
+              addMeasurement({ measurementCreateRequest: { name: 'measurement', unit: 'KG' } })
+            }
           >
             Submit
           </Button>

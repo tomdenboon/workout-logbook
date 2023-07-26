@@ -7,17 +7,20 @@ import AppHeader from 'components/AppHeader';
 import Section from 'components/Section';
 import AddWorkoutModal from 'features/workout/components/AddWorkoutModal';
 import WorkoutCard from 'features/workout/components/WorkoutCard';
-import { useGetActiveWorkoutQuery, useGetWorkoutsQuery } from 'services/monkeylogApi';
-import { Workout, WorkoutType } from 'features/workout/types';
 import AppContainer from 'components/AppContainer';
 import StartWorkoutModal from 'features/workout/components/StartWorkoutModal';
 import useModal from 'hooks/useModal';
+import {
+  WorkoutFullResponse,
+  useAllWorkoutsQuery,
+  useGetActiveWorkoutQuery,
+} from 'store/monkeylogApi';
 
 const useWorkoutModalState = () => {
-  const [workout, setWorkout] = useState<Workout | undefined>();
+  const [workout, setWorkout] = useState<WorkoutFullResponse | undefined>();
   const modalState = useModal();
 
-  const open = (newWorkout?: Workout) => {
+  const open = (newWorkout?: WorkoutFullResponse) => {
     setWorkout(newWorkout);
     modalState.open();
   };
@@ -26,7 +29,7 @@ const useWorkoutModalState = () => {
 };
 
 function TrainingPage() {
-  const { data: workouts } = useGetWorkoutsQuery({ type: WorkoutType.Template });
+  const { data: workouts } = useAllWorkoutsQuery({ type: 'TEMPLATE' });
   const { data: activeWorkout } = useGetActiveWorkoutQuery();
   const startWorkoutModal = useWorkoutModalState();
   const addWorkoutModal = useModal();

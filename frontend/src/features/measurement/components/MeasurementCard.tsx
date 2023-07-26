@@ -9,18 +9,17 @@ import {
   useTheme,
 } from '@mui/material';
 import { LineChart } from '@mui/x-charts';
-import { Measurement } from 'features/measurement/types';
 import { useState } from 'react';
-import { useAddMeasurementPointMutation } from 'services/measurementApi';
+import { MeasurementFullResponse, useCreatePointMutation } from 'store/monkeylogApi';
 
 interface MeasurementCardProps {
-  measurement: Measurement;
+  measurement: MeasurementFullResponse;
 }
 
 function MeasurementCard(props: MeasurementCardProps) {
   const { measurement } = props;
 
-  const [addMeasurementPoint] = useAddMeasurementPointMutation();
+  const [addMeasurementPoint] = useCreatePointMutation();
   const theme = useTheme();
   const [value, setValue] = useState('');
 
@@ -45,7 +44,10 @@ function MeasurementCard(props: MeasurementCardProps) {
           <Button
             variant="outlined"
             onClick={() =>
-              addMeasurementPoint({ id: measurement.id, body: { value: parseInt(value, 10) } })
+              addMeasurementPoint({
+                id: measurement.id,
+                measurementPointCreateRequest: { value: parseInt(value, 10) },
+              })
             }
           >
             <Add />

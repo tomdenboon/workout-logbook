@@ -1,7 +1,9 @@
 package tom.projects.monkeylog.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import tom.projects.monkeylog.dto.measurement.*;
 import tom.projects.monkeylog.mapper.MeasurementMapper;
@@ -11,27 +13,29 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "Measurement")
 public class MeasurementController {
     private final MeasurementService measurementService;
     private final MeasurementMapper measurementMapper;
 
     @GetMapping("/measurements")
-    List<MeasurementFullResponse> all() {
+    List<MeasurementFullResponse> allMeasurements() {
         return measurementMapper.measurementsToMeasurementFullResponses(measurementService.all());
     }
 
     @PostMapping("/measurements")
-    MeasurementResponse create(@RequestBody @Valid MeasurementCreateRequest measurementCreateRequest) {
+    MeasurementResponse createMeasurement(@RequestBody @Valid MeasurementCreateRequest measurementCreateRequest) {
         return measurementMapper.measurementToMeasurementResponse(measurementService.create(measurementCreateRequest));
     }
 
-    @PatchMapping("/measurements/id")
-    MeasurementResponse update(@RequestBody @Valid MeasurementUpdateRequest measurementUpdateRequest, @PathVariable Long id) {
+    @PatchMapping("/measurements/{id}")
+    MeasurementResponse updateMeasurement(@RequestBody @Valid MeasurementUpdateRequest measurementUpdateRequest, @PathVariable Long id) {
         return measurementMapper.measurementToMeasurementResponse(measurementService.update(measurementUpdateRequest, id));
     }
 
     @DeleteMapping("/measurements/{id}")
-    void delete(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    void deleteMeasurement(@PathVariable Long id) {
         measurementService.delete(id);
     }
 
@@ -41,12 +45,13 @@ public class MeasurementController {
     }
 
     @PatchMapping("/measurement-points/{id}")
-    MeasurementPointResponse updateField(@RequestBody @Valid MeasurementPointUpdateRequest measurementPointUpdateRequest, @PathVariable Long id) {
+    MeasurementPointResponse updatePoint(@RequestBody @Valid MeasurementPointUpdateRequest measurementPointUpdateRequest, @PathVariable Long id) {
         return measurementMapper.measurementPointToMeasurementPointResponse(measurementService.updatePoint(id, measurementPointUpdateRequest));
     }
 
     @DeleteMapping("/measurement-points/{id}")
-    void destroyPoint(@PathVariable Long id) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    void deletePoint(@PathVariable Long id) {
         measurementService.deletePoint(id);
     }
 }

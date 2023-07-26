@@ -1,10 +1,10 @@
 import { Card, CardContent, CardHeader, Typography } from '@mui/material';
 import WorkoutActions from 'features/workout/components/WorkoutActions';
 import useTimer from 'hooks/useTimer';
-import { Workout } from 'features/workout/types';
+import { WorkoutFullResponse } from 'store/monkeylogApi';
 
 interface WorkoutCompleteCardProps {
-  workout: Workout;
+  workout: WorkoutFullResponse;
 }
 
 function WorkoutCompleteCard(props: WorkoutCompleteCardProps) {
@@ -15,7 +15,9 @@ function WorkoutCompleteCard(props: WorkoutCompleteCardProps) {
     <Card variant="outlined" sx={{ padding: 1 }}>
       <CardHeader
         title={<Typography>{workout.name}</Typography>}
-        subheader={`${new Date(workout.startDate).toLocaleDateString()} ${prettyTimerFormat}`}
+        subheader={`${new Date(
+          workout?.startDate ?? ''
+        ).toLocaleDateString()} ${prettyTimerFormat}`}
         action={<WorkoutActions workout={workout} />}
       />
       {workout.exerciseGroups.length > 0 && (

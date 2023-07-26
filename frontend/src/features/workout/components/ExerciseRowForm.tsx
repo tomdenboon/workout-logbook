@@ -1,34 +1,25 @@
 import { Check } from '@mui/icons-material';
 import { Button, Stack, TextField } from '@mui/material';
-import { ExerciseRowField, ExerciseRow, WorkoutType } from 'features/workout/types';
 import React, { useEffect, useState } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
 import {
-  useUpdateExerciseRowFieldMutation,
-  useUpdateExerciseRowMutation,
-} from 'services/monkeylogApi';
+  ExerciseRowFieldResponse,
+  ExerciseRowResponse,
+  WorkoutResponse,
+  useUpdateRowFieldMutation,
+  useUpdateRowMutation,
+} from 'store/monkeylogApi';
 
 interface ExerciseRowFieldProps {
-  exerciseRowField: ExerciseRowField;
-  workoutId: number;
-  exerciseGroupIndex: number;
-  exerciseRowIndex: number;
-  exerciseRowFieldIndex: number;
+  exerciseRowField: ExerciseRowFieldResponse;
   isLifted: boolean;
 }
 
 function ExerciseRowFieldForm(props: ExerciseRowFieldProps) {
-  const {
-    exerciseRowField,
-    workoutId,
-    exerciseGroupIndex,
-    exerciseRowIndex,
-    exerciseRowFieldIndex,
-    isLifted,
-  } = props;
+  const { exerciseRowField, isLifted } = props;
   const [field, setField] = useState(exerciseRowField);
   const [newField, setNewField] = useState(exerciseRowField);
-  const [updateExerciseRowField] = useUpdateExerciseRowFieldMutation();
+  const [updateExerciseRowField] = useUpdateRowFieldMutation();
 
   useEffect(() => {
     if (!isLifted) {
@@ -44,11 +35,8 @@ function ExerciseRowFieldForm(props: ExerciseRowFieldProps) {
     }
 
     updateExerciseRowField({
-      patch: newField,
-      workoutId,
-      exerciseGroupIndex,
-      exerciseRowIndex,
-      exerciseRowFieldIndex,
+      exerciseRowFieldId: newField.id,
+      exerciseRowFieldUpdateRequest: newField,
     });
     setField(newField);
   };
@@ -81,16 +69,16 @@ function ExerciseRowFieldForm(props: ExerciseRowFieldProps) {
 }
 
 interface ExerciseRowFormProps {
-  exerciseRow: ExerciseRow;
+  exerciseRow: ExerciseRowResponse;
   workoutId: number;
-  workoutType: WorkoutType;
+  workoutType: WorkoutResponse['type'];
   exerciseRowIndex: number;
   exerciseGroupIndex: number;
 }
 
 function ExerciseRowForm(props: ExerciseRowFormProps) {
-  const { exerciseRow, workoutId, workoutType, exerciseRowIndex, exerciseGroupIndex } = props;
-  const [updateRow] = useUpdateExerciseRowMutation();
+  const { exerciseRow, workoutType, exerciseRowIndex } = props;
+  const [updateRow] = useUpdateRowMutation();
 
   return (
     <Draggable draggableId={exerciseRow.id.toString()} index={exerciseRowIndex}>
@@ -113,14 +101,10 @@ function ExerciseRowForm(props: ExerciseRowFormProps) {
           >
             {exerciseRowIndex + 1}
           </Button>
-          {exerciseRow.exerciseRowFields.map((exerciseRowField, index) => (
+          {exerciseRow.exerciseRowFields.map((exerciseRowField) => (
             <ExerciseRowFieldForm
               key={exerciseRowField.id}
               exerciseRowField={exerciseRowField}
-              workoutId={workoutId}
-              exerciseGroupIndex={exerciseGroupIndex}
-              exerciseRowIndex={exerciseRowIndex}
-              exerciseRowFieldIndex={index}
               isLifted={exerciseRow.isLifted}
             />
           ))}
@@ -130,13 +114,11 @@ function ExerciseRowForm(props: ExerciseRowFormProps) {
             color={exerciseRow.isLifted ? 'success' : 'primary'}
             onClick={() =>
               updateRow({
-                patch: { ...exerciseRow, isLifted: !exerciseRow.isLifted },
-                exerciseGroupIndex,
-                exerciseRowIndex,
-                workoutId,
+                id: exerciseRow.id,
+                exerciseRowUpdateRequest: { isLifted: !exerciseRow.isLifted },
               })
             }
-            disabled={!(workoutType === WorkoutType.Active)}
+            disabled={!(workoutType === 'ACTIVE')}
             type="button"
           >
             <Check />

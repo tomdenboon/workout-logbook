@@ -11,24 +11,24 @@ import {
   Stack,
   TextField,
 } from '@mui/material';
-import { Exercise } from 'features/workout/types';
 import { useCallback, useEffect, useState } from 'react';
 import {
-  useAddExerciseMutation,
-  useUpdateExerciseMutation,
+  ExerciseResponse,
   useGetExerciseTypesQuery,
-} from 'services/exerciseApi';
+  useSaveExerciseMutation,
+  useUpdateExerciseMutation,
+} from 'store/monkeylogApi';
 
 interface ExerciseFormProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
-  exercise?: Exercise;
+  exercise?: ExerciseResponse;
 }
 
 function ExerciseForm(props: ExerciseFormProps) {
   const { isOpen, setIsOpen, exercise } = props;
 
-  const [addExercise] = useAddExerciseMutation();
+  const [addExercise] = useSaveExerciseMutation();
   const [updateExercise] = useUpdateExerciseMutation();
   const { data: exerciseTypes } = useGetExerciseTypesQuery();
   const [name, setName] = useState('');
@@ -47,9 +47,9 @@ function ExerciseForm(props: ExerciseFormProps) {
     }
 
     if (exercise) {
-      updateExercise({ id: exercise.id, name });
+      updateExercise({ id: exercise.id, exerciseUpdateRequest: { name } });
     } else {
-      addExercise({ name, exerciseTypeId: exerciseType });
+      addExercise({ exerciseCreateRequest: { name, exerciseTypeId: exerciseType } });
     }
 
     setIsOpen(false);

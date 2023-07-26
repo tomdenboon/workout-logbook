@@ -1,12 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
-import { monkeylogApi } from '../services/monkeylogApi';
+import emptyMonkeylogApi from 'store/emptyMonkeylogApi';
 
 const store = configureStore({
   reducer: {
-    [monkeylogApi.reducerPath]: monkeylogApi.reducer,
+    [emptyMonkeylogApi.reducerPath]: emptyMonkeylogApi.reducer,
   },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(monkeylogApi.middleware),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(emptyMonkeylogApi.middleware),
 });
 
 setupListeners(store.dispatch);

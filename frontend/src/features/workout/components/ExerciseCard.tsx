@@ -1,11 +1,10 @@
 import { ListItem, ListItemButton, ListItemText } from '@mui/material';
 import ActionDropdown from 'components/ActionDropdown';
-import { Exercise } from 'features/workout/types';
 import { useNavigate } from 'react-router-dom';
-import { useDeleteExerciseMutation } from 'services/exerciseApi';
+import { ExerciseResponse, useDeleteExerciseMutation } from 'store/monkeylogApi';
 
 interface ExerciseCardProps {
-  exercise: Exercise;
+  exercise: ExerciseResponse;
   onEdit: () => void;
   isSelected?: boolean;
   onClick?: () => void;
@@ -23,7 +22,7 @@ function ExerciseCard(props: ExerciseCardProps) {
         <ActionDropdown
           actions={[
             { label: 'Edit', action: () => onEdit() },
-            { label: 'Delete', action: () => deleteExercise(exercise.id) },
+            { label: 'Delete', action: () => deleteExercise({ id: exercise.id }) },
           ]}
         />
       }

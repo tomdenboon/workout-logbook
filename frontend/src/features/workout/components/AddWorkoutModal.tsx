@@ -8,18 +8,14 @@ import {
 } from '@mui/material';
 import { IUseModal } from 'hooks/useModal';
 import { useState } from 'react';
-import { useAddWorkoutMutation } from 'services/monkeylogApi';
-
-interface AddExerciseForm {
-  name: string;
-}
+import { WorkoutCreateRequest, useCreateWorkoutMutation } from 'store/monkeylogApi';
 
 function AddWorkoutModal(props: IUseModal) {
   const { isOpen, close } = props;
-  const [workoutForm, setWorkoutForm] = useState<AddExerciseForm>({
+  const [workoutForm, setWorkoutForm] = useState<WorkoutCreateRequest>({
     name: '',
   });
-  const [addWorkout] = useAddWorkoutMutation();
+  const [addWorkout] = useCreateWorkoutMutation();
 
   return (
     <Dialog open={isOpen} onClose={() => close()}>
@@ -37,7 +33,7 @@ function AddWorkoutModal(props: IUseModal) {
         <Button onClick={() => close()}>Cancel</Button>
         <Button
           onClick={() =>
-            addWorkout(workoutForm)
+            addWorkout({ workoutCreateRequest: workoutForm })
               .unwrap()
               .then(() => close())
           }
