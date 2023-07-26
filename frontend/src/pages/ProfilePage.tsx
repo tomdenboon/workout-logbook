@@ -2,10 +2,10 @@ import { Button, Grid } from '@mui/material';
 import AppContainer from 'components/AppContainer';
 import AppHeader from 'components/AppHeader';
 import WorkoutCompleteCard from 'features/workout/components/WorkoutCompleteCard';
-import { useAllWorkoutsQuery } from 'store/monkeylogApi';
+import { useGetWorkoutsQuery } from 'store/monkeylogApi';
 
 function Profile() {
-  const { data: workouts } = useAllWorkoutsQuery({ type: 'COMPLETED' });
+  const { data: workouts } = useGetWorkoutsQuery({ type: 'COMPLETED' });
 
   return (
     <AppContainer header={<AppHeader title="Profile" />}>

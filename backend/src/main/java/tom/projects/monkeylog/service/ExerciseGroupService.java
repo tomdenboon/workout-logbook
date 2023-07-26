@@ -38,7 +38,7 @@ public class ExerciseGroupService {
     }
 
     public void save(ExerciseGroupCreateRequest exerciseGroupCreateRequest, Long workoutId) {
-        Workout workout = workoutService.get(workoutId);
+        Workout workout = workoutService.getWorkout(workoutId);
 
         exerciseService.allById(exerciseGroupCreateRequest.getExerciseIds())
                 .map(exercise -> {

@@ -16,7 +16,7 @@ function DeleteWorkoutModal(
     <Dialog open={isOpen} onClose={() => close}>
       <DialogTitle>Cancel workout</DialogTitle>
       <DialogContent>
-        Are you sure you want to cancel this workout? All logged exercises will be lost.
+        Are you sure you want to cancel this workout? Get logged exercises will be lost.
       </DialogContent>
       <DialogActions>
         <Button

@@ -18,7 +18,7 @@ function AddWorkoutModal(props: IUseModal) {
   const [addWorkout] = useCreateWorkoutMutation();
 
   return (
-    <Dialog open={isOpen} onClose={() => close()}>
+    <Dialog open={isOpen} onClose={close}>
       <DialogTitle>Add workout</DialogTitle>
       <DialogContent>
         <TextField
@@ -30,13 +30,9 @@ function AddWorkoutModal(props: IUseModal) {
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={() => close()}>Cancel</Button>
+        <Button onClick={close}>Cancel</Button>
         <Button
-          onClick={() =>
-            addWorkout({ workoutCreateRequest: workoutForm })
-              .unwrap()
-              .then(() => close())
-          }
+          onClick={() => addWorkout({ workoutCreateRequest: workoutForm }).unwrap().then(close)}
         >
           Add
         </Button>

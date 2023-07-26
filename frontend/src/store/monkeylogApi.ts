@@ -6,7 +6,7 @@ export const monkeyLogApi = baseMonkeylogApi.enhanceEndpoints({
   addTagTypes: ['Exercise', 'Measurement', 'Program', 'Workout'],
   endpoints: {
     // EXERCISES
-    allExercises: {
+    getExercises: {
       providesTags: (result) => [
         ...(result ?? []).map(({ id }) => ({ type: 'Exercise' as const, id })),
         { type: 'Exercise', id: 'LIST' },
@@ -15,7 +15,7 @@ export const monkeyLogApi = baseMonkeylogApi.enhanceEndpoints({
     getExercise: {
       providesTags: (result) => [{ type: 'Exercise', id: result?.id }],
     },
-    saveExercise: {
+    createExercise: {
       invalidatesTags: [{ type: 'Exercise', id: 'LIST' }],
     },
     deleteExercise: {
@@ -25,7 +25,7 @@ export const monkeyLogApi = baseMonkeylogApi.enhanceEndpoints({
       invalidatesTags: (result, error, args) => [{ type: 'Exercise', id: args.id }],
     },
     // MEASUREMENTS
-    allMeasurements: {
+    getMeasurements: {
       providesTags: (result) => [
         ...(result ?? []).map(({ id }) => ({ type: 'Exercise' as const, id })),
         { type: 'Measurement', id: 'LIST' },
@@ -39,7 +39,7 @@ export const monkeyLogApi = baseMonkeylogApi.enhanceEndpoints({
     },
     // PROGRAMS
     // WORKOUTS
-    allWorkouts: {
+    getWorkouts: {
       providesTags: (result, errors, arg) => [
         ...(result ?? []).map((workout) => ({ type: 'Workout' as const, id: workout.id })),
         { type: 'Workout', id: `${arg.type}_LIST` },
@@ -75,14 +75,14 @@ export const monkeyLogApi = baseMonkeylogApi.enhanceEndpoints({
         { type: 'Workout', id: `COMPLETED_LIST` },
       ],
     },
-    saveExerciseGroup: {
+    createExerciseGroup: {
       invalidatesTags: (result, error, args) => [{ type: 'Workout', id: args.workoutId }],
     },
   },
 });
 
 export const {
-  useAllWorkoutsQuery,
+  useGetWorkoutsQuery,
   useAddRowMutation,
   useDeleteWorkoutMutation,
   useDeleteExerciseMutation,
@@ -92,16 +92,16 @@ export const {
   useUpdateRowMutation,
   useDeleteRowMutation,
   useCreateWorkoutMutation,
-  useAllExercisesQuery,
-  useSaveExerciseGroupMutation,
-  useAllMeasurementsQuery,
+  useGetExercisesQuery,
+  useCreateExerciseGroupMutation,
+  useGetMeasurementsQuery,
   useCreateMeasurementMutation,
   useGetExerciseTypesQuery,
   useUpdateRowFieldMutation,
-  useSaveExerciseMutation,
+  useCreateExerciseMutation,
   useUpdateExerciseMutation,
   useDuplicateWorkoutMutation,
   useStartEmptyWorkoutMutation,
   useStartWorkoutMutation,
-  useCreatePointMutation,
+  useCreateMeasurementPointMutation,
 } = monkeyLogApi;

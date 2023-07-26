@@ -1,8 +1,9 @@
 import { useState } from 'react';
 
 export interface IUseModal {
-  isOpen: boolean;
+  open: () => void;
   close: () => void;
+  isOpen: boolean;
 }
 
 const useModal = () => {

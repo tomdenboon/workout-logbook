@@ -13,10 +13,10 @@ import AppHeader from 'components/AppHeader';
 import Section from 'components/Section';
 import MeasurementCard from 'features/measurement/components/MeasurementCard';
 import { useState } from 'react';
-import { useAllMeasurementsQuery, useCreateMeasurementMutation } from 'store/monkeylogApi';
+import { useGetMeasurementsQuery, useCreateMeasurementMutation } from 'store/monkeylogApi';
 
 function Statistics() {
-  const { data } = useAllMeasurementsQuery();
+  const { data } = useGetMeasurementsQuery();
   const [addMeasurement] = useCreateMeasurementMutation();
 
   const [isOpen, setIsOpen] = useState(false);

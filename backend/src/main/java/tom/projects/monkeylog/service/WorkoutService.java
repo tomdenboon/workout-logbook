@@ -1,6 +1,8 @@
 package tom.projects.monkeylog.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -22,38 +24,39 @@ public class WorkoutService {
     private final WorkoutMapper workoutMapper;
     private final ProgramService programService;
 
-    public List<Workout> all(Type type) {
-        return workoutRepository.findAllByTypeAndUserId(type, AuthenticatedUser.getId());
+    public Page<Workout> getWorkouts(Type type, LocalDateTime after, Pageable pageable) {
+        if (after != null) {
+            return workoutRepository.findAllByTypeAndUserIdAndStartDateAfter(Type.COMPLETED, AuthenticatedUser.getId(), after, pageable);
+        }
+
+        return workoutRepository.findAllByTypeAndUserId(Type.COMPLETED, AuthenticatedUser.getId(), pageable);
     }
 
-    public List<Workout> allByProgramWeekId(Long id) {
-        return programService.getProgramWeek(id).getWorkouts();
-    }
 
-    public Workout get(Long id) {
+    public Workout getWorkout(Long id) {
         return workoutRepository.findById(id)
                 .filter(AuthenticatedUser::isResourceOwner)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, WORKOUT_NOT_FOUND));
     }
 
-    public Workout getActive() {
+    public Workout getActiveWorkout() {
         return workoutRepository.findAllByTypeAndUserId(Type.ACTIVE, AuthenticatedUser.getId()).stream()
                 .findFirst()
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, WORKOUT_NOT_FOUND));
     }
 
-    public Workout start() {
+    public Workout startWorkout() {
         Workout workout = new Workout();
         workout.setName("New empty workout");
 
-        return start(workout);
+        return startWorkout(workout);
     }
 
-    public Workout start(Long id) {
-        return start(Workout.clone(get(id)));
+    public Workout startWorkout(Long id) {
+        return startWorkout(Workout.clone(getWorkout(id)));
     }
 
-    private Workout start(Workout workout) {
+    private Workout startWorkout(Workout workout) {
         workout.setStartDate(LocalDateTime.now());
         workout.setType(Type.ACTIVE);
         workout.setUserId(AuthenticatedUser.getId());
@@ -83,7 +86,7 @@ public class WorkoutService {
     }
 
     public Workout cloneToTemplate(Long id) {
-        Workout workout = get(id);
+        Workout workout = getWorkout(id);
         Workout newWorkout = Workout.clone(workout);
         newWorkout.setName(workout.getName() + " - copy");
         newWorkout.setType(Type.TEMPLATE);
@@ -102,6 +105,6 @@ public class WorkoutService {
     }
 
     public void delete(Long id) {
-        workoutRepository.delete(get(id));
+        workoutRepository.delete(getWorkout(id));
     }
 }

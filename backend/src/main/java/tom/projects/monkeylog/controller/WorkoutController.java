@@ -4,8 +4,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import tom.projects.monkeylog.common.dto.Page;
+import tom.projects.monkeylog.common.mapper.PageMapper;
 import tom.projects.monkeylog.dto.workout.WorkoutCreateRequest;
 import tom.projects.monkeylog.dto.workout.WorkoutFullResponse;
 import tom.projects.monkeylog.dto.workout.WorkoutResponse;
@@ -13,6 +17,7 @@ import tom.projects.monkeylog.mapper.WorkoutMapper;
 import tom.projects.monkeylog.model.workout.Type;
 import tom.projects.monkeylog.service.WorkoutService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -21,20 +26,21 @@ import java.util.List;
 public class WorkoutController {
     private final WorkoutService workoutService;
     private final WorkoutMapper workoutMapper;
+    private final PageMapper pageMapper;
 
     @GetMapping("/workouts/{id}")
     WorkoutFullResponse getWorkout(@PathVariable Long id) {
-        return workoutMapper.workoutToFullWorkoutResponse(workoutService.get(id));
+        return workoutMapper.workoutToFullWorkoutResponse(workoutService.getWorkout(id));
     }
 
     @GetMapping("/workouts/active")
     WorkoutResponse getActiveWorkout() {
-        return workoutMapper.workoutToWorkoutResponse(workoutService.getActive());
+        return workoutMapper.workoutToWorkoutResponse(workoutService.getActiveWorkout());
     }
 
     @GetMapping("/workouts")
-    List<WorkoutFullResponse> allWorkouts(@RequestParam Type type) {
-        return workoutMapper.workoutsToFullWorkoutResponses(workoutService.all(type));
+    Page<WorkoutFullResponse> get(@ParameterObject Pageable pageable, @RequestParam Type type, @RequestParam(required = false) LocalDateTime after) {
+        return pageMapper.map(workoutService.getWorkouts(type, after, pageable), workoutMapper::workoutsToFullWorkoutResponses);
     }
 
     @PostMapping("/workouts")
@@ -49,12 +55,12 @@ public class WorkoutController {
 
     @PostMapping("/workouts/start")
     WorkoutResponse startEmptyWorkout() {
-        return workoutMapper.workoutToWorkoutResponse(workoutService.start());
+        return workoutMapper.workoutToWorkoutResponse(workoutService.startWorkout());
     }
 
     @PostMapping("/workouts/{id}/start")
     WorkoutResponse startWorkout(@PathVariable Long id) {
-        return workoutMapper.workoutToWorkoutResponse(workoutService.start(id));
+        return workoutMapper.workoutToWorkoutResponse(workoutService.startWorkout(id));
     }
 
     @PostMapping("/workouts/complete")

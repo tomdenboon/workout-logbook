@@ -15,7 +15,7 @@ const injectedRtkApi = api.injectEndpoints({
     deleteProgram: build.mutation<DeleteProgramResponse, DeleteProgramArg>({
       query: (queryArg) => ({ url: `/programs/${queryArg.id}`, method: 'DELETE' }),
     }),
-    allWorkouts: build.query<AllWorkoutsResponse, AllWorkoutsArg>({
+    getWorkouts: build.query<GetWorkoutsResponse, GetWorkoutsArg>({
       query: (queryArg) => ({ url: `/workouts`, params: { type: queryArg.type } }),
     }),
     createWorkout: build.mutation<CreateWorkoutResponse, CreateWorkoutArg>({
@@ -25,7 +25,7 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.workoutCreateRequest,
       }),
     }),
-    saveExerciseGroup: build.mutation<SaveExerciseGroupResponse, SaveExerciseGroupArg>({
+    createExerciseGroup: build.mutation<CreateExerciseGroupResponse, CreateExerciseGroupArg>({
       query: (queryArg) => ({
         url: `/workouts/${queryArg.workoutId}/exercise-groups`,
         method: 'POST',
@@ -44,7 +44,7 @@ const injectedRtkApi = api.injectEndpoints({
     completeWorkout: build.mutation<CompleteWorkoutResponse, CompleteWorkoutArg>({
       query: () => ({ url: `/workouts/complete`, method: 'POST' }),
     }),
-    allPrograms: build.query<AllProgramsResponse, AllProgramsArg>({
+    getPrograms: build.query<GetProgramsResponse, GetProgramsArg>({
       query: () => ({ url: `/programs` }),
     }),
     createProgram: build.mutation<CreateProgramResponse, CreateProgramArg>({
@@ -61,7 +61,7 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.programWeekCreateRequest,
       }),
     }),
-    allMeasurements: build.query<AllMeasurementsResponse, AllMeasurementsArg>({
+    getMeasurements: build.query<GetMeasurementsResponse, GetMeasurementsArg>({
       query: () => ({ url: `/measurements` }),
     }),
     createMeasurement: build.mutation<CreateMeasurementResponse, CreateMeasurementArg>({
@@ -71,17 +71,20 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.measurementCreateRequest,
       }),
     }),
-    createPoint: build.mutation<CreatePointResponse, CreatePointArg>({
+    createMeasurementPoint: build.mutation<
+      CreateMeasurementPointResponse,
+      CreateMeasurementPointArg
+    >({
       query: (queryArg) => ({
         url: `/measurements/${queryArg.id}/measurement-points`,
         method: 'POST',
         body: queryArg.measurementPointCreateRequest,
       }),
     }),
-    allExercises: build.query<AllExercisesResponse, AllExercisesArg>({
+    getExercises: build.query<GetExercisesResponse, GetExercisesArg>({
       query: () => ({ url: `/exercises` }),
     }),
-    saveExercise: build.mutation<SaveExerciseResponse, SaveExerciseArg>({
+    createExercise: build.mutation<CreateExerciseResponse, CreateExerciseArg>({
       query: (queryArg) => ({
         url: `/exercises`,
         method: 'POST',
@@ -101,10 +104,16 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.measurementUpdateRequest,
       }),
     }),
-    deletePoint: build.mutation<DeletePointResponse, DeletePointArg>({
+    deleteMeasurementPoint: build.mutation<
+      DeleteMeasurementPointResponse,
+      DeleteMeasurementPointArg
+    >({
       query: (queryArg) => ({ url: `/measurement-points/${queryArg.id}`, method: 'DELETE' }),
     }),
-    updatePoint: build.mutation<UpdatePointResponse, UpdatePointArg>({
+    updateMeasurementPoint: build.mutation<
+      UpdateMeasurementPointResponse,
+      UpdateMeasurementPointArg
+    >({
       query: (queryArg) => ({
         url: `/measurement-points/${queryArg.id}`,
         method: 'PATCH',
@@ -176,16 +185,16 @@ export type DeleteProgramResponse = unknown;
 export type DeleteProgramArg = {
   id: number;
 };
-export type AllWorkoutsResponse = /** status 200 OK */ WorkoutFullResponse[];
-export type AllWorkoutsArg = {
+export type GetWorkoutsResponse = /** status 200 OK */ WorkoutFullResponse[];
+export type GetWorkoutsArg = {
   type: 'TEMPLATE' | 'ACTIVE' | 'COMPLETED';
 };
 export type CreateWorkoutResponse = /** status 200 OK */ WorkoutResponse;
 export type CreateWorkoutArg = {
   workoutCreateRequest: WorkoutCreateRequest;
 };
-export type SaveExerciseGroupResponse = unknown;
-export type SaveExerciseGroupArg = {
+export type CreateExerciseGroupResponse = unknown;
+export type CreateExerciseGroupArg = {
   workoutId: number;
   exerciseGroupCreateRequest: ExerciseGroupCreateRequest;
 };
@@ -201,8 +210,8 @@ export type StartEmptyWorkoutResponse = /** status 200 OK */ WorkoutResponse;
 export type StartEmptyWorkoutArg = void;
 export type CompleteWorkoutResponse = /** status 200 OK */ WorkoutResponse;
 export type CompleteWorkoutArg = void;
-export type AllProgramsResponse = /** status 200 OK */ ProgramResponse[];
-export type AllProgramsArg = void;
+export type GetProgramsResponse = /** status 200 OK */ ProgramResponse[];
+export type GetProgramsArg = void;
 export type CreateProgramResponse = /** status 200 OK */ ProgramResponse;
 export type CreateProgramArg = {
   programCreateRequest: ProgramCreateRequest;
@@ -212,21 +221,21 @@ export type CreateProgramWeekArg = {
   id: number;
   programWeekCreateRequest: ProgramWeekCreateRequest;
 };
-export type AllMeasurementsResponse = /** status 200 OK */ MeasurementFullResponse[];
-export type AllMeasurementsArg = void;
+export type GetMeasurementsResponse = /** status 200 OK */ MeasurementFullResponse[];
+export type GetMeasurementsArg = void;
 export type CreateMeasurementResponse = /** status 200 OK */ MeasurementResponse;
 export type CreateMeasurementArg = {
   measurementCreateRequest: MeasurementCreateRequest;
 };
-export type CreatePointResponse = /** status 200 OK */ MeasurementPointResponse;
-export type CreatePointArg = {
+export type CreateMeasurementPointResponse = /** status 200 OK */ MeasurementPointResponse;
+export type CreateMeasurementPointArg = {
   id: number;
   measurementPointCreateRequest: MeasurementPointCreateRequest;
 };
-export type AllExercisesResponse = /** status 200 OK */ ExerciseResponse[];
-export type AllExercisesArg = void;
-export type SaveExerciseResponse = /** status 200 OK */ ExerciseResponse;
-export type SaveExerciseArg = {
+export type GetExercisesResponse = /** status 200 OK */ ExerciseResponse[];
+export type GetExercisesArg = void;
+export type CreateExerciseResponse = /** status 200 OK */ ExerciseResponse;
+export type CreateExerciseArg = {
   exerciseCreateRequest: ExerciseCreateRequest;
 };
 export type AddRowResponse = /** status 200 OK */ ExerciseGroupResponse;
@@ -242,12 +251,12 @@ export type UpdateMeasurementArg = {
   id: number;
   measurementUpdateRequest: MeasurementUpdateRequest;
 };
-export type DeletePointResponse = unknown;
-export type DeletePointArg = {
+export type DeleteMeasurementPointResponse = unknown;
+export type DeleteMeasurementPointArg = {
   id: number;
 };
-export type UpdatePointResponse = /** status 200 OK */ MeasurementPointResponse;
-export type UpdatePointArg = {
+export type UpdateMeasurementPointResponse = /** status 200 OK */ MeasurementPointResponse;
+export type UpdateMeasurementPointArg = {
   id: number;
   measurementPointUpdateRequest: MeasurementPointUpdateRequest;
 };

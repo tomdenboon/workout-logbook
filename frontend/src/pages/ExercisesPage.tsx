@@ -8,16 +8,16 @@ import ExerciseCard from 'features/workout/components/ExerciseCard';
 import ExerciseForm from 'features/workout/components/ExerciseForm';
 import {
   ExerciseResponse,
-  useAllExercisesQuery,
-  useSaveExerciseGroupMutation,
+  useGetExercisesQuery,
+  useCreateExerciseGroupMutation,
 } from 'store/monkeylogApi';
 
 function Exercises() {
   const { workoutId } = useParams();
   const navigate = useNavigate();
 
-  const [addExerciseGroups] = useSaveExerciseGroupMutation();
-  const { data: exercises } = useAllExercisesQuery();
+  const [addExerciseGroups] = useCreateExerciseGroupMutation();
+  const { data: exercises } = useGetExercisesQuery();
   const [selectedExerciseIds, setSelectedExerciseIds] = useState<Record<string, boolean>>({});
   const [editExercise, setEditExercise] = useState<ExerciseResponse>();
   const [isOpen, setIsOpen] = useState(false);

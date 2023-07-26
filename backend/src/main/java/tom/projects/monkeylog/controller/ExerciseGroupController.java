@@ -18,33 +18,31 @@ public class ExerciseGroupController {
     private final ExerciseRowService exerciseRowService;
     private final WorkoutMapper workoutMapper;
 
-    @PostMapping("/exercise-groups/{id}/add-row")
-    ExerciseGroupResponse addRow(@PathVariable Long id) {
+    @PostMapping("/exercise-groups/{id}/exercise-rows")
+    ExerciseGroupResponse createExerciseRow(@PathVariable Long id) {
         return workoutMapper.exerciseGroupToExerciseGroupResponse(exerciseGroupService.addRow(id));
     }
 
     @PatchMapping("/exercise-rows/{id}")
-    ExerciseRowResponse updateRow(@RequestBody ExerciseRowUpdateRequest exerciseRowUpdateRequest,
-            @PathVariable Long id) {
+    ExerciseRowResponse updateExerciseRow(@RequestBody ExerciseRowUpdateRequest exerciseRowUpdateRequest, @PathVariable Long id) {
         return workoutMapper.exerciseRowToExerciseRowResponse(exerciseRowService.update(exerciseRowUpdateRequest, id));
     }
 
     @PatchMapping("/exercise-row-fields/{exerciseRowFieldId}")
-    ExerciseRowFieldResponse updateRowField(@RequestBody ExerciseRowFieldUpdateRequest exerciseRowFieldUpdateRequest,
-            @PathVariable Long exerciseRowFieldId) {
+    ExerciseRowFieldResponse updateExerciseRowField(@RequestBody ExerciseRowFieldUpdateRequest exerciseRowFieldUpdateRequest, @PathVariable Long exerciseRowFieldId) {
         return workoutMapper.exerciseRowFieldToExerciseRowFieldResponse(
                 exerciseRowService.updateField(exerciseRowFieldUpdateRequest, exerciseRowFieldId));
     }
 
     @PostMapping("/workouts/{workoutId}/exercise-groups")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    void saveExerciseGroup(@RequestBody ExerciseGroupCreateRequest exerciseGroupCreateRequest, @PathVariable Long workoutId) {
+    void createExerciseGroup(@RequestBody ExerciseGroupCreateRequest exerciseGroupCreateRequest, @PathVariable Long workoutId) {
         exerciseGroupService.save(exerciseGroupCreateRequest, workoutId);
     }
 
     @DeleteMapping("/exercise-rows/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    void deleteRow(@PathVariable Long id) {
+    void deleteExerciseRow(@PathVariable Long id) {
         exerciseRowService.delete(id);
     }
 

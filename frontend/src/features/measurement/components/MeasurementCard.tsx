@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import { LineChart } from '@mui/x-charts';
 import { useState } from 'react';
-import { MeasurementFullResponse, useCreatePointMutation } from 'store/monkeylogApi';
+import { MeasurementFullResponse, useCreateMeasurementPointMutation } from 'store/monkeylogApi';
 
 interface MeasurementCardProps {
   measurement: MeasurementFullResponse;
@@ -19,7 +19,7 @@ interface MeasurementCardProps {
 function MeasurementCard(props: MeasurementCardProps) {
   const { measurement } = props;
 
-  const [addMeasurementPoint] = useCreatePointMutation();
+  const [addMeasurementPoint] = useCreateMeasurementPointMutation();
   const theme = useTheme();
   const [value, setValue] = useState('');
 

@@ -19,7 +19,7 @@ public class MeasurementController {
     private final MeasurementMapper measurementMapper;
 
     @GetMapping("/measurements")
-    List<MeasurementFullResponse> allMeasurements() {
+    List<MeasurementFullResponse> getMeasurements() {
         return measurementMapper.measurementsToMeasurementFullResponses(measurementService.all());
     }
 
@@ -40,18 +40,18 @@ public class MeasurementController {
     }
 
     @PostMapping("/measurements/{id}/measurement-points")
-    MeasurementPointResponse createPoint(@RequestBody @Valid MeasurementPointCreateRequest measurementPointCreateRequest, @PathVariable Long id) {
+    MeasurementPointResponse createMeasurementPoint(@RequestBody @Valid MeasurementPointCreateRequest measurementPointCreateRequest, @PathVariable Long id) {
         return measurementMapper.measurementPointToMeasurementPointResponse(measurementService.createPoint(id, measurementPointCreateRequest));
     }
 
     @PatchMapping("/measurement-points/{id}")
-    MeasurementPointResponse updatePoint(@RequestBody @Valid MeasurementPointUpdateRequest measurementPointUpdateRequest, @PathVariable Long id) {
+    MeasurementPointResponse updateMeasurementPoint(@RequestBody @Valid MeasurementPointUpdateRequest measurementPointUpdateRequest, @PathVariable Long id) {
         return measurementMapper.measurementPointToMeasurementPointResponse(measurementService.updatePoint(id, measurementPointUpdateRequest));
     }
 
     @DeleteMapping("/measurement-points/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    void deletePoint(@PathVariable Long id) {
+    void deleteMeasurementPoint(@PathVariable Long id) {
         measurementService.deletePoint(id);
     }
 }

@@ -12,7 +12,7 @@ import StartWorkoutModal from 'features/workout/components/StartWorkoutModal';
 import useModal from 'hooks/useModal';
 import {
   WorkoutFullResponse,
-  useAllWorkoutsQuery,
+  useGetWorkoutsQuery,
   useGetActiveWorkoutQuery,
 } from 'store/monkeylogApi';
 
@@ -29,7 +29,7 @@ const useWorkoutModalState = () => {
 };
 
 function TrainingPage() {
-  const { data: workouts } = useAllWorkoutsQuery({ type: 'TEMPLATE' });
+  const { data: workouts } = useGetWorkoutsQuery({ type: 'TEMPLATE' });
   const { data: activeWorkout } = useGetActiveWorkoutQuery();
   const startWorkoutModal = useWorkoutModalState();
   const addWorkoutModal = useModal();

@@ -21,7 +21,7 @@ public class ExerciseController {
     private final ExerciseMapper exerciseMapper;
 
     @GetMapping("/exercises")
-    List<ExerciseResponse> allExercises() {
+    List<ExerciseResponse> getExercises() {
         return exerciseMapper.exercisesToExerciseResponses(exerciseService.all());
     }
 
@@ -31,7 +31,7 @@ public class ExerciseController {
     }
 
     @PostMapping("/exercises")
-    ExerciseResponse saveExercise(@RequestBody ExerciseCreateRequest exerciseCreateRequest) {
+    ExerciseResponse createExercise(@RequestBody ExerciseCreateRequest exerciseCreateRequest) {
         return exerciseMapper.exerciseToExerciseResponse(exerciseService.save(exerciseCreateRequest));
     }
 

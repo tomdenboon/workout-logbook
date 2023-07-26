@@ -19,7 +19,7 @@ public class ProgramController {
     private final ProgramMapper programMapper;
 
     @GetMapping("/programs")
-    List<ProgramResponse> allPrograms() {
+    List<ProgramResponse> getPrograms() {
         return programMapper.programListToProgramResponseList(programService.allPrograms());
     }
 

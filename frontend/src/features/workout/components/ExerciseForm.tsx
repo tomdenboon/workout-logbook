@@ -15,7 +15,7 @@ import { useCallback, useEffect, useState } from 'react';
 import {
   ExerciseResponse,
   useGetExerciseTypesQuery,
-  useSaveExerciseMutation,
+  useCreateExerciseMutation,
   useUpdateExerciseMutation,
 } from 'store/monkeylogApi';
 
@@ -28,7 +28,7 @@ interface ExerciseFormProps {
 function ExerciseForm(props: ExerciseFormProps) {
   const { isOpen, setIsOpen, exercise } = props;
 
-  const [addExercise] = useSaveExerciseMutation();
+  const [addExercise] = useCreateExerciseMutation();
   const [updateExercise] = useUpdateExerciseMutation();
   const { data: exerciseTypes } = useGetExerciseTypesQuery();
   const [name, setName] = useState('');
