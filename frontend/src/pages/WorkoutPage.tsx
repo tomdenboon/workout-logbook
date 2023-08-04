@@ -76,19 +76,21 @@ function WorkoutPage() {
                 <SimpleTimer startDate={workout.startDate} endDate={workout.endDate} />
               )}
             </Card>
-            <Box>
-              <Grid container spacing={1}>
-                {workout.exerciseGroups.map((exerciseGroup, index) => (
-                  <ExerciseGroupForm
-                    key={exerciseGroup.id}
-                    exerciseGroup={exerciseGroup}
-                    exerciseGroupIndex={index}
-                    workoutId={workout.id}
-                    workoutType={workout.type}
-                  />
-                ))}
-              </Grid>
-            </Box>
+            {workout.exerciseGroups?.length > 0 && (
+              <Box>
+                <Grid container spacing={1}>
+                  {workout.exerciseGroups.map((exerciseGroup, index) => (
+                    <ExerciseGroupForm
+                      key={exerciseGroup.id}
+                      exerciseGroup={exerciseGroup}
+                      exerciseGroupIndex={index}
+                      workoutId={workout.id}
+                      workoutType={workout.type}
+                    />
+                  ))}
+                </Grid>
+              </Box>
+            )}
             <Stack spacing={1}>
               <Button variant="outlined" size="small" onClick={() => navigate('exercises')}>
                 Add exercise

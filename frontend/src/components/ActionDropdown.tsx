@@ -1,8 +1,8 @@
 import React from 'react';
-import { IconButton, Menu, MenuItem, Stack, Typography } from '@mui/material';
+import { Button, Menu, MenuItem, Stack, Typography } from '@mui/material';
 import { MoreHoriz } from '@mui/icons-material';
 
-interface ActionDropdownProps {
+export interface ActionDropdownProps {
   actions: Array<{ label: string; action: () => void; icon?: React.ReactNode }>;
 }
 
@@ -20,22 +20,15 @@ function ActionDropdown(props: ActionDropdownProps) {
 
   return (
     <>
-      <IconButton
-        aria-label="more"
-        id="long-button"
-        aria-controls={open ? 'long-menu' : undefined}
-        aria-expanded={open ? 'true' : undefined}
-        aria-haspopup="true"
-        color="inherit"
+      <Button
+        color="primary"
+        variant="outlined"
         onClick={handleClick}
+        sx={{ height: 24, px: 1, py: 0, minWidth: 0 }}
       >
         <MoreHoriz />
-      </IconButton>
+      </Button>
       <Menu
-        id="long-menu"
-        MenuListProps={{
-          'aria-labelledby': 'long-button',
-        }}
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}

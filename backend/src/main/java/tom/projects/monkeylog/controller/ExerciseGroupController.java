@@ -18,7 +18,7 @@ public class ExerciseGroupController {
     private final ExerciseRowService exerciseRowService;
     private final WorkoutMapper workoutMapper;
 
-    @PostMapping("/exercise-groups/{id}/exercise-rows")
+    @PostMapping("/workouts/{workoutId}/exercise-groups/{id}/exercise-rows")
     ExerciseGroupResponse createExerciseRow(@PathVariable Long id) {
         return workoutMapper.exerciseGroupToExerciseGroupResponse(exerciseGroupService.addRow(id));
     }

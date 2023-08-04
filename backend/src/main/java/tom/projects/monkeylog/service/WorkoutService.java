@@ -1,6 +1,8 @@
 package tom.projects.monkeylog.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.apachecommons.CommonsLog;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -17,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class WorkoutService {
     private static final String WORKOUT_NOT_FOUND = "Workout not found.";
@@ -26,12 +29,11 @@ public class WorkoutService {
 
     public Page<Workout> getWorkouts(Type type, LocalDateTime after, Pageable pageable) {
         if (after != null) {
-            return workoutRepository.findAllByTypeAndUserIdAndStartDateAfter(Type.COMPLETED, AuthenticatedUser.getId(), after, pageable);
+            return workoutRepository.findAllByTypeAndUserIdAndStartDateAfter(type, AuthenticatedUser.getId(), after, pageable);
         }
 
-        return workoutRepository.findAllByTypeAndUserId(Type.COMPLETED, AuthenticatedUser.getId(), pageable);
+        return workoutRepository.findAllByTypeAndUserId(type, AuthenticatedUser.getId(), pageable);
     }
-
 
     public Workout getWorkout(Long id) {
         return workoutRepository.findById(id)

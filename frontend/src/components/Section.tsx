@@ -1,5 +1,5 @@
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
-import { Collapse, Stack, Typography } from '@mui/material';
+import { Box, Collapse, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 
 interface SectionProps {
@@ -33,7 +33,7 @@ function Section(props: SectionProps) {
           {children}
         </Collapse>
       ) : (
-        children
+        <Box>{children}</Box>
       )}
     </Stack>
   );

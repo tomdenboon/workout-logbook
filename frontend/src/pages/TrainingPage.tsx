@@ -55,8 +55,7 @@ function TrainingPage() {
                 startIcon={<Add />}
                 onClick={addWorkoutModal.open}
                 variant="outlined"
-                sx={{ height: 20 }}
-                size="small"
+                sx={{ height: 24, px: 1, minWidth: 0, py: 0 }}
               >
                 Create
               </Button>
@@ -64,12 +63,12 @@ function TrainingPage() {
           >
             {workouts && (
               <Grid container spacing={1}>
-                {workouts.length === 0 && (
+                {workouts.content.length === 0 && (
                   <Grid item xs={12} sm={6} md={4}>
                     <AddItemCard onClick={addWorkoutModal.open} />
                   </Grid>
                 )}
-                {workouts.map((val) => (
+                {workouts.content.map((val) => (
                   <Grid item xs={12} sm={6} md={4} key={val.id}>
                     <WorkoutCard
                       onClick={() => startWorkoutModal.open(val)}
@@ -81,7 +80,7 @@ function TrainingPage() {
               </Grid>
             )}
           </Section>
-          <Section
+          {/* <Section
             title="Program templates"
             collapse
             rightNode={
@@ -101,7 +100,7 @@ function TrainingPage() {
                 <AddItemCard onClick={addWorkoutModal.open} />
               </Grid>
             </Grid>
-          </Section>
+          </Section> */}
         </Stack>
       </Stack>
       <AddWorkoutModal {...addWorkoutModal} />

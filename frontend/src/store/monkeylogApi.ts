@@ -37,11 +37,13 @@ export const monkeyLogApi = baseMonkeylogApi.enhanceEndpoints({
     deleteMeasurement: {
       invalidatesTags: (result, error, args) => [{ type: 'Measurement', id: args.id }],
     },
-    // PROGRAMS
+    createMeasurementPoint: {
+      invalidatesTags: () => [{ type: 'Measurement', id: 'LIST' }],
+    },
     // WORKOUTS
     getWorkouts: {
       providesTags: (result, errors, arg) => [
-        ...(result ?? []).map((workout) => ({ type: 'Workout' as const, id: workout.id })),
+        ...(result?.content ?? []).map((workout) => ({ type: 'Workout' as const, id: workout.id })),
         { type: 'Workout', id: `${arg.type}_LIST` },
       ],
     },
@@ -83,21 +85,22 @@ export const monkeyLogApi = baseMonkeylogApi.enhanceEndpoints({
 
 export const {
   useGetWorkoutsQuery,
-  useAddRowMutation,
+  useCreateExerciseRowMutation,
   useDeleteWorkoutMutation,
   useDeleteExerciseMutation,
   useGetActiveWorkoutQuery,
   useLazyGetWorkoutQuery,
+  useLazyGetWorkoutsQuery,
   useCompleteWorkoutMutation,
-  useUpdateRowMutation,
-  useDeleteRowMutation,
+  useUpdateExerciseRowMutation,
+  useDeleteExerciseRowMutation,
   useCreateWorkoutMutation,
   useGetExercisesQuery,
   useCreateExerciseGroupMutation,
   useGetMeasurementsQuery,
   useCreateMeasurementMutation,
   useGetExerciseTypesQuery,
-  useUpdateRowFieldMutation,
+  useUpdateExerciseRowFieldMutation,
   useCreateExerciseMutation,
   useUpdateExerciseMutation,
   useDuplicateWorkoutMutation,

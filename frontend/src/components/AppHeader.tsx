@@ -12,7 +12,7 @@ function AppHeader(props: HeaderProps) {
     <AppBar>
       <Toolbar variant="dense">
         {LeftTitleButton}
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+        <Typography variant="h6" component="div" fontWeight="700" sx={{ flexGrow: 1 }}>
           {title}
         </Typography>
         {RightButton}

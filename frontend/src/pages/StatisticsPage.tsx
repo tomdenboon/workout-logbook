@@ -7,26 +7,66 @@ import {
   DialogTitle,
   Grid,
   IconButton,
+  TextField,
 } from '@mui/material';
 import AppContainer from 'components/AppContainer';
 import AppHeader from 'components/AppHeader';
 import Section from 'components/Section';
 import MeasurementCard from 'features/measurement/components/MeasurementCard';
-import { useState } from 'react';
-import { useGetMeasurementsQuery, useCreateMeasurementMutation } from 'store/monkeylogApi';
+import useForm from 'hooks/useForm';
+import useModal, { IUseModal } from 'hooks/useModal';
+import {
+  useGetMeasurementsQuery,
+  useCreateMeasurementMutation,
+  MeasurementCreateRequest,
+} from 'store/monkeylogApi';
+
+function MeasurementModal(props: IUseModal) {
+  const { isOpen, close } = props;
+  const { data: measurementForm, update } = useForm<MeasurementCreateRequest>({
+    name: '',
+    unit: '',
+  });
+  const [addMeasurement] = useCreateMeasurementMutation();
+
+  return (
+    <Dialog open={isOpen} onClose={close}>
+      <DialogTitle>Add measurement</DialogTitle>
+      <DialogContent>
+        <TextField
+          label="Name"
+          value={measurementForm.name}
+          onChange={(e) => update('name', e.target.value)}
+        />
+        <TextField
+          label="Unit"
+          value={measurementForm.unit}
+          onChange={(e) => update('unit', e.target.value)}
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button
+          onClick={() =>
+            addMeasurement({ measurementCreateRequest: measurementForm }).unwrap().then(close)
+          }
+        >
+          Submit
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
 
 function Statistics() {
   const { data } = useGetMeasurementsQuery();
-  const [addMeasurement] = useCreateMeasurementMutation();
-
-  const [isOpen, setIsOpen] = useState(false);
+  const measurementModal = useModal();
 
   return (
     <AppContainer
       header={
         <AppHeader
           RightButton={
-            <IconButton onClick={() => setIsOpen(true)} color="inherit">
+            <IconButton onClick={measurementModal.open} color="inherit">
               <Add />
             </IconButton>
           }
@@ -34,31 +74,16 @@ function Statistics() {
         />
       }
     >
-      <Section title="General Statistics" />
       <Section title="Measurements">
         <Grid container spacing={2}>
           {data?.map((measurement) => (
-            <Grid item>
+            <Grid item xs={12} md={6}>
               <MeasurementCard key={measurement.id} measurement={measurement} />
             </Grid>
           ))}
         </Grid>
       </Section>
-
-      <Dialog open={isOpen} onClose={() => setIsOpen(false)}>
-        <DialogTitle>Add measurement</DialogTitle>
-        <DialogContent>Test</DialogContent>
-        <DialogActions>
-          <Button
-            variant="text"
-            onClick={() =>
-              addMeasurement({ measurementCreateRequest: { name: 'measurement', unit: 'KG' } })
-            }
-          >
-            Submit
-          </Button>
-        </DialogActions>
-      </Dialog>
+      {measurementModal.isOpen && <MeasurementModal {...measurementModal} />}
     </AppContainer>
   );
 }

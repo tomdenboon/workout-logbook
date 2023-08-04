@@ -6,8 +6,8 @@ import {
   ExerciseRowFieldResponse,
   ExerciseRowResponse,
   WorkoutResponse,
-  useUpdateRowFieldMutation,
-  useUpdateRowMutation,
+  useUpdateExerciseRowFieldMutation,
+  useUpdateExerciseRowMutation,
 } from 'store/monkeylogApi';
 
 interface ExerciseRowFieldProps {
@@ -19,7 +19,7 @@ function ExerciseRowFieldForm(props: ExerciseRowFieldProps) {
   const { exerciseRowField, isLifted } = props;
   const [field, setField] = useState(exerciseRowField);
   const [newField, setNewField] = useState(exerciseRowField);
-  const [updateExerciseRowField] = useUpdateRowFieldMutation();
+  const [updateExerciseRowField] = useUpdateExerciseRowFieldMutation();
 
   useEffect(() => {
     if (!isLifted) {
@@ -54,7 +54,7 @@ function ExerciseRowFieldForm(props: ExerciseRowFieldProps) {
           '& input': {
             textAlign: 'center',
           },
-          height: 20,
+          height: 24,
         },
       }}
       fullWidth
@@ -78,7 +78,7 @@ interface ExerciseRowFormProps {
 
 function ExerciseRowForm(props: ExerciseRowFormProps) {
   const { exerciseRow, workoutType, exerciseRowIndex } = props;
-  const [updateRow] = useUpdateRowMutation();
+  const [updateRow] = useUpdateExerciseRowMutation();
 
   return (
     <Draggable draggableId={exerciseRow.id.toString()} index={exerciseRowIndex}>
@@ -95,7 +95,7 @@ function ExerciseRowForm(props: ExerciseRowFormProps) {
             component="div"
             variant="outlined"
             size="small"
-            sx={{ maxHeight: 20, maxWidth: 32, minWidth: 32 }}
+            sx={{ maxHeight: 24, maxWidth: 32, minWidth: 32 }}
             color="info"
             {...draggable.dragHandleProps}
           >
@@ -109,7 +109,7 @@ function ExerciseRowForm(props: ExerciseRowFormProps) {
             />
           ))}
           <Button
-            sx={{ maxHeight: 20, maxWidth: 32, minWidth: 32 }}
+            sx={{ maxHeight: 24, maxWidth: 32, minWidth: 32 }}
             variant="outlined"
             color={exerciseRow.isLifted ? 'success' : 'primary'}
             onClick={() =>

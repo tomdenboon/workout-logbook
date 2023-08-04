@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import tom.projects.monkeylog.model.MetricFormat;
 import tom.projects.monkeylog.model.workout.ExerciseRowField;
 
 import java.util.List;
@@ -17,8 +18,10 @@ public class ExerciseField implements Comparable<ExerciseField> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String name;
+
     @Enumerated(EnumType.STRING)
-    private ExerciseFieldType type;
+    private MetricFormat metricFormat;
 
     private Integer sortOrder;
 

@@ -1,16 +1,8 @@
-import { Add } from '@mui/icons-material';
-import {
-  Button,
-  InputAdornment,
-  Paper,
-  Stack,
-  TextField,
-  Typography,
-  useTheme,
-} from '@mui/material';
+import { useTheme } from '@mui/material';
 import { LineChart } from '@mui/x-charts';
-import { useState } from 'react';
-import { MeasurementFullResponse, useCreateMeasurementPointMutation } from 'store/monkeylogApi';
+import ActionDropdown from 'components/ActionDropdown';
+import AppCard from 'components/AppCard';
+import { MeasurementFullResponse } from 'store/monkeylogApi';
 
 interface MeasurementCardProps {
   measurement: MeasurementFullResponse;
@@ -19,9 +11,9 @@ interface MeasurementCardProps {
 function MeasurementCard(props: MeasurementCardProps) {
   const { measurement } = props;
 
-  const [addMeasurementPoint] = useCreateMeasurementPointMutation();
+  // const [addMeasurementPoint] = useCreateMeasurementPointMutation();
+  // const [value, setValue] = useState('');
   const theme = useTheme();
-  const [value, setValue] = useState('');
 
   const xAxis = measurement.measurementPoints.map(
     (measurmentPoint) => new Date(measurmentPoint.createdAt)
@@ -29,11 +21,11 @@ function MeasurementCard(props: MeasurementCardProps) {
   const seriesData = measurement.measurementPoints.map((measurmentPoint) => measurmentPoint.value);
 
   return (
-    <Paper variant="outlined" sx={{ p: 2 }}>
-      <Stack>
-        <Stack direction="row" alignItems="center" justifyContent="space-between">
-          <Typography>{measurement.name}</Typography>
-          <TextField
+    <AppCard
+      header={measurement.name}
+      actions={<ActionDropdown actions={[{ action: () => null, label: 'Graph action' }]} />}
+    >
+      {/* <TextField
             value={value}
             size="small"
             onChange={(e) => setValue(e.target.value)}
@@ -51,34 +43,29 @@ function MeasurementCard(props: MeasurementCardProps) {
             }
           >
             <Add />
-          </Button>
-        </Stack>
-        {xAxis.length >= 1 && (
-          <LineChart
-            xAxis={[
-              {
-                min: xAxis[0].getTime(),
-                max: xAxis[xAxis.length - 1].getTime(),
-                data: xAxis,
-                tickSpacing: 80,
-                scaleType: 'time',
-                disableLine: true,
-                disableTicks: true,
-              },
-            ]}
-            series={[
-              {
-                color: theme.palette.primary.main,
-                data: seriesData,
-              },
-            ]}
-            margin={{ left: 30, top: 10, right: 10, bottom: 20 }}
-            width={500}
-            height={120}
-          />
-        )}
-      </Stack>
-    </Paper>
+          </Button> */}
+      {xAxis.length >= 1 && (
+        <LineChart
+          xAxis={[
+            {
+              min: xAxis[0].getTime(),
+              max: xAxis[xAxis.length - 1].getTime(),
+              data: xAxis,
+              tickSpacing: 80,
+              scaleType: 'time',
+            },
+          ]}
+          series={[
+            {
+              color: theme.palette.primary.main,
+              data: seriesData,
+            },
+          ]}
+          margin={{ left: 22, top: 10, right: 10, bottom: 20 }}
+          height={120}
+        />
+      )}
+    </AppCard>
   );
 }
 export default MeasurementCard;

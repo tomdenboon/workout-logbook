@@ -1,54 +1,27 @@
 import { Add, ArrowBack } from '@mui/icons-material';
 import { Divider, Fab, IconButton, List, ListSubheader } from '@mui/material';
-import { useState, useMemo } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
 import AppContainer from 'components/AppContainer';
 import AppHeader from 'components/AppHeader';
 import ExerciseCard from 'features/workout/components/ExerciseCard';
 import ExerciseForm from 'features/workout/components/ExerciseForm';
-import {
-  ExerciseResponse,
-  useGetExercisesQuery,
-  useCreateExerciseGroupMutation,
-} from 'store/monkeylogApi';
+import useSelectIds from 'hooks/useSelectIds';
+import useAddExercises from 'features/workout/hooks/useAddExercises';
+import useExercises from 'features/workout/hooks/useExercises';
+import { Link, useParams } from 'react-router-dom';
+import useEditExerciseModal from 'features/workout/hooks/useEditExerciseModal';
 
 function Exercises() {
   const { workoutId } = useParams();
-  const navigate = useNavigate();
 
-  const [addExerciseGroups] = useCreateExerciseGroupMutation();
-  const { data: exercises } = useGetExercisesQuery();
-  const [selectedExerciseIds, setSelectedExerciseIds] = useState<Record<string, boolean>>({});
-  const [editExercise, setEditExercise] = useState<ExerciseResponse>();
-  const [isOpen, setIsOpen] = useState(false);
-
-  const hasSelectedExercises = useMemo(
-    () => Object.values(selectedExerciseIds).some((x) => x),
-    [selectedExerciseIds]
-  );
-
-  const groupedExercises = useMemo(
-    () =>
-      exercises?.reduce(
-        (grouped, exercise) => ({
-          ...grouped,
-          [exercise.name.toLowerCase().at(0) ?? '-']: [
-            ...(grouped[exercise.name.toLowerCase().at(0) ?? '-'] ?? []),
-            exercise,
-          ],
-        }),
-        {} as Record<string, ExerciseResponse[]>
-      ),
-    [exercises]
-  );
-
-  const exerciseClicked = (exerciseId: number) => {
-    const selectedExercise = selectedExerciseIds[exerciseId];
-    setSelectedExerciseIds({
-      ...selectedExerciseIds,
-      [exerciseId]: selectedExercise ? !selectedExercise : true,
-    });
-  };
+  const {
+    idMap: selectedExerciseIds,
+    toIdList,
+    hasSelection: hasSelectedExercises,
+    toggleId: exerciseClicked,
+  } = useSelectIds();
+  const { groupedExercises } = useExercises();
+  const { isOpen, openEmpty, openWithExercise, close, editExercise } = useEditExerciseModal();
+  const { add } = useAddExercises();
 
   return (
     <AppContainer
@@ -62,13 +35,7 @@ function Exercises() {
             )
           }
           RightButton={
-            <IconButton
-              onClick={() => {
-                setEditExercise(undefined);
-                setIsOpen(true);
-              }}
-              color="inherit"
-            >
+            <IconButton onClick={openEmpty} color="inherit">
               <Add />
             </IconButton>
           }
@@ -92,10 +59,7 @@ function Exercises() {
                       exercise={exercise}
                       isSelected={selectedExerciseIds[exercise.id]}
                       onClick={workoutId ? () => exerciseClicked(exercise.id) : undefined}
-                      onEdit={() => {
-                        setEditExercise(exercise);
-                        setIsOpen(true);
-                      }}
+                      onEdit={() => openWithExercise(exercise)}
                     />
                     {index !== groupedExercises[key].length - 1 && <Divider />}
                   </>
@@ -109,25 +73,14 @@ function Exercises() {
         <Fab
           sx={{ position: 'fixed', bottom: 64, left: 8 }}
           color="primary"
-          onClick={() =>
-            addExerciseGroups({
-              workoutId: parseInt(workoutId, 10),
-              exerciseGroupCreateRequest: {
-                exerciseIds: Object.keys(selectedExerciseIds)
-                  .filter((id) => selectedExerciseIds[id])
-                  .map((id) => parseInt(id, 10)),
-              },
-            })
-              .unwrap()
-              .then(() => navigate(`/training/workouts/${workoutId}`))
-          }
+          onClick={() => add(workoutId, toIdList().map(Number))}
           disabled={!hasSelectedExercises}
         >
           <Add />
         </Fab>
       )}
 
-      {isOpen && <ExerciseForm isOpen={isOpen} setIsOpen={setIsOpen} exercise={editExercise} />}
+      {isOpen && <ExerciseForm isOpen={isOpen} close={close} exercise={editExercise} />}
     </AppContainer>
   );
 }

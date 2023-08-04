@@ -16,7 +16,16 @@ const injectedRtkApi = api.injectEndpoints({
       query: (queryArg) => ({ url: `/programs/${queryArg.id}`, method: 'DELETE' }),
     }),
     getWorkouts: build.query<GetWorkoutsResponse, GetWorkoutsArg>({
-      query: (queryArg) => ({ url: `/workouts`, params: { type: queryArg.type } }),
+      query: (queryArg) => ({
+        url: `/workouts`,
+        params: {
+          page: queryArg.page,
+          size: queryArg.size,
+          sort: queryArg.sort,
+          type: queryArg.type,
+          after: queryArg.after,
+        },
+      }),
     }),
     createWorkout: build.mutation<CreateWorkoutResponse, CreateWorkoutArg>({
       query: (queryArg) => ({
@@ -91,8 +100,11 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.exerciseCreateRequest,
       }),
     }),
-    addRow: build.mutation<AddRowResponse, AddRowArg>({
-      query: (queryArg) => ({ url: `/exercise-groups/${queryArg.id}/add-row`, method: 'POST' }),
+    createExerciseRow: build.mutation<CreateExerciseRowResponse, CreateExerciseRowArg>({
+      query: (queryArg) => ({
+        url: `/exercise-groups/${queryArg.id}/exercise-rows`,
+        method: 'POST',
+      }),
     }),
     deleteMeasurement: build.mutation<DeleteMeasurementResponse, DeleteMeasurementArg>({
       query: (queryArg) => ({ url: `/measurements/${queryArg.id}`, method: 'DELETE' }),
@@ -133,17 +145,20 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.exerciseUpdateRequest,
       }),
     }),
-    deleteRow: build.mutation<DeleteRowResponse, DeleteRowArg>({
+    deleteExerciseRow: build.mutation<DeleteExerciseRowResponse, DeleteExerciseRowArg>({
       query: (queryArg) => ({ url: `/exercise-rows/${queryArg.id}`, method: 'DELETE' }),
     }),
-    updateRow: build.mutation<UpdateRowResponse, UpdateRowArg>({
+    updateExerciseRow: build.mutation<UpdateExerciseRowResponse, UpdateExerciseRowArg>({
       query: (queryArg) => ({
         url: `/exercise-rows/${queryArg.id}`,
         method: 'PATCH',
         body: queryArg.exerciseRowUpdateRequest,
       }),
     }),
-    updateRowField: build.mutation<UpdateRowFieldResponse, UpdateRowFieldArg>({
+    updateExerciseRowField: build.mutation<
+      UpdateExerciseRowFieldResponse,
+      UpdateExerciseRowFieldArg
+    >({
       query: (queryArg) => ({
         url: `/exercise-row-fields/${queryArg.exerciseRowFieldId}`,
         method: 'PATCH',
@@ -185,9 +200,16 @@ export type DeleteProgramResponse = unknown;
 export type DeleteProgramArg = {
   id: number;
 };
-export type GetWorkoutsResponse = /** status 200 OK */ WorkoutFullResponse[];
+export type GetWorkoutsResponse = /** status 200 OK */ PageWorkoutFullResponse;
 export type GetWorkoutsArg = {
+  /** Zero-based page index (0..N) */
+  page?: number;
+  /** The size of the page to be returned */
+  size?: number;
+  /** Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
+  sort?: string[];
   type: 'TEMPLATE' | 'ACTIVE' | 'COMPLETED';
+  after?: string;
 };
 export type CreateWorkoutResponse = /** status 200 OK */ WorkoutResponse;
 export type CreateWorkoutArg = {
@@ -238,8 +260,8 @@ export type CreateExerciseResponse = /** status 200 OK */ ExerciseResponse;
 export type CreateExerciseArg = {
   exerciseCreateRequest: ExerciseCreateRequest;
 };
-export type AddRowResponse = /** status 200 OK */ ExerciseGroupResponse;
-export type AddRowArg = {
+export type CreateExerciseRowResponse = /** status 200 OK */ ExerciseGroupResponse;
+export type CreateExerciseRowArg = {
   id: number;
 };
 export type DeleteMeasurementResponse = unknown;
@@ -273,17 +295,17 @@ export type UpdateExerciseArg = {
   id: number;
   exerciseUpdateRequest: ExerciseUpdateRequest;
 };
-export type DeleteRowResponse = unknown;
-export type DeleteRowArg = {
+export type DeleteExerciseRowResponse = unknown;
+export type DeleteExerciseRowArg = {
   id: number;
 };
-export type UpdateRowResponse = /** status 200 OK */ ExerciseRowResponse;
-export type UpdateRowArg = {
+export type UpdateExerciseRowResponse = /** status 200 OK */ ExerciseRowResponse;
+export type UpdateExerciseRowArg = {
   id: number;
   exerciseRowUpdateRequest: ExerciseRowUpdateRequest;
 };
-export type UpdateRowFieldResponse = /** status 200 OK */ ExerciseRowFieldResponse;
-export type UpdateRowFieldArg = {
+export type UpdateExerciseRowFieldResponse = /** status 200 OK */ ExerciseRowFieldResponse;
+export type UpdateExerciseRowFieldArg = {
   exerciseRowFieldId: number;
   exerciseRowFieldUpdateRequest: ExerciseRowFieldUpdateRequest;
 };
@@ -358,6 +380,12 @@ export type WorkoutFullResponse = {
   startDate?: string;
   endDate?: string;
   exerciseGroups: ExerciseGroupResponse[];
+};
+export type PageWorkoutFullResponse = {
+  number: number;
+  size: number;
+  numberOfElements: number;
+  content: WorkoutFullResponse[];
 };
 export type WorkoutResponse = {
   id: number;
