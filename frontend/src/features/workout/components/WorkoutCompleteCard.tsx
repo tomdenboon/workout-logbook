@@ -20,7 +20,7 @@ function WorkoutCompleteCard(props: WorkoutCompleteCardProps) {
       {workout.exerciseGroups.length > 0 &&
         workout.exerciseGroups.map((exerciseGroup) => (
           <div key={exerciseGroup.id}>
-            {exerciseGroup.exerciseRows.length} x {exerciseGroup.exercise.name}
+            {exerciseGroup.exerciseRows?.length ?? 0} x {exerciseGroup.exercise.name}
           </div>
         ))}
     </AppCard>

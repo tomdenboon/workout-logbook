@@ -2,9 +2,11 @@ package tom.projects.monkeylog.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
-import tom.projects.monkeylog.dto.exercise.ExerciseResponse;
-import tom.projects.monkeylog.dto.exercise.ExerciseTypeResponse;
+import tom.projects.monkeylog.dto.workout.ExerciseCategoryResponse;
+import tom.projects.monkeylog.dto.workout.ExerciseResponse;
+import tom.projects.monkeylog.dto.workout.ExerciseTypeResponse;
 import tom.projects.monkeylog.model.exercise.Exercise;
+import tom.projects.monkeylog.model.exercise.ExerciseCategory;
 import tom.projects.monkeylog.model.exercise.ExerciseType;
 
 import java.util.List;
@@ -15,7 +17,17 @@ public interface ExerciseMapper {
 
     List<ExerciseResponse> exercisesToExerciseResponses(List<Exercise> exercises);
 
-    ExerciseTypeResponse exerciseTypeToExerciseTypeResponse(ExerciseType exerciseType);
+    default ExerciseTypeResponse exerciseTypeToExerciseTypeResponse(ExerciseType exerciseType) {
+        return ExerciseTypeResponse.builder()
+                .metricFormat(exerciseType.getMetricFormat())
+                .name(exerciseType.getName())
+                .build();
+    }
 
-    List<ExerciseTypeResponse> exerciseTypesToExerciseTypeResponses(List<ExerciseType> exerciseTypes);
+    default ExerciseCategoryResponse exerciseCategoryToExerciseCategoryResponse(ExerciseCategory exerciseCategory) {
+        return ExerciseCategoryResponse.builder()
+                .exerciseTypes(exerciseCategory.getTypes().stream().map(this::exerciseTypeToExerciseTypeResponse).toList())
+                .name(exerciseCategory.getName())
+                .build();
+    }
 }

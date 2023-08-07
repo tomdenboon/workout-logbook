@@ -2,7 +2,7 @@ package tom.projects.monkeylog.dto.workout;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import tom.projects.monkeylog.dto.exercise.ExerciseFieldResponse;
+import tom.projects.monkeylog.model.exercise.ExerciseType;
 
 @Data
 public class ExerciseRowFieldResponse {
@@ -10,5 +10,5 @@ public class ExerciseRowFieldResponse {
     private Long id;
     private String value;
     @NotNull
-    private ExerciseFieldResponse exerciseField;
+    private ExerciseType exerciseType;
 }

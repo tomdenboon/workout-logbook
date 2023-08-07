@@ -30,7 +30,7 @@ function WorkoutHeader({ workout }: { workout?: WorkoutResponse }) {
         <IconButton
           component={Link}
           color="inherit"
-          to={workout?.type === 'COMPLETED' ? '/profile' : '/training'}
+          to={workout?.type === 'COMPLETED' ? '/history' : '/training'}
         >
           <ArrowBack />
         </IconButton>
@@ -41,7 +41,7 @@ function WorkoutHeader({ workout }: { workout?: WorkoutResponse }) {
             variant="text"
             color="inherit"
             onClick={() => {
-              completeWorkout().then(() => navigate('/profile'));
+              completeWorkout().then(() => navigate('/history'));
             }}
           >
             COMPLETE

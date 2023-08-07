@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import tom.projects.monkeylog.model.user.UserOwned;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +26,7 @@ public class Program implements UserOwned {
     private String description;
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private Type type;
+    private WorkoutType workoutType;
 
     @OneToMany(mappedBy = "program", cascade = CascadeType.ALL)
     private List<ProgramWeek> programWeeks = new ArrayList<>();

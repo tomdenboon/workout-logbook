@@ -4,5 +4,5 @@ import lombok.Data;
 
 @Data
 public class ExerciseRowFieldUpdateRequest {
-    private String value;
+    private Double value;
 }

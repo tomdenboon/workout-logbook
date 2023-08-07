@@ -1,4 +1,4 @@
-import { Container, SxProps, Theme } from '@mui/material';
+import { Box, SxProps, Theme } from '@mui/material';
 
 interface AppContainerProps {
   header: React.ReactNode;
@@ -11,9 +11,9 @@ function AppContainer(props: AppContainerProps) {
   return (
     <>
       {header}
-      <Container maxWidth="lg" sx={{ paddingY: 8, ...sx }}>
+      <Box maxWidth="lg" sx={{ paddingY: 8, paddingX: 2, ...sx }}>
         {children}
-      </Container>
+      </Box>
     </>
   );
 }

@@ -1,10 +1,12 @@
 package tom.projects.monkeylog.model.exercise;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import tom.projects.monkeylog.model.MetricFormat;
 import tom.projects.monkeylog.model.user.UserOwned;
 import tom.projects.monkeylog.model.workout.ExerciseGroup;
 
@@ -23,7 +25,7 @@ public class Exercise implements UserOwned {
     private String name;
     @OneToMany(mappedBy = "exercise")
     private List<ExerciseGroup> exerciseGroups;
-    @ManyToOne
-    @JoinColumn(name = "exercise_type_id", nullable = false)
-    private ExerciseType exerciseType;
+    @Enumerated(EnumType.STRING)
+    private ExerciseCategory exerciseCategory;
+
 }

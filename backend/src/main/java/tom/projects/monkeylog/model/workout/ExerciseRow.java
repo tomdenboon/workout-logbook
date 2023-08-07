@@ -7,6 +7,8 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import tom.projects.monkeylog.model.user.UserOwned;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.stream.Stream;
@@ -28,7 +30,7 @@ public class ExerciseRow implements UserOwned {
 
     @OneToMany(mappedBy = "exerciseRow", cascade =  {CascadeType.PERSIST, CascadeType.MERGE })
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private SortedSet<ExerciseRowField> exerciseRowFields = new TreeSet<>();
+    private List<ExerciseRowField> exerciseRowFields = new ArrayList<>();
 
     public static ExerciseRow clone(ExerciseRow exerciseRow) {
         ExerciseRow newExerciseRow = new ExerciseRow();
@@ -44,9 +46,9 @@ public class ExerciseRow implements UserOwned {
         exerciseRow.setIsLifted(isLifted);
         exerciseRow.setExerciseGroup(exerciseGroup);
         exerciseRow.addExerciseRowFields(
-                exerciseGroup.getExercise().getExerciseType().getExerciseFields().stream().map(exerciseField -> {
+                exerciseGroup.getExercise().getExerciseCategory().getTypes().stream().map(exerciseType -> {
                     ExerciseRowField exerciseRowField = new ExerciseRowField();
-                    exerciseRowField.setExerciseField(exerciseField);
+                    exerciseRowField.setType(exerciseType);
 
                     return exerciseRowField;
                 }));

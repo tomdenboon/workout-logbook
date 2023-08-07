@@ -7,7 +7,7 @@ import org.springframework.web.server.ResponseStatusException;
 import tom.projects.monkeylog.dto.workout.ExerciseGroupCreateRequest;
 import tom.projects.monkeylog.model.workout.ExerciseGroup;
 import tom.projects.monkeylog.model.workout.ExerciseRow;
-import tom.projects.monkeylog.model.workout.Type;
+import tom.projects.monkeylog.model.workout.WorkoutType;
 import tom.projects.monkeylog.model.workout.Workout;
 import tom.projects.monkeylog.repository.workout.ExerciseGroupRepository;
 import tom.projects.monkeylog.repository.workout.WorkoutRepository;
@@ -31,7 +31,7 @@ public class ExerciseGroupService {
         ExerciseGroup exerciseGroup = get(id);
         ExerciseRow exerciseRow = ExerciseRow
                 .clone(exerciseGroup.getExerciseRows().get(exerciseGroup.getExerciseRows().size() - 1));
-        exerciseRow.setIsLifted(exerciseGroup.getWorkout().getType() == Type.COMPLETED);
+        exerciseRow.setIsLifted(exerciseGroup.getWorkout().getWorkoutType() == WorkoutType.COMPLETED);
         exerciseGroup.addExerciseRow(exerciseRow);
 
         return exerciseGroupRepository.save(exerciseGroup);
@@ -45,7 +45,7 @@ public class ExerciseGroupService {
                     ExerciseGroup exerciseGroup = new ExerciseGroup();
                     exerciseGroup.setExercise(exercise);
                     exerciseGroup.setWorkout(workout);
-                    exerciseGroup.addExerciseRow(ExerciseRow.first(exerciseGroup, workout.getType() == Type.COMPLETED));
+                    exerciseGroup.addExerciseRow(ExerciseRow.first(exerciseGroup, workout.getWorkoutType() == WorkoutType.COMPLETED));
 
                     return exerciseGroup;
                 }).forEach(workout::addExerciseGroup);

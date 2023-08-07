@@ -10,7 +10,7 @@ import tom.projects.monkeylog.dto.program.ProgramWeekCreateRequest;
 import tom.projects.monkeylog.mapper.ProgramMapper;
 import tom.projects.monkeylog.model.workout.Program;
 import tom.projects.monkeylog.model.workout.ProgramWeek;
-import tom.projects.monkeylog.model.workout.Type;
+import tom.projects.monkeylog.model.workout.WorkoutType;
 import tom.projects.monkeylog.repository.workout.ProgramRepository;
 import tom.projects.monkeylog.repository.workout.ProgramWeekRepository;
 import tom.projects.monkeylog.security.AuthenticatedUser;
@@ -37,7 +37,7 @@ public class ProgramService {
     public Program createProgram(ProgramCreateRequest programCreateRequest) {
         Program program = programMapper.programCreateRequestToProgram(programCreateRequest);
         program.setUserId(AuthenticatedUser.getId());
-        program.setType(Type.TEMPLATE);
+        program.setWorkoutType(WorkoutType.TEMPLATE);
         return programRepository.save(program);
     }
 

@@ -1,4 +1,4 @@
-package tom.projects.monkeylog.dto.exercise;
+package tom.projects.monkeylog.dto.workout;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;

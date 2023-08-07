@@ -1,6 +1,6 @@
 package tom.projects.monkeylog.model.workout;
 
-public enum Type {
+public enum WorkoutType {
     TEMPLATE,
     ACTIVE,
     COMPLETED

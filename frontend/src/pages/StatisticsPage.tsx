@@ -11,7 +11,6 @@ import {
 } from '@mui/material';
 import AppContainer from 'components/AppContainer';
 import AppHeader from 'components/AppHeader';
-import Section from 'components/Section';
 import MeasurementCard from 'features/measurement/components/MeasurementCard';
 import useForm from 'hooks/useForm';
 import useModal, { IUseModal } from 'hooks/useModal';
@@ -70,19 +69,17 @@ function Statistics() {
               <Add />
             </IconButton>
           }
-          title="Statistics"
+          title="Measurements"
         />
       }
     >
-      <Section title="Measurements">
-        <Grid container spacing={2}>
-          {data?.map((measurement) => (
-            <Grid item xs={12} md={6}>
-              <MeasurementCard key={measurement.id} measurement={measurement} />
-            </Grid>
-          ))}
-        </Grid>
-      </Section>
+      <Grid container spacing={2}>
+        {data?.map((measurement) => (
+          <Grid item xs={12} md={6}>
+            <MeasurementCard key={measurement.id} measurement={measurement} />
+          </Grid>
+        ))}
+      </Grid>
       {measurementModal.isOpen && <MeasurementModal {...measurementModal} />}
     </AppContainer>
   );

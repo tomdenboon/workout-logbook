@@ -4,12 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import tom.projects.monkeylog.dto.exercise.ExerciseCreateRequest;
-import tom.projects.monkeylog.dto.exercise.ExerciseUpdateRequest;
+import tom.projects.monkeylog.dto.workout.ExerciseCreateRequest;
+import tom.projects.monkeylog.dto.workout.ExerciseUpdateRequest;
 import tom.projects.monkeylog.model.exercise.Exercise;
-import tom.projects.monkeylog.model.exercise.ExerciseType;
-import tom.projects.monkeylog.repository.exercise.ExerciseRepository;
-import tom.projects.monkeylog.repository.exercise.ExerciseTypeRepository;
+import tom.projects.monkeylog.repository.workout.ExerciseRepository;
 import tom.projects.monkeylog.security.AuthenticatedUser;
 
 import java.util.List;
@@ -21,16 +19,6 @@ import java.util.stream.Stream;
 public class ExerciseService {
     private static final String EXERCISE_NOT_FOUND = "Exercise not found";
     private final ExerciseRepository exerciseRepository;
-    private final ExerciseTypeRepository exerciseTypeRepository;
-
-    public ExerciseType getExerciseType(Long id) {
-        return exerciseTypeRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, EXERCISE_NOT_FOUND));
-    }
-
-    public List<ExerciseType> getExerciseTypes() {
-        return exerciseTypeRepository.findAll();
-    }
 
     public List<Exercise> all() {
         return exerciseRepository.findAllByUserId(AuthenticatedUser.getId());
@@ -50,7 +38,7 @@ public class ExerciseService {
         Exercise exercise = new Exercise();
         exercise.setUserId(AuthenticatedUser.getId());
         exercise.setName(exerciseCreateRequest.getName());
-        exercise.setExerciseType(getExerciseType(exerciseCreateRequest.getExerciseTypeId()));
+        exercise.setExerciseCategory(exerciseCreateRequest.getExerciseCategory());
 
         return exerciseRepository.save(exercise);
     }

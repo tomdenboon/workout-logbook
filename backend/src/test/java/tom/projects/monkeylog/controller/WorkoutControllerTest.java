@@ -2,8 +2,6 @@ package tom.projects.monkeylog.controller;
 
 
 import org.junit.jupiter.api.Test;
-import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -15,8 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import tom.projects.monkeylog.common.dto.Page;
 import tom.projects.monkeylog.common.mapper.PageMapper;
 import tom.projects.monkeylog.mapper.WorkoutMapper;
-import tom.projects.monkeylog.model.workout.Type;
-import tom.projects.monkeylog.model.workout.Workout;
+import tom.projects.monkeylog.model.workout.WorkoutType;
 import tom.projects.monkeylog.service.WorkoutService;
 
 import java.util.List;
@@ -45,7 +42,7 @@ public class WorkoutControllerTest {
 
     @Test
     public void getAllWorkouts_ReturnsEmptyWorkouts() throws Exception {
-        when(workoutService.getWorkouts(Type.ACTIVE, null, PageRequest.ofSize(1))).thenReturn(new PageImpl<>(List.of()));
+        when(workoutService.getWorkouts(WorkoutType.ACTIVE, null, PageRequest.ofSize(1))).thenReturn(new PageImpl<>(List.of()));
         when(pageMapper.map(any(), any())).thenReturn(new Page<>(0, 1, 1, List.of()));
         when(workoutMapper.workoutsToFullWorkoutResponses(List.of())).thenReturn(List.of());
 
@@ -56,7 +53,7 @@ public class WorkoutControllerTest {
 
     @Test
     public void getAllWorkouts_WithAfter_ReturnsEmptyWorkouts() throws Exception {
-        when(workoutService.getWorkouts(Type.ACTIVE, null, PageRequest.ofSize(1))).thenReturn(new PageImpl<>(List.of()));
+        when(workoutService.getWorkouts(WorkoutType.ACTIVE, null, PageRequest.ofSize(1))).thenReturn(new PageImpl<>(List.of()));
         when(pageMapper.map(any(), any())).thenReturn(new Page<>(0, 1, 1, List.of()));
         when(workoutMapper.workoutsToFullWorkoutResponses(List.of())).thenReturn(List.of());
 

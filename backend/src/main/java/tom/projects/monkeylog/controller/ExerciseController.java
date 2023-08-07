@@ -4,14 +4,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import tom.projects.monkeylog.dto.exercise.ExerciseCreateRequest;
-import tom.projects.monkeylog.dto.exercise.ExerciseResponse;
-import tom.projects.monkeylog.dto.exercise.ExerciseTypeResponse;
-import tom.projects.monkeylog.dto.exercise.ExerciseUpdateRequest;
+import tom.projects.monkeylog.dto.workout.*;
 import tom.projects.monkeylog.mapper.ExerciseMapper;
 import tom.projects.monkeylog.service.ExerciseService;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @Tag(name = "Exercise")
@@ -44,11 +44,6 @@ public class ExerciseController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void deleteExercise(@PathVariable Long id) {
         exerciseService.delete(id);
-    }
-
-    @GetMapping("/exercise-types")
-    List<ExerciseTypeResponse> getExerciseTypes() {
-        return exerciseMapper.exerciseTypesToExerciseTypeResponses(exerciseService.getExerciseTypes());
     }
 }
 

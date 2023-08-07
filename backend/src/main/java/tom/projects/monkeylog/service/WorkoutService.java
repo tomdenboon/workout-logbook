@@ -1,7 +1,6 @@
 package tom.projects.monkeylog.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.apachecommons.CommonsLog;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,13 +9,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import tom.projects.monkeylog.dto.workout.WorkoutCreateRequest;
 import tom.projects.monkeylog.mapper.WorkoutMapper;
-import tom.projects.monkeylog.model.workout.Type;
+import tom.projects.monkeylog.model.workout.WorkoutType;
 import tom.projects.monkeylog.model.workout.Workout;
 import tom.projects.monkeylog.repository.workout.WorkoutRepository;
 import tom.projects.monkeylog.security.AuthenticatedUser;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @Slf4j
@@ -27,12 +25,12 @@ public class WorkoutService {
     private final WorkoutMapper workoutMapper;
     private final ProgramService programService;
 
-    public Page<Workout> getWorkouts(Type type, LocalDateTime after, Pageable pageable) {
+    public Page<Workout> getWorkouts(WorkoutType workoutType, LocalDateTime after, Pageable pageable) {
         if (after != null) {
-            return workoutRepository.findAllByTypeAndUserIdAndStartDateAfter(type, AuthenticatedUser.getId(), after, pageable);
+            return workoutRepository.findAllByWorkoutTypeAndUserIdAndStartDateAfter(workoutType, AuthenticatedUser.getId(), after, pageable);
         }
 
-        return workoutRepository.findAllByTypeAndUserId(type, AuthenticatedUser.getId(), pageable);
+        return workoutRepository.findAllByWorkoutTypeAndUserId(workoutType, AuthenticatedUser.getId(), pageable);
     }
 
     public Workout getWorkout(Long id) {
@@ -42,7 +40,7 @@ public class WorkoutService {
     }
 
     public Workout getActiveWorkout() {
-        return workoutRepository.findAllByTypeAndUserId(Type.ACTIVE, AuthenticatedUser.getId()).stream()
+        return workoutRepository.findAllByWorkoutTypeAndUserId(WorkoutType.ACTIVE, AuthenticatedUser.getId()).stream()
                 .findFirst()
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, WORKOUT_NOT_FOUND));
     }
@@ -60,7 +58,7 @@ public class WorkoutService {
 
     private Workout startWorkout(Workout workout) {
         workout.setStartDate(LocalDateTime.now());
-        workout.setType(Type.ACTIVE);
+        workout.setWorkoutType(WorkoutType.ACTIVE);
         workout.setUserId(AuthenticatedUser.getId());
 
         clearActive();
@@ -70,11 +68,11 @@ public class WorkoutService {
 
     private void clearActive() {
         workoutRepository
-                .deleteAll(workoutRepository.findAllByTypeAndUserId(Type.ACTIVE, AuthenticatedUser.getId()));
+                .deleteAll(workoutRepository.findAllByWorkoutTypeAndUserId(WorkoutType.ACTIVE, AuthenticatedUser.getId()));
     }
 
     public Workout complete() {
-        Workout workout = workoutRepository.findAllByTypeAndUserId(Type.ACTIVE, AuthenticatedUser.getId())
+        Workout workout = workoutRepository.findAllByWorkoutTypeAndUserId(WorkoutType.ACTIVE, AuthenticatedUser.getId())
                 .stream().findFirst()
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, WORKOUT_NOT_FOUND));
 
@@ -82,7 +80,7 @@ public class WorkoutService {
                 exerciseGroup -> exerciseGroup.getExerciseRows().removeIf(exerciseRow -> !exerciseRow.getIsLifted()));
         workout.getExerciseGroups().removeIf(exerciseGroup -> exerciseGroup.getExerciseRows().isEmpty());
         workout.setEndDate(LocalDateTime.now());
-        workout.setType(Type.COMPLETED);
+        workout.setWorkoutType(WorkoutType.COMPLETED);
 
         return workoutRepository.save(workout);
     }
@@ -91,7 +89,7 @@ public class WorkoutService {
         Workout workout = getWorkout(id);
         Workout newWorkout = Workout.clone(workout);
         newWorkout.setName(workout.getName() + " - copy");
-        newWorkout.setType(Type.TEMPLATE);
+        newWorkout.setWorkoutType(WorkoutType.TEMPLATE);
         newWorkout.setUserId(AuthenticatedUser.getId());
 
         return workoutRepository.save(newWorkout);
@@ -99,7 +97,7 @@ public class WorkoutService {
 
     public Workout save(WorkoutCreateRequest workoutRequest) {
         Workout workout = workoutMapper.workoutRequestToWorkout(workoutRequest);
-        workout.setType(Type.TEMPLATE);
+        workout.setWorkoutType(WorkoutType.TEMPLATE);
         workout.setUserId(AuthenticatedUser.getId());
         workout.setProgramWeek(workoutRequest.getProgramWeekId() == null ? null : programService.getProgramWeek(workoutRequest.getProgramWeekId()));
 

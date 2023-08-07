@@ -11,7 +11,7 @@ import tom.projects.monkeylog.model.workout.Workout;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, uses={ExerciseMapper.class})
 public interface WorkoutMapper {
     Workout workoutRequestToWorkout(WorkoutCreateRequest workoutRequest);
 

@@ -14,11 +14,10 @@ import tom.projects.monkeylog.dto.workout.WorkoutCreateRequest;
 import tom.projects.monkeylog.dto.workout.WorkoutFullResponse;
 import tom.projects.monkeylog.dto.workout.WorkoutResponse;
 import tom.projects.monkeylog.mapper.WorkoutMapper;
-import tom.projects.monkeylog.model.workout.Type;
+import tom.projects.monkeylog.model.workout.WorkoutType;
 import tom.projects.monkeylog.service.WorkoutService;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,8 +38,8 @@ public class WorkoutController {
     }
 
     @GetMapping("/workouts")
-    Page<WorkoutFullResponse> get(@ParameterObject Pageable pageable, @RequestParam Type type, @RequestParam(required = false) LocalDateTime after) {
-        return pageMapper.map(workoutService.getWorkouts(type, after, pageable), workoutMapper::workoutsToFullWorkoutResponses);
+    Page<WorkoutFullResponse> get(@ParameterObject Pageable pageable, @RequestParam WorkoutType workoutType, @RequestParam(required = false) LocalDateTime after) {
+        return pageMapper.map(workoutService.getWorkouts(workoutType, after, pageable), workoutMapper::workoutsToFullWorkoutResponses);
     }
 
     @PostMapping("/workouts")

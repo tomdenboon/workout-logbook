@@ -5,8 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 import tom.projects.monkeylog.model.user.UserOwned;
 
 import java.time.LocalDateTime;
@@ -32,14 +30,14 @@ public class Workout implements UserOwned {
     private Long userId;
 
     @Enumerated(EnumType.STRING)
-    private Type type;
+    private WorkoutType workoutType;
 
     private LocalDateTime startDate;
 
     private LocalDateTime endDate;
 
-    @OneToMany(mappedBy = "workout", cascade =  {CascadeType.PERSIST, CascadeType.MERGE })
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OneToMany(mappedBy = "workout", cascade =  CascadeType.ALL)
+//    @OnDelete(action = OnDeleteAction.CASCADE)
     @OrderColumn(name = "sort_order")
     private List<ExerciseGroup> exerciseGroups = new ArrayList<>();
 
@@ -49,11 +47,11 @@ public class Workout implements UserOwned {
 
     public static Workout clone(Workout workout) {
         Workout newWorkout = new Workout();
-        newWorkout.setType(Type.TEMPLATE);
+        newWorkout.setWorkoutType(WorkoutType.TEMPLATE);
         newWorkout.setName(workout.getName());
         newWorkout.setUserId(workout.getUserId());
         newWorkout.setNote(workout.getNote());
-        newWorkout.setType(workout.getType());
+        newWorkout.setWorkoutType(workout.getWorkoutType());
         workout.getExerciseGroups().stream().map(ExerciseGroup::clone).forEach(newWorkout::addExerciseGroup);
 
         return newWorkout;
