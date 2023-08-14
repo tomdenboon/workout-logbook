@@ -1,31 +1,33 @@
 import { Scale, Settings } from '@mui/icons-material';
 import { IconButton, Stack } from '@mui/material';
 import AppContainer from 'components/AppContainer';
-import AppHeader from 'components/AppHeader';
-import { useNavigate } from 'react-router-dom';
+import FullScreenMeasurementModal from 'features/measurement/components/FullScreenMeasurementModal';
+import useModal from 'hooks/useModal';
+import SettingsPage from 'pages/SettingsPage';
 
 function ProfilePage() {
-  const navigate = useNavigate();
+  const measurementModal = useModal();
+  const settingsModal = useModal();
 
   return (
     <AppContainer
-      header={
-        <AppHeader
-          title="Profile"
-          RightButton={
-            <Stack direction="row">
-              <IconButton onClick={() => navigate('settings')} color="inherit">
-                <Settings color="inherit" />
-              </IconButton>
-              <IconButton onClick={() => navigate('/measurements')} color="inherit">
-                <Scale color="inherit" />
-              </IconButton>
-            </Stack>
-          }
-        />
-      }
+      header={{
+        title: 'Profile',
+        rightButton: (
+          <Stack direction="row">
+            <IconButton onClick={measurementModal.open} color="inherit">
+              <Scale color="inherit" />
+            </IconButton>
+            <IconButton onClick={settingsModal.open} color="inherit">
+              <Settings color="inherit" />
+            </IconButton>
+          </Stack>
+        ),
+      }}
     >
       Profile page
+      <FullScreenMeasurementModal {...measurementModal} />
+      <SettingsPage {...settingsModal} />
     </AppContainer>
   );
 }

@@ -28,8 +28,7 @@ public class ExerciseRow implements UserOwned {
     @JoinColumn(name = "exercise_group_id", nullable = false)
     private ExerciseGroup exerciseGroup;
 
-    @OneToMany(mappedBy = "exerciseRow", cascade =  {CascadeType.PERSIST, CascadeType.MERGE })
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OneToMany(mappedBy = "exerciseRow", cascade =  CascadeType.ALL, orphanRemoval = true)
     private List<ExerciseRowField> exerciseRowFields = new ArrayList<>();
 
     public static ExerciseRow clone(ExerciseRow exerciseRow) {
@@ -48,7 +47,7 @@ public class ExerciseRow implements UserOwned {
         exerciseRow.addExerciseRowFields(
                 exerciseGroup.getExercise().getExerciseCategory().getTypes().stream().map(exerciseType -> {
                     ExerciseRowField exerciseRowField = new ExerciseRowField();
-                    exerciseRowField.setType(exerciseType);
+                    exerciseRowField.setExerciseType(exerciseType);
 
                     return exerciseRowField;
                 }));

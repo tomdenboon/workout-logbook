@@ -1,14 +1,9 @@
 import { Stack, TextField } from '@mui/material';
-import AppHeader from 'components/AppHeader';
 import AppContainer from 'components/AppContainer';
-
-function ProgramPageHeader() {
-  return <AppHeader title="Program" />;
-}
 
 function ProgramPage() {
   return (
-    <AppContainer header={<ProgramPageHeader />}>
+    <AppContainer header={{ title: 'Program' }}>
       <Stack spacing={1}>
         <TextField size="small" label="Program title" />
         <TextField size="small" rows={3} multiline label="Program description" />

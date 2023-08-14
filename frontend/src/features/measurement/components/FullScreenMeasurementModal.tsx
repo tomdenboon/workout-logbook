@@ -9,8 +9,8 @@ import {
   IconButton,
   TextField,
 } from '@mui/material';
-import AppContainer from 'components/AppContainer';
-import AppHeader from 'components/AppHeader';
+
+import FullScreenModal from 'components/FullScreenModal';
 import MeasurementCard from 'features/measurement/components/MeasurementCard';
 import useForm from 'hooks/useForm';
 import useModal, { IUseModal } from 'hooks/useModal';
@@ -24,7 +24,7 @@ function MeasurementModal(props: IUseModal) {
   const { isOpen, close } = props;
   const { data: measurementForm, update } = useForm<MeasurementCreateRequest>({
     name: '',
-    unit: '',
+    metricFormat: 'WEIGHT',
   });
   const [addMeasurement] = useCreateMeasurementMutation();
 
@@ -37,11 +37,11 @@ function MeasurementModal(props: IUseModal) {
           value={measurementForm.name}
           onChange={(e) => update('name', e.target.value)}
         />
-        <TextField
+        {/* <TextField
           label="Unit"
           value={measurementForm.unit}
           onChange={(e) => update('unit', e.target.value)}
-        />
+        /> */}
       </DialogContent>
       <DialogActions>
         <Button
@@ -56,22 +56,23 @@ function MeasurementModal(props: IUseModal) {
   );
 }
 
-function Statistics() {
+function FullScreenMeasurementModal(props: IUseModal) {
+  const { isOpen, close } = props;
   const { data } = useGetMeasurementsQuery();
   const measurementModal = useModal();
 
   return (
-    <AppContainer
-      header={
-        <AppHeader
-          RightButton={
-            <IconButton onClick={measurementModal.open} color="inherit">
-              <Add />
-            </IconButton>
-          }
-          title="Measurements"
-        />
-      }
+    <FullScreenModal
+      header={{
+        title: 'Measurements',
+        rightButton: (
+          <IconButton onClick={measurementModal.open} color="inherit">
+            <Add />
+          </IconButton>
+        ),
+      }}
+      isOpen={isOpen}
+      close={close}
     >
       <Grid container spacing={2}>
         {data?.map((measurement) => (
@@ -81,8 +82,8 @@ function Statistics() {
         ))}
       </Grid>
       {measurementModal.isOpen && <MeasurementModal {...measurementModal} />}
-    </AppContainer>
+    </FullScreenModal>
   );
 }
 
-export default Statistics;
+export default FullScreenMeasurementModal;

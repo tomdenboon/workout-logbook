@@ -8,7 +8,7 @@ import tom.projects.monkeylog.model.exercise.ExerciseType;
 public class ExerciseRowFieldResponse {
     @NotNull
     private Long id;
-    private String value;
+    private Double value;
     @NotNull
     private ExerciseType exerciseType;
 }

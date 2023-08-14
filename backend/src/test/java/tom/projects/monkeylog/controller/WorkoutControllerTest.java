@@ -46,7 +46,7 @@ public class WorkoutControllerTest {
         when(pageMapper.map(any(), any())).thenReturn(new Page<>(0, 1, 1, List.of()));
         when(workoutMapper.workoutsToFullWorkoutResponses(List.of())).thenReturn(List.of());
 
-        mockMvc.perform(get("/workouts").param("type", "ACTIVE"))
+        mockMvc.perform(get("/workouts").param("workoutType", "ACTIVE"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size", is(1)));
     }
@@ -57,7 +57,7 @@ public class WorkoutControllerTest {
         when(pageMapper.map(any(), any())).thenReturn(new Page<>(0, 1, 1, List.of()));
         when(workoutMapper.workoutsToFullWorkoutResponses(List.of())).thenReturn(List.of());
 
-        mockMvc.perform(get("/workouts").param("type", "ACTIVE").param("after", "2023-05-01T15:23:45"))
+        mockMvc.perform(get("/workouts").param("workoutType", "ACTIVE").param("after", "2023-05-01T15:23:45"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size", is(1)));
     }

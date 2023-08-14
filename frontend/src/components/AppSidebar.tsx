@@ -1,4 +1,4 @@
-import { FitnessCenter, History, Person } from '@mui/icons-material';
+import { FitnessCenter, History, LocalActivity, Person } from '@mui/icons-material';
 import {
   BottomNavigationAction,
   Paper,
@@ -8,6 +8,8 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
+import WorkoutContext from 'features/workout/context/WorkoutContext';
+import { useContext } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useGetActiveWorkoutQuery } from 'store/monkeylogApi';
 
@@ -15,11 +17,12 @@ const NAVBAR_LIST = [
   { to: 'profile', text: 'Home', Icon: Person },
   { to: 'history', text: 'History', Icon: History },
   { to: 'training', text: 'Workout', Icon: FitnessCenter },
-  // { to: 'exercises', text: 'Exercises', Icon: LocalActivity },
+  { to: 'exercises', text: 'Exercises', Icon: LocalActivity },
 ];
 
 function AppSideBar() {
   const { data: activeWorkout } = useGetActiveWorkoutQuery();
+  const { setWorkoutId } = useContext(WorkoutContext);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -35,7 +38,12 @@ function AppSideBar() {
             spacing={2}
           >
             <Typography>{activeWorkout.name}</Typography>
-            <Button sx={{ height: 24 }} size="small" variant="contained">
+            <Button
+              sx={{ height: 24 }}
+              size="small"
+              variant="contained"
+              onClick={() => setWorkoutId(activeWorkout.id)}
+            >
               Resume
             </Button>
           </Stack>

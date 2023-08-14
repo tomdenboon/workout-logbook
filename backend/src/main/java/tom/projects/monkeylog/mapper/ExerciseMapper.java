@@ -19,6 +19,7 @@ public interface ExerciseMapper {
 
     default ExerciseTypeResponse exerciseTypeToExerciseTypeResponse(ExerciseType exerciseType) {
         return ExerciseTypeResponse.builder()
+                .id(exerciseType)
                 .metricFormat(exerciseType.getMetricFormat())
                 .name(exerciseType.getName())
                 .build();
@@ -26,6 +27,7 @@ public interface ExerciseMapper {
 
     default ExerciseCategoryResponse exerciseCategoryToExerciseCategoryResponse(ExerciseCategory exerciseCategory) {
         return ExerciseCategoryResponse.builder()
+                .id(exerciseCategory)
                 .exerciseTypes(exerciseCategory.getTypes().stream().map(this::exerciseTypeToExerciseTypeResponse).toList())
                 .name(exerciseCategory.getName())
                 .build();

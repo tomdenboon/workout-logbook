@@ -1,20 +1,14 @@
 import { Button, Grid, Stack } from '@mui/material';
 import { Add } from '@mui/icons-material';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
 import AddItemCard from 'components/AddItemCard';
-import AppHeader from 'components/AppHeader';
 import Section from 'components/Section';
 import AddWorkoutModal from 'features/workout/components/AddWorkoutModal';
 import WorkoutCard from 'features/workout/components/WorkoutCard';
 import AppContainer from 'components/AppContainer';
 import StartWorkoutModal from 'features/workout/components/StartWorkoutModal';
 import useModal from 'hooks/useModal';
-import {
-  WorkoutFullResponse,
-  useGetWorkoutsQuery,
-  useGetActiveWorkoutQuery,
-} from 'store/monkeylogApi';
+import { WorkoutFullResponse, useGetWorkoutsQuery } from 'store/monkeylogApi';
 
 const useWorkoutModalState = () => {
   const [workout, setWorkout] = useState<WorkoutFullResponse | undefined>();
@@ -29,23 +23,16 @@ const useWorkoutModalState = () => {
 };
 
 function TrainingPage() {
-  const { data: workouts } = useGetWorkoutsQuery({ type: 'TEMPLATE' });
-  const { data: activeWorkout } = useGetActiveWorkoutQuery();
+  const { data: workouts } = useGetWorkoutsQuery({ workoutType: 'TEMPLATE' });
   const startWorkoutModal = useWorkoutModalState();
   const addWorkoutModal = useModal();
 
   return (
-    <AppContainer header={<AppHeader title="Workouts" />}>
+    <AppContainer header={{ title: 'Workouts' }}>
       <Stack spacing={2}>
-        {activeWorkout ? (
-          <Button component={Link} to={`workouts/${activeWorkout.id}`} variant="contained">
-            continue workout
-          </Button>
-        ) : (
-          <Button onClick={() => startWorkoutModal.open()} variant="contained">
-            Start empty workout
-          </Button>
-        )}
+        <Button onClick={() => startWorkoutModal.open()} variant="contained">
+          Start empty workout
+        </Button>
         <Stack spacing={1}>
           <Section
             title="Workout templates"

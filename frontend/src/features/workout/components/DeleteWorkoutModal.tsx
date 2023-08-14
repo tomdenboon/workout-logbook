@@ -1,19 +1,18 @@
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
 import { IUseModal } from 'hooks/useModal';
-import { useNavigate } from 'react-router-dom';
 import { useDeleteWorkoutMutation } from 'store/monkeylogApi';
 
 function DeleteWorkoutModal(
   props: {
-    id: number;
+    workoutId: number;
+    closeWorkoutModal: () => void;
   } & IUseModal
 ) {
-  const { id, isOpen, close } = props;
+  const { workoutId, closeWorkoutModal, isOpen, close } = props;
   const [deleteWorkout] = useDeleteWorkoutMutation();
-  const navigate = useNavigate();
 
   return (
-    <Dialog open={isOpen} onClose={() => close}>
+    <Dialog open={isOpen} onClose={close}>
       <DialogTitle>Cancel workout</DialogTitle>
       <DialogContent>
         Are you sure you want to cancel this workout? Get logged exercises will be lost.
@@ -22,9 +21,12 @@ function DeleteWorkoutModal(
         <Button
           variant="text"
           onClick={() => {
-            deleteWorkout({ id })
+            deleteWorkout({ id: workoutId })
               .unwrap()
-              .then(() => navigate('/training'));
+              .then(() => {
+                close();
+                closeWorkoutModal();
+              });
           }}
         >
           CONFIRM

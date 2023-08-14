@@ -14,9 +14,10 @@ import {
 import useForm from 'hooks/useForm';
 import { useCallback, useEffect } from 'react';
 import {
+  ExerciseCategoryResponse,
   ExerciseResponse,
-  useGetExerciseTypesQuery,
   useCreateExerciseMutation,
+  useGetExerciseCategoriesQuery,
   useUpdateExerciseMutation,
 } from 'store/monkeylogApi';
 
@@ -31,12 +32,12 @@ function ExerciseForm(props: ExerciseFormProps) {
 
   const [addExercise] = useCreateExerciseMutation();
   const [updateExercise] = useUpdateExerciseMutation();
-  const { data: exerciseTypes } = useGetExerciseTypesQuery();
+  const { data: exerciseCategories } = useGetExerciseCategoriesQuery();
   const {
     data: exerciseForm,
     update,
     init,
-  } = useForm<{ name: string; exerciseType?: number }>({
+  } = useForm<{ name: string; exerciseCategory?: ExerciseCategoryResponse['id'] }>({
     name: '',
   });
 
@@ -44,22 +45,22 @@ function ExerciseForm(props: ExerciseFormProps) {
     if (exercise) {
       init({
         name: exercise.name,
-        exerciseType: exercise.exerciseType.id,
+        exerciseCategory: exercise.exerciseCategory.id,
       });
     }
   }, [exercise]);
 
   const submitForm = useCallback(() => {
-    const { name, exerciseType } = exerciseForm;
+    const { name, exerciseCategory } = exerciseForm;
 
-    if (!exerciseType) {
+    if (!exerciseCategory) {
       return;
     }
 
     if (exercise) {
       updateExercise({ id: exercise.id, exerciseUpdateRequest: { name } });
     } else {
-      addExercise({ exerciseCreateRequest: { name, exerciseTypeId: exerciseType } });
+      addExercise({ exerciseCreateRequest: { name, exerciseCategory } });
     }
 
     close();
@@ -82,10 +83,15 @@ function ExerciseForm(props: ExerciseFormProps) {
             <Select
               label="Type"
               labelId="exercise_type_label"
-              value={exerciseForm.exerciseType ?? ''}
-              onChange={(e) => update('exerciseType', e.target.value as number)}
+              value={exerciseForm.exerciseCategory ?? ''}
+              onChange={(e) =>
+                update(
+                  'exerciseCategory',
+                  e.target.value as typeof exerciseForm['exerciseCategory']
+                )
+              }
             >
-              {exerciseTypes?.map((et) => (
+              {exerciseCategories?.map((et) => (
                 <MenuItem key={et.id} value={et.id}>
                   {et.name}
                 </MenuItem>

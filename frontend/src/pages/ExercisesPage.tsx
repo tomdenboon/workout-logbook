@@ -1,7 +1,6 @@
 import { Add, ArrowBack } from '@mui/icons-material';
 import { Divider, Fab, IconButton, List, ListSubheader } from '@mui/material';
 import AppContainer from 'components/AppContainer';
-import AppHeader from 'components/AppHeader';
 import ExerciseCard from 'features/workout/components/ExerciseCard';
 import ExerciseForm from 'features/workout/components/ExerciseForm';
 import useSelectIds from 'hooks/useSelectIds';
@@ -25,23 +24,19 @@ function Exercises() {
 
   return (
     <AppContainer
-      header={
-        <AppHeader
-          LeftTitleButton={
-            workoutId && (
-              <IconButton component={Link} to={`/training/workouts/${workoutId}`} color="inherit">
-                <ArrowBack />
-              </IconButton>
-            )
-          }
-          RightButton={
-            <IconButton onClick={openEmpty} color="inherit">
-              <Add />
-            </IconButton>
-          }
-          title="Exercises"
-        />
-      }
+      header={{
+        leftButton: workoutId && (
+          <IconButton component={Link} to={`/training/workouts/${workoutId}`} color="inherit">
+            <ArrowBack />
+          </IconButton>
+        ),
+        rightButton: (
+          <IconButton onClick={openEmpty} color="inherit">
+            <Add />
+          </IconButton>
+        ),
+        title: 'Exercises',
+      }}
       sx={{ px: 0, pt: 6 }}
     >
       {groupedExercises &&

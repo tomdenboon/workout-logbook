@@ -28,7 +28,7 @@ public class Program implements UserOwned {
     @Enumerated(EnumType.STRING)
     private WorkoutType workoutType;
 
-    @OneToMany(mappedBy = "program", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "program", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProgramWeek> programWeeks = new ArrayList<>();
 
     public Program clone(Program program) {

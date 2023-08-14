@@ -13,7 +13,7 @@ interface ExerciseGroupProps {
 }
 
 function ExerciseGroupForm(props: ExerciseGroupProps) {
-  const { exerciseGroup, exerciseGroupIndex, workoutId, workoutType } = props;
+  const { exerciseGroup, workoutId, workoutType } = props;
   const [addExerciseRow] = useCreateExerciseRowMutation();
 
   return (
@@ -37,15 +37,15 @@ function ExerciseGroupForm(props: ExerciseGroupProps) {
             >
               Set
             </Typography>
-            {exerciseGroup.exercise.exerciseType.exerciseFields.map((exerciseField) => (
+            {exerciseGroup.exercise.exerciseCategory.exerciseTypes.map((exerciseType) => (
               <Typography
-                key={exerciseField.id}
+                key={exerciseType.id}
                 sx={{ flexGrow: 1 }}
                 variant="body2"
                 fontWeight={800}
                 align="center"
               >
-                {exerciseField.type[0] + exerciseField.type.slice(1).toLowerCase()}
+                {exerciseType.name}
               </Typography>
             ))}
             <Typography sx={{ minWidth: 32, maxWidth: 32 }} align="center" />
@@ -57,11 +57,11 @@ function ExerciseGroupForm(props: ExerciseGroupProps) {
                   {exerciseGroup.exerciseRows.map((exerciseRow, index) => (
                     <ExerciseRowForm
                       key={exerciseRow.id}
-                      exerciseRow={exerciseRow}
                       workoutId={workoutId}
-                      workoutType={workoutType}
-                      exerciseGroupIndex={exerciseGroupIndex}
+                      exerciseGroupId={exerciseGroup.id}
+                      exerciseRow={exerciseRow}
                       exerciseRowIndex={index}
+                      workoutType={workoutType}
                     />
                   ))}
                   {droppable.placeholder}
@@ -72,7 +72,7 @@ function ExerciseGroupForm(props: ExerciseGroupProps) {
           <Button
             sx={{ height: 24 }}
             variant="text"
-            onClick={() => addExerciseRow({ id: exerciseGroup.id })}
+            onClick={() => addExerciseRow({ workoutId, exerciseGroupId: exerciseGroup.id })}
           >
             Add exercise set
           </Button>

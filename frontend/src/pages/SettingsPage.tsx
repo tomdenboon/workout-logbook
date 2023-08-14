@@ -1,24 +1,12 @@
-import { ArrowBack } from '@mui/icons-material';
-import AppContainer from 'components/AppContainer';
-import AppHeader from 'components/AppHeader';
+import FullScreenModal from 'components/FullScreenModal';
 import Section from 'components/Section';
+import { IUseModal } from 'hooks/useModal';
 
-import { Link } from 'react-router-dom';
+function SettingsPage(props: IUseModal) {
+  const { isOpen, close } = props;
 
-function Settings() {
   return (
-    <AppContainer
-      header={
-        <AppHeader
-          LeftTitleButton={
-            <Link to="/profile">
-              <ArrowBack />
-            </Link>
-          }
-          title="Settings"
-        />
-      }
-    >
+    <FullScreenModal header={{ title: 'Settings' }} isOpen={isOpen} close={close} slideLeft>
       <Section title="Basic settings">
         <div className="grid grid-cols-1 gap-px">
           <div className="bg-surface p-2"> settings </div>
@@ -28,8 +16,8 @@ function Settings() {
         </div>
       </Section>
       <Section title="History" />
-    </AppContainer>
+    </FullScreenModal>
   );
 }
 
-export default Settings;
+export default SettingsPage;

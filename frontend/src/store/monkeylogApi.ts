@@ -44,7 +44,7 @@ export const monkeyLogApi = baseMonkeylogApi.enhanceEndpoints({
     getWorkouts: {
       providesTags: (result, errors, arg) => [
         ...(result?.content ?? []).map((workout) => ({ type: 'Workout' as const, id: workout.id })),
-        { type: 'Workout', id: `${arg.type}_LIST` },
+        { type: 'Workout', id: `${arg.workoutType}_LIST` },
       ],
     },
     getWorkout: {
@@ -72,13 +72,46 @@ export const monkeyLogApi = baseMonkeylogApi.enhanceEndpoints({
       invalidatesTags: () => [{ type: 'Workout', id: 'ACTIVE' }],
     },
     completeWorkout: {
-      invalidatesTags: (result) => [
-        { type: 'Workout', id: result?.id },
+      invalidatesTags: () => [
+        { type: 'Workout', id: 'ACTIVE' },
         { type: 'Workout', id: `COMPLETED_LIST` },
       ],
     },
     createExerciseGroup: {
       invalidatesTags: (result, error, args) => [{ type: 'Workout', id: args.workoutId }],
+    },
+    createExerciseRow: {
+      onQueryStarted: async ({ workoutId, exerciseGroupId }, { dispatch, queryFulfilled }) => {
+        queryFulfilled.then((result) => {
+          dispatch(
+            monkeyLogApi.util.updateQueryData('getWorkout', { id: workoutId }, (draft) => {
+              const exerciseGroup = draft.exerciseGroups.find((eg) => eg.id === exerciseGroupId);
+              if (exerciseGroup) {
+                Object.assign(exerciseGroup, result.data);
+              }
+            })
+          );
+        });
+      },
+    },
+    updateExerciseRow: {
+      onQueryStarted: async (
+        { workoutId, exerciseGroupId, exerciseRowId, exerciseRowUpdateRequest },
+        { dispatch, queryFulfilled }
+      ) => {
+        const patchResult = dispatch(
+          monkeyLogApi.util.updateQueryData('getWorkout', { id: workoutId }, (draft) => {
+            const exerciseRow = draft.exerciseGroups
+              .find((eg) => eg.id === exerciseGroupId)
+              ?.exerciseRows.find((er) => er.id === exerciseRowId);
+            if (exerciseRow) {
+              Object.assign(exerciseRow, exerciseRowUpdateRequest);
+            }
+          })
+        );
+
+        queryFulfilled.catch(patchResult.undo);
+      },
     },
   },
 });
@@ -99,7 +132,6 @@ export const {
   useCreateExerciseGroupMutation,
   useGetMeasurementsQuery,
   useCreateMeasurementMutation,
-  useGetExerciseTypesQuery,
   useUpdateExerciseRowFieldMutation,
   useCreateExerciseMutation,
   useUpdateExerciseMutation,
@@ -107,4 +139,6 @@ export const {
   useStartEmptyWorkoutMutation,
   useStartWorkoutMutation,
   useCreateMeasurementPointMutation,
+  useGetExerciseTypesQuery,
+  useGetExerciseCategoriesQuery,
 } = monkeyLogApi;

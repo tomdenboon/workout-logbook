@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import tom.projects.monkeylog.dto.workout.*;
 import tom.projects.monkeylog.mapper.ExerciseMapper;
+import tom.projects.monkeylog.model.exercise.ExerciseCategory;
+import tom.projects.monkeylog.model.exercise.ExerciseType;
 import tom.projects.monkeylog.service.ExerciseService;
 
 import java.util.Arrays;
@@ -44,6 +46,16 @@ public class ExerciseController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void deleteExercise(@PathVariable Long id) {
         exerciseService.delete(id);
+    }
+
+    @GetMapping("/exercises/types")
+    List<ExerciseTypeResponse> getExerciseTypes() {
+        return Arrays.stream(ExerciseType.values()).map(exerciseMapper::exerciseTypeToExerciseTypeResponse).toList();
+    }
+
+    @GetMapping("/exercises/categories")
+    List<ExerciseCategoryResponse> getExerciseCategories() {
+        return Arrays.stream(ExerciseCategory.values()).map(exerciseMapper::exerciseCategoryToExerciseCategoryResponse).toList();
     }
 }
 

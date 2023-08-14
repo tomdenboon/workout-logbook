@@ -6,8 +6,9 @@ import {
   Typography,
   DialogContent,
 } from '@mui/material';
+import WorkoutContext from 'features/workout/context/WorkoutContext';
 import { IUseModal } from 'hooks/useModal';
-import { useNavigate } from 'react-router-dom';
+import { useContext } from 'react';
 import {
   WorkoutFullResponse,
   useStartEmptyWorkoutMutation,
@@ -20,14 +21,15 @@ function StartWorkoutModal(
   } & IUseModal
 ) {
   const { workout, isOpen, close } = props;
-  const navigate = useNavigate();
+  const { setWorkoutId } = useContext(WorkoutContext);
   const [startWorkout] = useStartWorkoutMutation();
   const [startEmptyWorkout] = useStartEmptyWorkoutMutation();
 
   const startTheWorkout = (id?: number) =>
-    (id ? startWorkout({ id }) : startEmptyWorkout())
-      .unwrap()
-      .then(({ id: finalId }) => navigate(`/training/workouts/${finalId}`));
+    (id ? startWorkout({ id }) : startEmptyWorkout()).unwrap().then(({ id: finalId }) => {
+      setWorkoutId(finalId);
+      close();
+    });
 
   return (
     <Dialog open={isOpen} onClose={close}>

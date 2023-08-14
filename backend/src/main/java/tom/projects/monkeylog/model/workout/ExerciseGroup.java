@@ -30,8 +30,8 @@ public class ExerciseGroup implements UserOwned {
     @JoinColumn(name = "workout_id", nullable = false)
     private Workout workout;
 
-    @OneToMany(mappedBy = "exerciseGroup", cascade =  {CascadeType.PERSIST, CascadeType.MERGE })
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OneToMany(mappedBy = "exerciseGroup", cascade =  CascadeType.ALL, orphanRemoval = true)
+//    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<ExerciseRow> exerciseRows = new ArrayList<>();
 
     public static ExerciseGroup clone(ExerciseGroup exerciseGroup) {

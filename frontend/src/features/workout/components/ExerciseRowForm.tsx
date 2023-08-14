@@ -11,30 +11,36 @@ import {
 } from 'store/monkeylogApi';
 
 interface ExerciseRowFieldProps {
+  workoutId: number;
+  exerciseGroupId: number;
+  exerciseRowId: number;
   exerciseRowField: ExerciseRowFieldResponse;
   isLifted: boolean;
 }
 
 function ExerciseRowFieldForm(props: ExerciseRowFieldProps) {
-  const { exerciseRowField, isLifted } = props;
+  const { workoutId, exerciseGroupId, exerciseRowId, exerciseRowField, isLifted } = props;
   const [field, setField] = useState(exerciseRowField);
   const [newField, setNewField] = useState(exerciseRowField);
   const [updateExerciseRowField] = useUpdateExerciseRowFieldMutation();
 
   useEffect(() => {
     if (!isLifted) {
-      setNewField({ ...newField, value: '' });
+      setNewField({ ...newField, value: undefined });
     } else {
       setNewField({ ...field });
     }
   }, [isLifted]);
 
   const updateField = async () => {
-    if (!newField.value || newField.value === field.value) {
+    if (newField.value === undefined || newField.value === field.value) {
       return;
     }
 
     updateExerciseRowField({
+      workoutId,
+      exerciseGroupId,
+      exerciseRowId,
       exerciseRowFieldId: newField.id,
       exerciseRowFieldUpdateRequest: newField,
     });
@@ -42,9 +48,11 @@ function ExerciseRowFieldForm(props: ExerciseRowFieldProps) {
   };
 
   const cleanFieldInput = (newInput: string) => {
-    newInput.replace(/\D/g, '');
+    if (newInput === '') {
+      return undefined;
+    }
 
-    return newInput;
+    return Number(newInput.replace(/\D/g, ''));
   };
 
   return (
@@ -60,24 +68,24 @@ function ExerciseRowFieldForm(props: ExerciseRowFieldProps) {
       fullWidth
       hiddenLabel
       type="tel"
-      value={newField.value ?? undefined}
-      placeholder={field.value || '0'}
+      value={newField.value?.toString() ?? ''}
+      placeholder={field.value?.toString() ?? '0'}
       onChange={(e) => setNewField({ ...newField, value: cleanFieldInput(e.target.value) })}
-      onBlur={() => updateField()}
+      onBlur={updateField}
     />
   );
 }
 
 interface ExerciseRowFormProps {
   exerciseRow: ExerciseRowResponse;
-  workoutId: number;
-  workoutType: WorkoutResponse['type'];
   exerciseRowIndex: number;
-  exerciseGroupIndex: number;
+  workoutId: number;
+  exerciseGroupId: number;
+  workoutType: WorkoutResponse['workoutType'];
 }
 
 function ExerciseRowForm(props: ExerciseRowFormProps) {
-  const { exerciseRow, workoutType, exerciseRowIndex } = props;
+  const { workoutId, exerciseGroupId, exerciseRow, workoutType, exerciseRowIndex } = props;
   const [updateRow] = useUpdateExerciseRowMutation();
 
   return (
@@ -104,6 +112,9 @@ function ExerciseRowForm(props: ExerciseRowFormProps) {
           {exerciseRow.exerciseRowFields.map((exerciseRowField) => (
             <ExerciseRowFieldForm
               key={exerciseRowField.id}
+              workoutId={workoutId}
+              exerciseGroupId={exerciseGroupId}
+              exerciseRowId={exerciseRow.id}
               exerciseRowField={exerciseRowField}
               isLifted={exerciseRow.isLifted}
             />
@@ -114,7 +125,9 @@ function ExerciseRowForm(props: ExerciseRowFormProps) {
             color={exerciseRow.isLifted ? 'success' : 'primary'}
             onClick={() =>
               updateRow({
-                id: exerciseRow.id,
+                workoutId,
+                exerciseGroupId,
+                exerciseRowId: exerciseRow.id,
                 exerciseRowUpdateRequest: { isLifted: !exerciseRow.isLifted },
               })
             }

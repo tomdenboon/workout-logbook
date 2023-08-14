@@ -18,6 +18,7 @@ import tom.projects.monkeylog.model.workout.WorkoutType;
 import tom.projects.monkeylog.service.WorkoutService;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,8 +34,8 @@ public class WorkoutController {
     }
 
     @GetMapping("/workouts/active")
-    WorkoutResponse getActiveWorkout() {
-        return workoutMapper.workoutToWorkoutResponse(workoutService.getActiveWorkout());
+    Optional<WorkoutResponse> getActiveWorkout() {
+        return workoutService.getActiveWorkout().map(workoutMapper::workoutToWorkoutResponse);
     }
 
     @GetMapping("/workouts")

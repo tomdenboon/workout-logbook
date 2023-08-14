@@ -36,7 +36,7 @@ public class Workout implements UserOwned {
 
     private LocalDateTime endDate;
 
-    @OneToMany(mappedBy = "workout", cascade =  CascadeType.ALL)
+    @OneToMany(mappedBy = "workout", cascade =  CascadeType.ALL, orphanRemoval = true)
 //    @OnDelete(action = OnDeleteAction.CASCADE)
     @OrderColumn(name = "sort_order")
     private List<ExerciseGroup> exerciseGroups = new ArrayList<>();

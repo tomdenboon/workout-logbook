@@ -25,11 +25,12 @@ public class ExerciseRowField implements UserOwned {
 
     private Double value;
 
-    private ExerciseType type;
+    @Enumerated(EnumType.STRING)
+    private ExerciseType exerciseType;
 
     public static ExerciseRowField clone(ExerciseRowField exerciseRowField) {
         ExerciseRowField newExerciseRowField = new ExerciseRowField();
-        newExerciseRowField.setType(exerciseRowField.getType());
+        newExerciseRowField.setExerciseType(exerciseRowField.getExerciseType());
         newExerciseRowField.setValue(exerciseRowField.getValue());
 
         return newExerciseRowField;

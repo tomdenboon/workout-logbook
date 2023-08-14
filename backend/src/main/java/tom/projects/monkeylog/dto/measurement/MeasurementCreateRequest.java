@@ -1,6 +1,7 @@
 package tom.projects.monkeylog.dto.measurement;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import tom.projects.monkeylog.model.MetricFormat;
 
@@ -8,6 +9,6 @@ import tom.projects.monkeylog.model.MetricFormat;
 public class MeasurementCreateRequest {
     @NotBlank
     private String name;
-    @NotBlank
+    @NotNull
     private MetricFormat metricFormat;
 }

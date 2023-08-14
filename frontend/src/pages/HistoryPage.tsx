@@ -1,7 +1,6 @@
 import { Dialog, Grid, IconButton, Stack } from '@mui/material';
 import { CalendarIcon, DateCalendar, PickersDay, PickersDayProps } from '@mui/x-date-pickers';
 import AppContainer from 'components/AppContainer';
-import AppHeader from 'components/AppHeader';
 import Section from 'components/Section';
 import dayjs, { Dayjs } from 'dayjs';
 import WorkoutCompleteCard from 'features/workout/components/WorkoutCompleteCard';
@@ -33,7 +32,7 @@ function HistoryPage() {
   const calendarModal = useModal();
   const [date, setDate] = useState<Dayjs | null>();
   const { data: pageWorkout } = useGetWorkoutsQuery({
-    type: 'COMPLETED',
+    workoutType: 'COMPLETED',
     size: 20,
     after: date?.format('YYYY-MM-DDT00:00:00'),
   });
@@ -49,16 +48,14 @@ function HistoryPage() {
 
   return (
     <AppContainer
-      header={
-        <AppHeader
-          title="History"
-          RightButton={
-            <IconButton onClick={calendarModal.open} color="inherit">
-              <CalendarIcon color="inherit" />
-            </IconButton>
-          }
-        />
-      }
+      header={{
+        title: 'History',
+        rightButton: (
+          <IconButton onClick={calendarModal.open} color="inherit">
+            <CalendarIcon color="inherit" />
+          </IconButton>
+        ),
+      }}
     >
       {pageWorkout && pageWorkout.content.length > 0 && (
         <Dialog open={calendarModal.isOpen} onClose={calendarModal.close}>

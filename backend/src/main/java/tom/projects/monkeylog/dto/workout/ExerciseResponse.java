@@ -13,5 +13,5 @@ public class ExerciseResponse {
     @NotBlank
     private String name;
     @NotNull
-    private ExerciseCategory exerciseCategory;
+    private ExerciseCategoryResponse exerciseCategory;
 }
