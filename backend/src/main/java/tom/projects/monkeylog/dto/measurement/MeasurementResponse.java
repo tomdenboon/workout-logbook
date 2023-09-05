@@ -3,10 +3,12 @@ package tom.projects.monkeylog.dto.measurement;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.util.UUID;
+
 @Data
 public class MeasurementResponse {
     @NotNull
-    private Long id;
+    private UUID id;
     @NotNull
     private String name;
     @NotNull

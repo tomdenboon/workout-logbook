@@ -3,14 +3,12 @@ package tom.projects.monkeylog.model.workout;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.UuidGenerator;
 import tom.projects.monkeylog.model.user.UserOwned;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 @Entity
@@ -18,8 +16,9 @@ import java.util.stream.Stream;
 @NoArgsConstructor
 public class ExerciseRow implements UserOwned {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue
+    @UuidGenerator
+    private UUID id;
 
     @Column(nullable = false)
     private Boolean isLifted;
@@ -28,7 +27,7 @@ public class ExerciseRow implements UserOwned {
     @JoinColumn(name = "exercise_group_id", nullable = false)
     private ExerciseGroup exerciseGroup;
 
-    @OneToMany(mappedBy = "exerciseRow", cascade =  CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "exerciseRow", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ExerciseRowField> exerciseRowFields = new ArrayList<>();
 
     public static ExerciseRow clone(ExerciseRow exerciseRow) {
@@ -65,7 +64,7 @@ public class ExerciseRow implements UserOwned {
     }
 
     @Override
-    public Long getUserId() {
+    public UUID getUserId() {
         return exerciseGroup.getUserId();
     }
 }

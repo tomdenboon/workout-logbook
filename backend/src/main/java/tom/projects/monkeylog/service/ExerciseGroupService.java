@@ -7,11 +7,13 @@ import org.springframework.web.server.ResponseStatusException;
 import tom.projects.monkeylog.dto.workout.ExerciseGroupCreateRequest;
 import tom.projects.monkeylog.model.workout.ExerciseGroup;
 import tom.projects.monkeylog.model.workout.ExerciseRow;
-import tom.projects.monkeylog.model.workout.WorkoutType;
 import tom.projects.monkeylog.model.workout.Workout;
+import tom.projects.monkeylog.model.workout.WorkoutType;
 import tom.projects.monkeylog.repository.workout.ExerciseGroupRepository;
 import tom.projects.monkeylog.repository.workout.WorkoutRepository;
 import tom.projects.monkeylog.security.AuthenticatedUser;
+
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -21,13 +23,13 @@ public class ExerciseGroupService {
     private final WorkoutRepository workoutRepository;
     private final WorkoutService workoutService;
 
-    public ExerciseGroup get(Long id) {
+    public ExerciseGroup get(UUID id) {
         return exerciseGroupRepository.findById(id)
                 .filter(AuthenticatedUser::isResourceOwner)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Exercise group not found"));
     }
 
-    public ExerciseGroup addRow(Long id) {
+    public ExerciseGroup addRow(UUID id) {
         ExerciseGroup exerciseGroup = get(id);
         ExerciseRow exerciseRow = ExerciseRow
                 .clone(exerciseGroup.getExerciseRows().get(exerciseGroup.getExerciseRows().size() - 1));
@@ -37,7 +39,7 @@ public class ExerciseGroupService {
         return exerciseGroupRepository.save(exerciseGroup);
     }
 
-    public void save(ExerciseGroupCreateRequest exerciseGroupCreateRequest, Long workoutId) {
+    public void save(ExerciseGroupCreateRequest exerciseGroupCreateRequest, UUID workoutId) {
         Workout workout = workoutService.getWorkout(workoutId);
 
         exerciseService.allById(exerciseGroupCreateRequest.getExerciseIds())
@@ -53,7 +55,7 @@ public class ExerciseGroupService {
         workoutRepository.save(workout);
     }
 
-    public void delete(Long id) {
+    public void delete(UUID id) {
         ExerciseGroup exerciseGroup = get(id);
         Workout workout = exerciseGroup.getWorkout();
         workout.getExerciseGroups().remove(exerciseGroup);

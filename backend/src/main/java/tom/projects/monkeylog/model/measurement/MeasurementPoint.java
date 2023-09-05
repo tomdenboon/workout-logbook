@@ -5,9 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UuidGenerator;
 import tom.projects.monkeylog.model.user.UserOwned;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Data
@@ -15,8 +17,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class MeasurementPoint implements UserOwned {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue
+    @UuidGenerator
+    private UUID id;
 
     private Double value;
 
@@ -28,7 +31,7 @@ public class MeasurementPoint implements UserOwned {
     private LocalDateTime createdAt;
 
     @Override
-    public Long getUserId() {
+    public UUID getUserId() {
         return getMeasurement().getUserId();
     }
 }

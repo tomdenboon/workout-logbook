@@ -3,9 +3,8 @@ import FullScreenModal from 'components/FullScreenModal';
 import SimpleTimer from 'components/SimpleTimer';
 import DeleteWorkoutModal from 'features/workout/components/DeleteWorkoutModal';
 import ExerciseGroupForm from 'features/workout/components/ExerciseGroupForm';
-import WorkoutContext from 'features/workout/context/WorkoutContext';
-import useModal from 'hooks/useModal';
-import { useContext, useEffect } from 'react';
+import useModal, { ModalType } from 'hooks/useModal';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCompleteWorkoutMutation, useLazyGetWorkoutQuery } from 'store/monkeylogApi';
 
@@ -16,10 +15,10 @@ const TITLE_MAP = {
 };
 
 function WorkoutPage() {
-  const { workoutId, closeWorkoutModal } = useContext(WorkoutContext);
   const navigate = useNavigate();
+  const { value: workoutId, close: closeWorkoutModal } = useModal(ModalType.Workout);
   const [completeWorkout] = useCompleteWorkoutMutation();
-  const deleteWorkoutModal = useModal();
+  const deleteWorkoutModal = useModal(ModalType.DeleteWorkout);
   const [getWorkout, { data: workout }] = useLazyGetWorkoutQuery();
 
   useEffect(() => {

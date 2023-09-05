@@ -4,11 +4,12 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 public class MeasurementPointResponse {
     @NotNull
-    private Long id;
+    private UUID id;
     @NotNull
     private Double value;
     @NotNull

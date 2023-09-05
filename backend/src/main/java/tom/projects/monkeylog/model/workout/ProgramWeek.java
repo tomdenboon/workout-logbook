@@ -5,9 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.UuidGenerator;
 import tom.projects.monkeylog.model.user.UserOwned;
 
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -16,8 +18,9 @@ import java.util.List;
 @NoArgsConstructor
 public class ProgramWeek implements UserOwned {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue
+    @UuidGenerator
+    private UUID id;
     @Column(nullable = false)
     private String name;
     @ManyToOne
@@ -39,7 +42,7 @@ public class ProgramWeek implements UserOwned {
     }
 
     @Override
-    public Long getUserId() {
+    public UUID getUserId() {
         return program.getUserId();
     }
 }

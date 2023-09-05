@@ -5,7 +5,7 @@ function useSelectIds() {
 
   const hasSelection = useMemo(() => Object.values(idMap).some((x) => x), [idMap]);
 
-  const toggleId = (id: number) => {
+  const toggleId = (id: string) => {
     const selectedExercise = idMap[id];
     setIdMap({
       ...idMap,

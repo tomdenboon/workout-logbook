@@ -10,10 +10,11 @@ import tom.projects.monkeylog.mapper.ProgramMapper;
 import tom.projects.monkeylog.service.ProgramService;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@Tag(name="Program")
+@Tag(name = "Program")
 public class ProgramController {
     private final ProgramService programService;
     private final ProgramMapper programMapper;
@@ -24,7 +25,7 @@ public class ProgramController {
     }
 
     @GetMapping("/programs/{id}")
-    ProgramResponse getProgram(@PathVariable Long id) {
+    ProgramResponse getProgram(@PathVariable UUID id) {
         return programMapper.programToProgramResponse(programService.getProgram(id));
     }
 
@@ -34,24 +35,24 @@ public class ProgramController {
     }
 
     @PutMapping("/programs/{id}")
-    ProgramResponse updateProgram(@PathVariable Long id, @RequestBody @Valid ProgramUpdateRequest programUpdateRequest) {
+    ProgramResponse updateProgram(@PathVariable UUID id, @RequestBody @Valid ProgramUpdateRequest programUpdateRequest) {
         return programMapper.programToProgramResponse(programService.updateProgram(id, programUpdateRequest));
     }
 
     @DeleteMapping("/programs/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    void deleteProgram(@PathVariable Long id) {
+    void deleteProgram(@PathVariable UUID id) {
         programService.deleteProgram(id);
     }
 
     @PostMapping("/programs/{id}/program-weeks")
-    ProgramWeekResponse createProgramWeek(@PathVariable Long id, @RequestBody @Valid ProgramWeekCreateRequest programWeekCreateRequest) {
+    ProgramWeekResponse createProgramWeek(@PathVariable UUID id, @RequestBody @Valid ProgramWeekCreateRequest programWeekCreateRequest) {
         return programMapper.programWeekToProgramWeekResponse(programService.createProgramWeek(id, programWeekCreateRequest));
     }
 
     @DeleteMapping("/program-weeks/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    void deleteProgramWeek(@PathVariable Long id) {
+    void deleteProgramWeek(@PathVariable UUID id) {
         programService.deleteProgramWeek(id);
     }
 }

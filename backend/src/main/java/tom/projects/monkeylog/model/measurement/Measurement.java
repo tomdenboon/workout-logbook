@@ -7,10 +7,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.UuidGenerator;
 import tom.projects.monkeylog.model.MetricFormat;
 import tom.projects.monkeylog.model.user.UserOwned;
 
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -19,10 +21,11 @@ import java.util.List;
 @NoArgsConstructor
 public class Measurement implements UserOwned {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue
+    @UuidGenerator
+    private UUID id;
     private String name;
-    private Long userId;
+    private UUID userId;
     @Enumerated(EnumType.STRING)
     private MetricFormat metric;
     @OneToMany(mappedBy = "measurement")

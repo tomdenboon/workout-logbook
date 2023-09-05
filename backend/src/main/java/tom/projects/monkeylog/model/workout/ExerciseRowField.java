@@ -5,9 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import tom.projects.monkeylog.model.exercise.Exercise;
+import org.hibernate.annotations.UuidGenerator;
 import tom.projects.monkeylog.model.exercise.ExerciseType;
 import tom.projects.monkeylog.model.user.UserOwned;
+
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -16,8 +18,9 @@ import tom.projects.monkeylog.model.user.UserOwned;
 @NoArgsConstructor
 public class ExerciseRowField implements UserOwned {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue
+    @UuidGenerator
+    private UUID id;
 
     @ManyToOne
     @JoinColumn(name = "exercise_row_id", nullable = false)
@@ -37,7 +40,7 @@ public class ExerciseRowField implements UserOwned {
     }
 
     @Override
-    public Long getUserId() {
+    public UUID getUserId() {
         return exerciseRow.getUserId();
     }
 }

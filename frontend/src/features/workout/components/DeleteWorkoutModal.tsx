@@ -4,7 +4,7 @@ import { useDeleteWorkoutMutation } from 'store/monkeylogApi';
 
 function DeleteWorkoutModal(
   props: {
-    workoutId: number;
+    workoutId: string;
     closeWorkoutModal: () => void;
   } & IUseModal
 ) {

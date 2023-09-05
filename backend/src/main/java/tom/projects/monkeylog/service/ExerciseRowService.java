@@ -14,6 +14,8 @@ import tom.projects.monkeylog.repository.workout.ExerciseRowFieldRepository;
 import tom.projects.monkeylog.repository.workout.ExerciseRowRepository;
 import tom.projects.monkeylog.security.AuthenticatedUser;
 
+import java.util.UUID;
+
 @RequiredArgsConstructor
 @Service
 public class ExerciseRowService {
@@ -22,19 +24,19 @@ public class ExerciseRowService {
     private final ExerciseRowRepository exerciseRowRepository;
     private final ExerciseRowFieldRepository exerciseRowFieldRepository;
 
-    public ExerciseRow get(Long id) {
+    public ExerciseRow get(UUID id) {
         return exerciseRowRepository.findById(id)
                 .filter(AuthenticatedUser::isResourceOwner)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ROW_NOT_FOUND));
     }
 
-    public ExerciseRowField getField(Long id) {
+    public ExerciseRowField getField(UUID id) {
         return exerciseRowFieldRepository.findById(id)
                 .filter(AuthenticatedUser::isResourceOwner)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ROW_NOT_FOUND));
     }
 
-    public ExerciseRow update(ExerciseRowUpdateRequest exerciseRowUpdateRequest, Long id) {
+    public ExerciseRow update(ExerciseRowUpdateRequest exerciseRowUpdateRequest, UUID id) {
         ExerciseRow exerciseRow = get(id);
         exerciseRow.setIsLifted(exerciseRowUpdateRequest.getIsLifted());
 
@@ -42,14 +44,14 @@ public class ExerciseRowService {
     }
 
     public ExerciseRowField updateField(ExerciseRowFieldUpdateRequest exerciseRowFieldUpdateRequest,
-            Long exerciseRowFieldId) {
+                                        UUID exerciseRowFieldId) {
         ExerciseRowField exerciseRowField = getField(exerciseRowFieldId);
         exerciseRowField.setValue(exerciseRowFieldUpdateRequest.getValue());
 
         return exerciseRowFieldRepository.save(exerciseRowField);
     }
 
-    public void delete(Long id) {
+    public void delete(UUID id) {
         ExerciseRow exerciseRow = get(id);
         ExerciseGroup exerciseGroup = exerciseRow.getExerciseGroup();
         exerciseGroup.getExerciseRows().remove(exerciseRow);

@@ -198,16 +198,16 @@ const injectedRtkApi = api.injectEndpoints({
 export { injectedRtkApi as baseMonkeylogApi };
 export type GetProgramResponse = /** status 200 OK */ ProgramResponse;
 export type GetProgramArg = {
-  id: number;
+  id: string;
 };
 export type UpdateProgramResponse = /** status 200 OK */ ProgramResponse;
 export type UpdateProgramArg = {
-  id: number;
+  id: string;
   programUpdateRequest: ProgramUpdateRequest;
 };
 export type DeleteProgramResponse = unknown;
 export type DeleteProgramArg = {
-  id: number;
+  id: string;
 };
 export type GetWorkoutsResponse = /** status 200 OK */ PageWorkoutFullResponse;
 export type GetWorkoutsArg = {
@@ -226,21 +226,21 @@ export type CreateWorkoutArg = {
 };
 export type CreateExerciseGroupResponse = unknown;
 export type CreateExerciseGroupArg = {
-  workoutId: number;
+  workoutId: string;
   exerciseGroupCreateRequest: ExerciseGroupCreateRequest;
 };
 export type CreateExerciseRowResponse = /** status 200 OK */ ExerciseGroupResponse;
 export type CreateExerciseRowArg = {
-  workoutId: number;
-  exerciseGroupId: number;
+  workoutId: string;
+  exerciseGroupId: string;
 };
 export type StartWorkoutResponse = /** status 200 OK */ WorkoutResponse;
 export type StartWorkoutArg = {
-  id: number;
+  id: string;
 };
 export type DuplicateWorkoutResponse = /** status 200 OK */ WorkoutResponse;
 export type DuplicateWorkoutArg = {
-  id: number;
+  id: string;
 };
 export type StartEmptyWorkoutResponse = /** status 200 OK */ WorkoutResponse;
 export type StartEmptyWorkoutArg = void;
@@ -254,7 +254,7 @@ export type CreateProgramArg = {
 };
 export type CreateProgramWeekResponse = /** status 200 OK */ ProgramWeekResponse;
 export type CreateProgramWeekArg = {
-  id: number;
+  id: string;
   programWeekCreateRequest: ProgramWeekCreateRequest;
 };
 export type GetMeasurementsResponse = /** status 200 OK */ MeasurementFullResponse[];
@@ -265,7 +265,7 @@ export type CreateMeasurementArg = {
 };
 export type CreateMeasurementPointResponse = /** status 200 OK */ MeasurementPointResponse;
 export type CreateMeasurementPointArg = {
-  id: number;
+  id: string;
   measurementPointCreateRequest: MeasurementPointCreateRequest;
 };
 export type GetExercisesResponse = /** status 200 OK */ ExerciseResponse[];
@@ -276,57 +276,57 @@ export type CreateExerciseArg = {
 };
 export type UpdateExerciseRowResponse = /** status 200 OK */ ExerciseRowResponse;
 export type UpdateExerciseRowArg = {
-  workoutId: number;
-  exerciseGroupId: number;
-  exerciseRowId: number;
+  workoutId: string;
+  exerciseGroupId: string;
+  exerciseRowId: string;
   exerciseRowUpdateRequest: ExerciseRowUpdateRequest;
 };
 export type UpdateExerciseRowFieldResponse = /** status 200 OK */ ExerciseRowFieldResponse;
 export type UpdateExerciseRowFieldArg = {
-  workoutId: number;
-  exerciseGroupId: number;
-  exerciseRowId: number;
-  exerciseRowFieldId: number;
+  workoutId: string;
+  exerciseGroupId: string;
+  exerciseRowId: string;
+  exerciseRowFieldId: string;
   exerciseRowFieldUpdateRequest: ExerciseRowFieldUpdateRequest;
 };
 export type DeleteMeasurementResponse = unknown;
 export type DeleteMeasurementArg = {
-  id: number;
+  id: string;
 };
 export type UpdateMeasurementResponse = /** status 200 OK */ MeasurementResponse;
 export type UpdateMeasurementArg = {
-  id: number;
+  id: string;
   measurementUpdateRequest: MeasurementUpdateRequest;
 };
 export type DeleteMeasurementPointResponse = unknown;
 export type DeleteMeasurementPointArg = {
-  id: number;
+  id: string;
 };
 export type UpdateMeasurementPointResponse = /** status 200 OK */ MeasurementPointResponse;
 export type UpdateMeasurementPointArg = {
-  id: number;
+  id: string;
   measurementPointUpdateRequest: MeasurementPointUpdateRequest;
 };
 export type GetExerciseResponse = /** status 200 OK */ ExerciseResponse;
 export type GetExerciseArg = {
-  id: number;
+  id: string;
 };
 export type DeleteExerciseResponse = unknown;
 export type DeleteExerciseArg = {
-  id: number;
+  id: string;
 };
 export type UpdateExerciseResponse = /** status 200 OK */ ExerciseResponse;
 export type UpdateExerciseArg = {
-  id: number;
+  id: string;
   exerciseUpdateRequest: ExerciseUpdateRequest;
 };
 export type GetWorkoutResponse = /** status 200 OK */ WorkoutFullResponse;
 export type GetWorkoutArg = {
-  id: number;
+  id: string;
 };
 export type DeleteWorkoutResponse = unknown;
 export type DeleteWorkoutArg = {
-  id: number;
+  id: string;
 };
 export type GetActiveWorkoutResponse = /** status 200 OK */ WorkoutResponse;
 export type GetActiveWorkoutArg = void;
@@ -336,28 +336,28 @@ export type GetExerciseCategoriesResponse = /** status 200 OK */ ExerciseCategor
 export type GetExerciseCategoriesArg = void;
 export type DeleteExerciseGroupResponse = unknown;
 export type DeleteExerciseGroupArg = {
-  workoutId: number;
-  exerciseGroupId: number;
+  workoutId: string;
+  exerciseGroupId: string;
 };
 export type DeleteExerciseRowResponse = unknown;
 export type DeleteExerciseRowArg = {
-  workoutId: number;
-  exerciseGroupId: number;
-  exerciseRowId: number;
+  workoutId: string;
+  exerciseGroupId: string;
+  exerciseRowId: string;
 };
 export type DeleteProgramWeekResponse = unknown;
 export type DeleteProgramWeekArg = {
-  id: number;
+  id: string;
 };
 export type ProgramWeekResponse = {
-  id: number;
+  id: string;
   name: string;
 };
 export type ProgramResponse = {
-  id: number;
+  programWeeks: ProgramWeekResponse[];
+  id: string;
   name: string;
   description: string;
-  programWeeks: ProgramWeekResponse[];
 };
 export type ProgramUpdateRequest = {
   name: string;
@@ -366,7 +366,7 @@ export type ProgramUpdateRequest = {
 export type ExerciseTypeResponse = {
   id: 'REPS' | 'TIME' | 'DISTANCE' | 'WEIGHT';
   name: string;
-  metricFormat: 'WEIGHT' | 'DISTANCE' | 'TIME' | 'NUMBER';
+  metricFormat: 'WEIGHT' | 'DISTANCE' | 'TIME' | 'NUMBER' | 'PERCENTAGE';
 };
 export type ExerciseCategoryResponse = {
   id: 'REPS' | 'WEIGHTED' | 'DURATION' | 'DISTANCE';
@@ -374,27 +374,27 @@ export type ExerciseCategoryResponse = {
   exerciseTypes: ExerciseTypeResponse[];
 };
 export type ExerciseResponse = {
-  id: number;
+  id: string;
   name: string;
   exerciseCategory: ExerciseCategoryResponse;
 };
 export type ExerciseRowFieldResponse = {
-  id: number;
+  id: string;
   value?: number;
   exerciseType: 'REPS' | 'TIME' | 'DISTANCE' | 'WEIGHT';
 };
 export type ExerciseRowResponse = {
-  id: number;
+  id: string;
   exerciseRowFields: ExerciseRowFieldResponse[];
   isLifted: boolean;
 };
 export type ExerciseGroupResponse = {
-  id: number;
+  id: string;
   exercise: ExerciseResponse;
   exerciseRows: ExerciseRowResponse[];
 };
 export type WorkoutFullResponse = {
-  id: number;
+  id: string;
   name: string;
   note: string;
   workoutType: 'TEMPLATE' | 'ACTIVE' | 'COMPLETED';
@@ -409,7 +409,7 @@ export type PageWorkoutFullResponse = {
   content: WorkoutFullResponse[];
 };
 export type WorkoutResponse = {
-  id: number;
+  id: string;
   name: string;
   note: string;
   workoutType: 'TEMPLATE' | 'ACTIVE' | 'COMPLETED';
@@ -418,10 +418,10 @@ export type WorkoutResponse = {
 };
 export type WorkoutCreateRequest = {
   name: string;
-  programWeekId?: number;
+  programWeekId?: string;
 };
 export type ExerciseGroupCreateRequest = {
-  exerciseIds: number[];
+  exerciseIds: string[];
 };
 export type ProgramCreateRequest = {
   name: string;
@@ -431,24 +431,24 @@ export type ProgramWeekCreateRequest = {
   name: string;
 };
 export type MeasurementPointResponse = {
-  id: number;
+  id: string;
   value: number;
   createdAt: string;
 };
 export type MeasurementFullResponse = {
-  id: number;
+  id: string;
   name: string;
   unit: string;
   measurementPoints: MeasurementPointResponse[];
 };
 export type MeasurementResponse = {
-  id: number;
+  id: string;
   name: string;
   unit: string;
 };
 export type MeasurementCreateRequest = {
   name: string;
-  metricFormat: 'WEIGHT' | 'DISTANCE' | 'TIME' | 'NUMBER';
+  metricFormat: 'WEIGHT' | 'DISTANCE' | 'TIME' | 'NUMBER' | 'PERCENTAGE';
 };
 export type MeasurementPointCreateRequest = {
   value: number;
@@ -465,7 +465,7 @@ export type ExerciseRowFieldUpdateRequest = {
 };
 export type MeasurementUpdateRequest = {
   name: string;
-  metricFormat: 'WEIGHT' | 'DISTANCE' | 'TIME' | 'NUMBER';
+  metricFormat: 'WEIGHT' | 'DISTANCE' | 'TIME' | 'NUMBER' | 'PERCENTAGE';
 };
 export type MeasurementPointUpdateRequest = {
   value: number;

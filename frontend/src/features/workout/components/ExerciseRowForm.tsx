@@ -11,9 +11,9 @@ import {
 } from 'store/monkeylogApi';
 
 interface ExerciseRowFieldProps {
-  workoutId: number;
-  exerciseGroupId: number;
-  exerciseRowId: number;
+  workoutId: string;
+  exerciseGroupId: string;
+  exerciseRowId: string;
   exerciseRowField: ExerciseRowFieldResponse;
   isLifted: boolean;
 }
@@ -79,8 +79,8 @@ function ExerciseRowFieldForm(props: ExerciseRowFieldProps) {
 interface ExerciseRowFormProps {
   exerciseRow: ExerciseRowResponse;
   exerciseRowIndex: number;
-  workoutId: number;
-  exerciseGroupId: number;
+  workoutId: string;
+  exerciseGroupId: string;
   workoutType: WorkoutResponse['workoutType'];
 }
 

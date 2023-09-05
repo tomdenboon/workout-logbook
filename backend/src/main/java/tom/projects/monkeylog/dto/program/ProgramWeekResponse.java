@@ -9,11 +9,12 @@ import tom.projects.monkeylog.model.workout.ProgramWeek;
 import tom.projects.monkeylog.model.workout.Workout;
 
 import java.util.List;
+import java.util.UUID;
 
 @Data
 public class ProgramWeekResponse {
     @NotNull
-    private Long id;
+    private UUID id;
     @NotNull
     private String name;
 }

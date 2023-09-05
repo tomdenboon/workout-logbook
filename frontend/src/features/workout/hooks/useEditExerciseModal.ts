@@ -1,9 +1,9 @@
-import useModal from 'hooks/useModal';
+import useModal, { ModalType } from 'hooks/useModal';
 import { useState } from 'react';
 import { ExerciseResponse } from 'store/baseMonkeylogApi';
 
 function useEditExerciseModal() {
-  const { open, isOpen, close } = useModal();
+  const { open, isOpen, close } = useModal(ModalType.EditExercise);
   const [editExercise, setEditExercise] = useState<ExerciseResponse>();
 
   const openEmpty = () => {

@@ -1,4 +1,5 @@
-import { useTheme } from '@mui/material';
+import { Add } from '@mui/icons-material';
+import { Button, Stack, useTheme } from '@mui/material';
 import { LineChart } from '@mui/x-charts';
 import ActionDropdown from 'components/ActionDropdown';
 import AppCard from 'components/AppCard';
@@ -6,13 +7,12 @@ import { MeasurementFullResponse } from 'store/monkeylogApi';
 
 interface MeasurementCardProps {
   measurement: MeasurementFullResponse;
+  openAddMeasurementPointModal: () => void;
 }
 
 function MeasurementCard(props: MeasurementCardProps) {
-  const { measurement } = props;
+  const { measurement, openAddMeasurementPointModal } = props;
 
-  // const [addMeasurementPoint] = useCreateMeasurementPointMutation();
-  // const [value, setValue] = useState('');
   const theme = useTheme();
 
   const xAxis = measurement.measurementPoints.map(
@@ -23,27 +23,20 @@ function MeasurementCard(props: MeasurementCardProps) {
   return (
     <AppCard
       header={measurement.name}
-      actions={<ActionDropdown actions={[{ action: () => null, label: 'Graph action' }]} />}
-    >
-      {/* <TextField
-            value={value}
-            size="small"
-            onChange={(e) => setValue(e.target.value)}
-            inputProps={{
-              endAdornment: <InputAdornment position="end">{measurement.unit}</InputAdornment>,
-            }}
-          />
+      actions={
+        <Stack direction="row" spacing={1}>
           <Button
+            color="primary"
             variant="outlined"
-            onClick={() =>
-              addMeasurementPoint({
-                id: measurement.id,
-                measurementPointCreateRequest: { value: parseInt(value, 10) },
-              })
-            }
+            onClick={openAddMeasurementPointModal}
+            sx={{ height: 24, px: 1, py: 0, minWidth: 0 }}
           >
             <Add />
-          </Button> */}
+          </Button>
+          <ActionDropdown actions={[{ action: () => null, label: 'Graph action' }]} />
+        </Stack>
+      }
+    >
       {xAxis.length >= 1 && (
         <LineChart
           xAxis={[
@@ -61,7 +54,7 @@ function MeasurementCard(props: MeasurementCardProps) {
               data: seriesData,
             },
           ]}
-          margin={{ left: 22, top: 10, right: 10, bottom: 20 }}
+          margin={{ left: 30, top: 10, right: 10, bottom: 20 }}
           height={120}
         />
       )}

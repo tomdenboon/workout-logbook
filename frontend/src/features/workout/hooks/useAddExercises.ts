@@ -5,9 +5,9 @@ function useAddExercises() {
   const navigate = useNavigate();
   const [addExerciseGroups] = useCreateExerciseGroupMutation();
 
-  const add = (workoutId: string, exerciseIds: number[]) =>
+  const add = (workoutId: string, exerciseIds: string[]) =>
     addExerciseGroups({
-      workoutId: parseInt(workoutId, 10),
+      workoutId,
       exerciseGroupCreateRequest: {
         exerciseIds,
       },

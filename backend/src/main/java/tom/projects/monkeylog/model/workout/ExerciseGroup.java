@@ -4,13 +4,13 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.UuidGenerator;
 import tom.projects.monkeylog.model.exercise.Exercise;
 import tom.projects.monkeylog.model.user.UserOwned;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 @Entity
@@ -19,8 +19,9 @@ import java.util.stream.Stream;
 @NoArgsConstructor
 public class ExerciseGroup implements UserOwned {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue
+    @UuidGenerator
+    private UUID id;
 
     @ManyToOne
     @JoinColumn(name = "exercise_id", nullable = false)
@@ -30,7 +31,7 @@ public class ExerciseGroup implements UserOwned {
     @JoinColumn(name = "workout_id", nullable = false)
     private Workout workout;
 
-    @OneToMany(mappedBy = "exerciseGroup", cascade =  CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "exerciseGroup", cascade = CascadeType.ALL, orphanRemoval = true)
 //    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<ExerciseRow> exerciseRows = new ArrayList<>();
 
@@ -52,7 +53,7 @@ public class ExerciseGroup implements UserOwned {
     }
 
     @Override
-    public Long getUserId() {
+    public UUID getUserId() {
         return workout.getUserId();
     }
 }

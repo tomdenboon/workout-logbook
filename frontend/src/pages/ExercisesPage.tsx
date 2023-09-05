@@ -11,7 +11,6 @@ import useEditExerciseModal from 'features/workout/hooks/useEditExerciseModal';
 
 function Exercises() {
   const { workoutId } = useParams();
-
   const {
     idMap: selectedExerciseIds,
     toIdList,
@@ -68,7 +67,7 @@ function Exercises() {
         <Fab
           sx={{ position: 'fixed', bottom: 64, left: 8 }}
           color="primary"
-          onClick={() => add(workoutId, toIdList().map(Number))}
+          onClick={() => add(workoutId, toIdList())}
           disabled={!hasSelectedExercises}
         >
           <Add />

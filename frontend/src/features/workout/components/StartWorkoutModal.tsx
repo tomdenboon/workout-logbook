@@ -6,9 +6,7 @@ import {
   Typography,
   DialogContent,
 } from '@mui/material';
-import WorkoutContext from 'features/workout/context/WorkoutContext';
-import { IUseModal } from 'hooks/useModal';
-import { useContext } from 'react';
+import useModal, { IUseModal, ModalType } from 'hooks/useModal';
 import {
   WorkoutFullResponse,
   useStartEmptyWorkoutMutation,
@@ -21,11 +19,11 @@ function StartWorkoutModal(
   } & IUseModal
 ) {
   const { workout, isOpen, close } = props;
-  const { setWorkoutId } = useContext(WorkoutContext);
+  const { open: setWorkoutId } = useModal(ModalType.Workout);
   const [startWorkout] = useStartWorkoutMutation();
   const [startEmptyWorkout] = useStartEmptyWorkoutMutation();
 
-  const startTheWorkout = (id?: number) =>
+  const startTheWorkout = (id?: string) =>
     (id ? startWorkout({ id }) : startEmptyWorkout()).unwrap().then(({ id: finalId }) => {
       setWorkoutId(finalId);
       close();

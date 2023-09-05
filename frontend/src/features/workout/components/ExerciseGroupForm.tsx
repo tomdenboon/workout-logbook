@@ -8,7 +8,7 @@ import { ExerciseGroupResponse, useCreateExerciseRowMutation } from 'store/monke
 interface ExerciseGroupProps {
   exerciseGroup: ExerciseGroupResponse;
   exerciseGroupIndex: number;
-  workoutId: number;
+  workoutId: string;
   workoutType: 'COMPLETED' | 'TEMPLATE' | 'ACTIVE';
 }
 

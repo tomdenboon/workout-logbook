@@ -1,16 +1,15 @@
 import { ContentCopy, Delete, Edit } from '@mui/icons-material';
 import ActionDropdown from 'components/ActionDropdown';
+import useModal, { ModalType } from 'hooks/useModal';
 import {
   WorkoutResponse,
   useDeleteWorkoutMutation,
   useDuplicateWorkoutMutation,
 } from 'store/monkeylogApi';
-import WorkoutContext from 'features/workout/context/WorkoutContext';
-import { useContext } from 'react';
 
 function WorkoutActions(props: { workout: WorkoutResponse }) {
   const { workout } = props;
-  const { setWorkoutId } = useContext(WorkoutContext);
+  const { open: setWorkoutId } = useModal(ModalType.Workout);
   const [cloneWorkout] = useDuplicateWorkoutMutation();
   const [deleteWorkout] = useDeleteWorkoutMutation();
 
@@ -19,7 +18,7 @@ function WorkoutActions(props: { workout: WorkoutResponse }) {
       actions={[
         {
           label: 'Edit',
-          action: () => setWorkoutId(workout.id),
+          action: () => setWorkoutId(workout.id.toString()),
           icon: <Edit />,
         },
         {

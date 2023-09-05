@@ -6,11 +6,12 @@ import lombok.Data;
 import tom.projects.monkeylog.model.workout.WorkoutType;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 public class WorkoutResponse {
     @NotNull
-    private Long id;
+    private UUID id;
     @NotEmpty
     private String name;
     @NotEmpty

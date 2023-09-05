@@ -9,13 +9,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import tom.projects.monkeylog.dto.workout.WorkoutCreateRequest;
 import tom.projects.monkeylog.mapper.WorkoutMapper;
-import tom.projects.monkeylog.model.workout.WorkoutType;
 import tom.projects.monkeylog.model.workout.Workout;
+import tom.projects.monkeylog.model.workout.WorkoutType;
 import tom.projects.monkeylog.repository.workout.WorkoutRepository;
 import tom.projects.monkeylog.security.AuthenticatedUser;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -34,7 +35,7 @@ public class WorkoutService {
         return workoutRepository.findAllByWorkoutTypeAndUserId(workoutType, AuthenticatedUser.getId(), pageable);
     }
 
-    public Workout getWorkout(Long id) {
+    public Workout getWorkout(UUID id) {
         return workoutRepository.findById(id)
                 .filter(AuthenticatedUser::isResourceOwner)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, WORKOUT_NOT_FOUND));
@@ -52,7 +53,7 @@ public class WorkoutService {
         return startWorkout(workout);
     }
 
-    public Workout startWorkout(Long id) {
+    public Workout startWorkout(UUID id) {
         return startWorkout(Workout.clone(getWorkout(id)));
     }
 
@@ -85,7 +86,7 @@ public class WorkoutService {
         return workoutRepository.save(workout);
     }
 
-    public Workout cloneToTemplate(Long id) {
+    public Workout cloneToTemplate(UUID id) {
         Workout workout = getWorkout(id);
         Workout newWorkout = Workout.clone(workout);
         newWorkout.setName(workout.getName() + " - copy");
@@ -104,7 +105,7 @@ public class WorkoutService {
         return workoutRepository.save(workout);
     }
 
-    public void delete(Long id) {
+    public void delete(UUID id) {
         workoutRepository.delete(getWorkout(id));
     }
 }

@@ -4,10 +4,12 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import tom.projects.monkeylog.model.exercise.ExerciseType;
 
+import java.util.UUID;
+
 @Data
 public class ExerciseRowFieldResponse {
     @NotNull
-    private Long id;
+    private UUID id;
     private Double value;
     @NotNull
     private ExerciseType exerciseType;

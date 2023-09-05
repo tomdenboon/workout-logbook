@@ -12,6 +12,7 @@ import tom.projects.monkeylog.security.AuthenticatedUser;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
@@ -24,13 +25,13 @@ public class ExerciseService {
         return exerciseRepository.findAllByUserId(AuthenticatedUser.getId());
     }
 
-    public Exercise get(Long id) {
+    public Exercise get(UUID id) {
         return exerciseRepository.findById(id)
                 .filter(AuthenticatedUser::isResourceOwner)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, EXERCISE_NOT_FOUND));
     }
 
-    public Stream<Exercise> allById(Set<Long> ids) {
+    public Stream<Exercise> allById(Set<UUID> ids) {
         return exerciseRepository.findAllById(ids).stream().filter(AuthenticatedUser::isResourceOwner);
     }
 
@@ -43,14 +44,14 @@ public class ExerciseService {
         return exerciseRepository.save(exercise);
     }
 
-    public Exercise update(ExerciseUpdateRequest exerciseUpdateRequest, Long id) {
+    public Exercise update(ExerciseUpdateRequest exerciseUpdateRequest, UUID id) {
         Exercise exercise = get(id);
         exercise.setName(exerciseUpdateRequest.getName());
 
         return exerciseRepository.save(exercise);
     }
 
-    public void delete(Long id) {
+    public void delete(UUID id) {
         exerciseRepository.delete(get(id));
     }
 }

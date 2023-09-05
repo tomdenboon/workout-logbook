@@ -19,17 +19,18 @@ import tom.projects.monkeylog.service.WorkoutService;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@Tag(name="Workout")
+@Tag(name = "Workout")
 public class WorkoutController {
     private final WorkoutService workoutService;
     private final WorkoutMapper workoutMapper;
     private final PageMapper pageMapper;
 
     @GetMapping("/workouts/{id}")
-    WorkoutFullResponse getWorkout(@PathVariable Long id) {
+    WorkoutFullResponse getWorkout(@PathVariable UUID id) {
         return workoutMapper.workoutToFullWorkoutResponse(workoutService.getWorkout(id));
     }
 
@@ -49,7 +50,7 @@ public class WorkoutController {
     }
 
     @PostMapping("/workouts/{id}/duplicate")
-    WorkoutResponse duplicateWorkout(@PathVariable Long id) {
+    WorkoutResponse duplicateWorkout(@PathVariable UUID id) {
         return workoutMapper.workoutToWorkoutResponse(workoutService.cloneToTemplate(id));
     }
 
@@ -59,7 +60,7 @@ public class WorkoutController {
     }
 
     @PostMapping("/workouts/{id}/start")
-    WorkoutResponse startWorkout(@PathVariable Long id) {
+    WorkoutResponse startWorkout(@PathVariable UUID id) {
         return workoutMapper.workoutToWorkoutResponse(workoutService.startWorkout(id));
     }
 
@@ -71,7 +72,7 @@ public class WorkoutController {
     @DeleteMapping("/workouts/{id}")
     @ApiResponse(responseCode = "204")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    void deleteWorkout(@PathVariable Long id) {
+    void deleteWorkout(@PathVariable UUID id) {
         workoutService.delete(id);
     }
 }

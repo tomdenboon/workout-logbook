@@ -16,6 +16,7 @@ import tom.projects.monkeylog.repository.measurement.MeasurementRepository;
 import tom.projects.monkeylog.security.AuthenticatedUser;
 
 import java.util.List;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -30,13 +31,13 @@ public class MeasurementService {
         return measurementRepository.findAll();
     }
 
-    public Measurement get(Long id) {
+    public Measurement get(UUID id) {
         return measurementRepository.findById(id)
                 .filter(AuthenticatedUser::isResourceOwner)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, MEASUREMENT_NOT_FOUND));
     }
 
-    public MeasurementPoint getPoint(Long id) {
+    public MeasurementPoint getPoint(UUID id) {
         return measurementPointRepository.findById(id)
                 .filter(AuthenticatedUser::isResourceOwner)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, MEASUREMENT_POINT_NOT_FOUND));
@@ -49,14 +50,14 @@ public class MeasurementService {
         return measurementRepository.save(measurement);
     }
 
-    public Measurement update(MeasurementUpdateRequest measurementPatchDto, Long id) {
+    public Measurement update(MeasurementUpdateRequest measurementPatchDto, UUID id) {
         Measurement measurement = get(id);
         measurementMapper.updateMeasurement(measurement, measurementPatchDto);
 
         return measurementRepository.save(measurement);
     }
 
-    public MeasurementPoint createPoint(Long measurementId, MeasurementPointCreateRequest measurementPointCreateRequest) {
+    public MeasurementPoint createPoint(UUID measurementId, MeasurementPointCreateRequest measurementPointCreateRequest) {
         Measurement measurement = get(measurementId);
         MeasurementPoint measurementPoint = new MeasurementPoint();
         measurementPoint.setValue(measurementPointCreateRequest.getValue());
@@ -65,18 +66,18 @@ public class MeasurementService {
         return measurementPointRepository.save(measurementPoint);
     }
 
-    public MeasurementPoint updatePoint(Long id, MeasurementPointUpdateRequest measurementPointUpdateRequest) {
+    public MeasurementPoint updatePoint(UUID id, MeasurementPointUpdateRequest measurementPointUpdateRequest) {
         MeasurementPoint measurementPoint = getPoint(id);
         measurementPoint.setValue(measurementPointUpdateRequest.getValue());
 
         return measurementPointRepository.save(measurementPoint);
     }
 
-    public void delete(Long id) {
+    public void delete(UUID id) {
         measurementRepository.delete(get(id));
     }
 
-    public void deletePoint(Long id) {
+    public void deletePoint(UUID id) {
         measurementPointRepository.delete(getPoint(id));
     }
 }

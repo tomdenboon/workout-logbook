@@ -7,12 +7,12 @@ import AddWorkoutModal from 'features/workout/components/AddWorkoutModal';
 import WorkoutCard from 'features/workout/components/WorkoutCard';
 import AppContainer from 'components/AppContainer';
 import StartWorkoutModal from 'features/workout/components/StartWorkoutModal';
-import useModal from 'hooks/useModal';
+import useModal, { ModalType } from 'hooks/useModal';
 import { WorkoutFullResponse, useGetWorkoutsQuery } from 'store/monkeylogApi';
 
 const useWorkoutModalState = () => {
   const [workout, setWorkout] = useState<WorkoutFullResponse | undefined>();
-  const modalState = useModal();
+  const modalState = useModal(ModalType.StartWorkout);
 
   const open = (newWorkout?: WorkoutFullResponse) => {
     setWorkout(newWorkout);
@@ -25,7 +25,7 @@ const useWorkoutModalState = () => {
 function TrainingPage() {
   const { data: workouts } = useGetWorkoutsQuery({ workoutType: 'TEMPLATE' });
   const startWorkoutModal = useWorkoutModalState();
-  const addWorkoutModal = useModal();
+  const addWorkoutModal = useModal(ModalType.AddWorkout);
 
   return (
     <AppContainer header={{ title: 'Workouts' }}>
@@ -40,7 +40,7 @@ function TrainingPage() {
             rightNode={
               <Button
                 startIcon={<Add />}
-                onClick={addWorkoutModal.open}
+                onClick={() => addWorkoutModal.open()}
                 variant="outlined"
                 sx={{ height: 24, px: 1, minWidth: 0, py: 0 }}
               >

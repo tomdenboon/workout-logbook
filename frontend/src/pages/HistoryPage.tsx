@@ -4,7 +4,7 @@ import AppContainer from 'components/AppContainer';
 import Section from 'components/Section';
 import dayjs, { Dayjs } from 'dayjs';
 import WorkoutCompleteCard from 'features/workout/components/WorkoutCompleteCard';
-import useModal from 'hooks/useModal';
+import useModal, { ModalType } from 'hooks/useModal';
 import { useState } from 'react';
 import { WorkoutFullResponse, useGetWorkoutsQuery } from 'store/monkeylogApi';
 
@@ -29,7 +29,7 @@ function ServerDay(props: PickersDayProps<Dayjs> & { highlightedDays?: String[] 
 }
 
 function HistoryPage() {
-  const calendarModal = useModal();
+  const calendarModal = useModal(ModalType.Calendar);
   const [date, setDate] = useState<Dayjs | null>();
   const { data: pageWorkout } = useGetWorkoutsQuery({
     workoutType: 'COMPLETED',
@@ -51,7 +51,7 @@ function HistoryPage() {
       header={{
         title: 'History',
         rightButton: (
-          <IconButton onClick={calendarModal.open} color="inherit">
+          <IconButton onClick={() => calendarModal.open()} color="inherit">
             <CalendarIcon color="inherit" />
           </IconButton>
         ),

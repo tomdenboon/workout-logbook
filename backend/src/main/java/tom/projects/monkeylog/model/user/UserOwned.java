@@ -1,5 +1,7 @@
 package tom.projects.monkeylog.model.user;
 
+import java.util.UUID;
+
 public interface UserOwned {
-    Long getUserId();
+    UUID getUserId();
 }

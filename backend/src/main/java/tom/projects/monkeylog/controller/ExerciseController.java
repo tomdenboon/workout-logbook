@@ -12,8 +12,7 @@ import tom.projects.monkeylog.service.ExerciseService;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.UUID;
 
 @RestController
 @Tag(name = "Exercise")
@@ -28,7 +27,7 @@ public class ExerciseController {
     }
 
     @GetMapping("/exercises/{id}")
-    ExerciseResponse getExercise(@PathVariable Long id) {
+    ExerciseResponse getExercise(@PathVariable UUID id) {
         return exerciseMapper.exerciseToExerciseResponse(exerciseService.get(id));
     }
 
@@ -38,13 +37,13 @@ public class ExerciseController {
     }
 
     @PatchMapping("/exercises/{id}")
-    ExerciseResponse updateExercise(@RequestBody ExerciseUpdateRequest exerciseUpdateRequest, @PathVariable Long id) {
+    ExerciseResponse updateExercise(@RequestBody ExerciseUpdateRequest exerciseUpdateRequest, @PathVariable UUID id) {
         return exerciseMapper.exerciseToExerciseResponse(exerciseService.update(exerciseUpdateRequest, id));
     }
 
     @DeleteMapping("/exercises/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    void deleteExercise(@PathVariable Long id) {
+    void deleteExercise(@PathVariable UUID id) {
         exerciseService.delete(id);
     }
 
