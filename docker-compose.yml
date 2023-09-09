@@ -18,6 +18,7 @@ services:
     build:
       context: backend
       target: development
+    restart: always
     networks:
       - proxy-spring
       - spring-postgresql
@@ -40,7 +41,7 @@ services:
     ports:
       - 80:80
       - 443:443
-    restart: unless-stopped
+    restart: always
     depends_on:
       - frontend
     networks:
@@ -48,16 +49,16 @@ services:
       - proxy-react
     volumes:
       - ./proxy/nginx:/etc/nginx/conf.d
-      - ./proxy/certbot/conf:/etc/letsencrypt
-      - ./proxy/certbot/www:/var/www/certbot
-    command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
-  certbot:
-    image: certbot/certbot
-    restart: unless-stopped
-    volumes:
-      - ./proxy/certbot/conf:/etc/letsencrypt
-      - ./proxy/certbot/www:/var/www/certbot
-    entrypoint: "/bin/sh -c 'trap exit term; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+  #     - ./proxy/certbot/conf:/etc/letsencrypt
+  #     - ./proxy/certbot/www:/var/www/certbot
+  #   command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
+  # certbot:
+  #   image: certbot/certbot
+  #   restart: unless-stopped
+  #   volumes:
+  #     - ./proxy/certbot/conf:/etc/letsencrypt
+  #     - ./proxy/certbot/www:/var/www/certbot
+  #   entrypoint: "/bin/sh -c 'trap exit term; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 
 volumes:
   postgresql-data:
