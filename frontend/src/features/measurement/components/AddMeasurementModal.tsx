@@ -6,10 +6,10 @@ import {
   DialogActions,
   Button,
 } from '@mui/material';
-import useForm from 'hooks/useForm';
-import { IUseModal } from 'hooks/useModal';
-import { MeasurementCreateRequest } from 'store/baseMonkeylogApi';
-import { useCreateMeasurementMutation } from 'store/monkeylogApi';
+import useForm from 'src/hooks/useForm';
+import { IUseModal } from 'src/hooks/useModal';
+import { MeasurementCreateRequest } from 'src/store/baseMonkeylogApi';
+import { useCreateMeasurementMutation } from 'src/store/monkeylogApi';
 
 export default function AddMeasurementModal(props: IUseModal) {
   const { isOpen, close } = props;
@@ -39,7 +39,9 @@ export default function AddMeasurementModal(props: IUseModal) {
       <DialogActions>
         <Button
           onClick={() =>
-            addMeasurement({ measurementCreateRequest: measurementForm }).unwrap().then(close)
+            addMeasurement({ measurementCreateRequest: measurementForm })
+              .unwrap()
+              .then(close)
           }
         >
           Submit

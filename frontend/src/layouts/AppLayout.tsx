@@ -1,5 +1,5 @@
-import AppSidebar from 'components/AppSidebar';
-import FullWorkoutModal from 'pages/WorkoutPage';
+import AppSidebar from 'src/components/AppSidebar';
+import FullWorkoutModal from 'src/pages/WorkoutPage';
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 

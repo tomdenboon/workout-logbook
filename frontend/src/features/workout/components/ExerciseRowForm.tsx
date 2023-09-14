@@ -8,7 +8,7 @@ import {
   WorkoutResponse,
   useUpdateExerciseRowFieldMutation,
   useUpdateExerciseRowMutation,
-} from 'store/monkeylogApi';
+} from 'src/store/monkeylogApi';
 
 interface ExerciseRowFieldProps {
   workoutId: string;
@@ -19,7 +19,13 @@ interface ExerciseRowFieldProps {
 }
 
 function ExerciseRowFieldForm(props: ExerciseRowFieldProps) {
-  const { workoutId, exerciseGroupId, exerciseRowId, exerciseRowField, isLifted } = props;
+  const {
+    workoutId,
+    exerciseGroupId,
+    exerciseRowId,
+    exerciseRowField,
+    isLifted,
+  } = props;
   const [field, setField] = useState(exerciseRowField);
   const [newField, setNewField] = useState(exerciseRowField);
   const [updateExerciseRowField] = useUpdateExerciseRowFieldMutation();
@@ -70,7 +76,9 @@ function ExerciseRowFieldForm(props: ExerciseRowFieldProps) {
       type="tel"
       value={newField.value?.toString() ?? ''}
       placeholder={field.value?.toString() ?? '0'}
-      onChange={(e) => setNewField({ ...newField, value: cleanFieldInput(e.target.value) })}
+      onChange={(e) =>
+        setNewField({ ...newField, value: cleanFieldInput(e.target.value) })
+      }
       onBlur={updateField}
     />
   );
@@ -85,7 +93,13 @@ interface ExerciseRowFormProps {
 }
 
 function ExerciseRowForm(props: ExerciseRowFormProps) {
-  const { workoutId, exerciseGroupId, exerciseRow, workoutType, exerciseRowIndex } = props;
+  const {
+    workoutId,
+    exerciseGroupId,
+    exerciseRow,
+    workoutType,
+    exerciseRowIndex,
+  } = props;
   const [updateRow] = useUpdateExerciseRowMutation();
 
   return (

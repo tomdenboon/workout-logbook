@@ -1,14 +1,17 @@
 import { Button, Grid, Stack } from '@mui/material';
 import { Add } from '@mui/icons-material';
 import { useState } from 'react';
-import AddItemCard from 'components/AddItemCard';
-import Section from 'components/Section';
-import AddWorkoutModal from 'features/workout/components/AddWorkoutModal';
-import WorkoutCard from 'features/workout/components/WorkoutCard';
-import AppContainer from 'components/AppContainer';
-import StartWorkoutModal from 'features/workout/components/StartWorkoutModal';
-import useModal, { ModalType } from 'hooks/useModal';
-import { WorkoutFullResponse, useGetWorkoutsQuery } from 'store/monkeylogApi';
+import AddItemCard from 'src/components/AddItemCard';
+import Section from 'src/components/Section';
+import AddWorkoutModal from 'src/features/workout/components/AddWorkoutModal';
+import WorkoutCard from 'src/features/workout/components/WorkoutCard';
+import AppContainer from 'src/components/AppContainer';
+import StartWorkoutModal from 'src/features/workout/components/StartWorkoutModal';
+import useModal, { ModalType } from 'src/hooks/useModal';
+import {
+  WorkoutFullResponse,
+  useGetWorkoutsQuery,
+} from 'src/store/monkeylogApi';
 
 const useWorkoutModalState = () => {
   const [workout, setWorkout] = useState<WorkoutFullResponse | undefined>();

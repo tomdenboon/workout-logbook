@@ -1,16 +1,16 @@
 import { ArrowBack, ArrowDownward } from '@mui/icons-material';
 import { Slide, Dialog, IconButton } from '@mui/material';
 import { TransitionProps } from '@mui/material/transitions';
-import AppContainer from 'components/AppContainer';
 import { forwardRef } from 'react';
+import AppContainer from 'src/components/AppContainer';
 
 const LeftTransitionComponent = forwardRef(
   (
     props: TransitionProps & {
       children: React.ReactElement;
     },
-    ref: React.Ref<unknown>
-  ) => <Slide direction="left" ref={ref} {...props} />
+    ref: React.Ref<unknown>,
+  ) => <Slide direction="left" ref={ref} {...props} />,
 );
 
 const UpTransitionComponent = forwardRef(
@@ -18,8 +18,8 @@ const UpTransitionComponent = forwardRef(
     props: TransitionProps & {
       children: React.ReactElement;
     },
-    ref: React.Ref<unknown>
-  ) => <Slide direction="up" ref={ref} {...props} />
+    ref: React.Ref<unknown>,
+  ) => <Slide direction="up" ref={ref} {...props} />,
 );
 
 export default function FullScreenModal(props: {
@@ -39,7 +39,9 @@ export default function FullScreenModal(props: {
       fullScreen
       open={isOpen}
       onClose={close}
-      TransitionComponent={slideLeft ? LeftTransitionComponent : UpTransitionComponent}
+      TransitionComponent={
+        slideLeft ? LeftTransitionComponent : UpTransitionComponent
+      }
     >
       <AppContainer
         header={{

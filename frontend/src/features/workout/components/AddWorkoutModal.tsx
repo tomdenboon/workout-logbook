@@ -6,9 +6,10 @@ import {
   DialogTitle,
   TextField,
 } from '@mui/material';
-import { IUseModal } from 'hooks/useModal';
 import { useState } from 'react';
-import { WorkoutCreateRequest, useCreateWorkoutMutation } from 'store/monkeylogApi';
+import { IUseModal } from 'src/hooks/useModal';
+import { WorkoutCreateRequest } from 'src/store/baseMonkeylogApi';
+import { useCreateWorkoutMutation } from 'src/store/monkeylogApi';
 
 function AddWorkoutModal(props: IUseModal) {
   const { isOpen, close } = props;
@@ -26,13 +27,19 @@ function AddWorkoutModal(props: IUseModal) {
           size="small"
           margin="dense"
           value={workoutForm.name}
-          onChange={(e) => setWorkoutForm({ ...workoutForm, name: e.target.value })}
+          onChange={(e) =>
+            setWorkoutForm({ ...workoutForm, name: e.target.value })
+          }
         />
       </DialogContent>
       <DialogActions>
         <Button onClick={close}>Cancel</Button>
         <Button
-          onClick={() => addWorkout({ workoutCreateRequest: workoutForm }).unwrap().then(close)}
+          onClick={() =>
+            addWorkout({ workoutCreateRequest: workoutForm })
+              .unwrap()
+              .then(close)
+          }
         >
           Add
         </Button>

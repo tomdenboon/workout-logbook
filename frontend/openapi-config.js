@@ -10,4 +10,4 @@ const config = {
   exportName: 'baseMonkeylogApi',
 };
 
-module.exports = config;
+export default config;

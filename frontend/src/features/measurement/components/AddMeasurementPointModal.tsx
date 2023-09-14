@@ -6,16 +6,19 @@ import {
   DialogActions,
   Button,
 } from '@mui/material';
-import useForm from 'hooks/useForm';
-import { IUseModal } from 'hooks/useModal';
-import { MeasurementPointCreateRequest } from 'store/baseMonkeylogApi';
-import { useCreateMeasurementPointMutation } from 'store/monkeylogApi';
+import useForm from 'src/hooks/useForm';
+import { IUseModal } from 'src/hooks/useModal';
+import { MeasurementPointCreateRequest } from 'src/store/baseMonkeylogApi';
+import { useCreateMeasurementPointMutation } from 'src/store/monkeylogApi';
 
-export default function AddMeasurementPointModal(props: IUseModal & { measurementId: string }) {
+export default function AddMeasurementPointModal(
+  props: IUseModal & { measurementId: string },
+) {
   const { measurementId, isOpen, close } = props;
-  const { data: measurementForm, update } = useForm<MeasurementPointCreateRequest>({
-    value: 0,
-  });
+  const { data: measurementForm, update } =
+    useForm<MeasurementPointCreateRequest>({
+      value: 0,
+    });
   const [addMeasurementPoint] = useCreateMeasurementPointMutation();
 
   return (

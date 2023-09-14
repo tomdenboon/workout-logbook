@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import { ExerciseResponse } from 'store/baseMonkeylogApi';
-import { useGetExercisesQuery } from 'store/monkeylogApi';
+import { ExerciseResponse } from 'src/store/baseMonkeylogApi';
+import { useGetExercisesQuery } from 'src/store/monkeylogApi';
 
 function useExercises() {
   const { data: exercises } = useGetExercisesQuery();
@@ -15,9 +15,9 @@ function useExercises() {
             exercise,
           ],
         }),
-        {}
+        {},
       ),
-    [exercises]
+    [exercises],
   );
 
   return { exercises, groupedExercises };

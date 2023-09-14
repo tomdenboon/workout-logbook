@@ -1,5 +1,5 @@
 import { Typography } from '@mui/material';
-import useTimer from 'hooks/useTimer';
+import useTimer from 'src/hooks/useTimer';
 
 function SimpleTimer(props: { startDate?: string; endDate?: string }) {
   const { startDate, endDate } = props;

@@ -1,9 +1,9 @@
 import { Add } from '@mui/icons-material';
 import { Button, Stack, useTheme } from '@mui/material';
 import { LineChart } from '@mui/x-charts';
-import ActionDropdown from 'components/ActionDropdown';
-import AppCard from 'components/AppCard';
-import { MeasurementFullResponse } from 'store/monkeylogApi';
+import ActionDropdown from 'src/components/ActionDropdown';
+import AppCard from 'src/components/AppCard';
+import { MeasurementFullResponse } from 'src/store/monkeylogApi';
 
 interface MeasurementCardProps {
   measurement: MeasurementFullResponse;
@@ -16,9 +16,11 @@ function MeasurementCard(props: MeasurementCardProps) {
   const theme = useTheme();
 
   const xAxis = measurement.measurementPoints.map(
-    (measurmentPoint) => new Date(measurmentPoint.createdAt)
+    (measurmentPoint) => new Date(measurmentPoint.createdAt),
   );
-  const seriesData = measurement.measurementPoints.map((measurmentPoint) => measurmentPoint.value);
+  const seriesData = measurement.measurementPoints.map(
+    (measurmentPoint) => measurmentPoint.value,
+  );
 
   return (
     <AppCard
@@ -33,7 +35,9 @@ function MeasurementCard(props: MeasurementCardProps) {
           >
             <Add />
           </Button>
-          <ActionDropdown actions={[{ action: () => null, label: 'Graph action' }]} />
+          <ActionDropdown
+            actions={[{ action: () => null, label: 'Graph action' }]}
+          />
         </Stack>
       }
     >

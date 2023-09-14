@@ -1,12 +1,12 @@
 import { Add } from '@mui/icons-material';
 import { Grid, IconButton } from '@mui/material';
 
-import FullScreenModal from 'components/FullScreenModal';
-import AddMeasurementModal from 'features/measurement/components/AddMeasurementModal';
-import AddMeasurementPointModal from 'features/measurement/components/AddMeasurementPointModal';
-import MeasurementCard from 'features/measurement/components/MeasurementCard';
-import useModal, { IUseModal, ModalType } from 'hooks/useModal';
-import { useGetMeasurementsQuery } from 'store/monkeylogApi';
+import FullScreenModal from 'src/components/FullScreenModal';
+import AddMeasurementModal from 'src/features/measurement/components/AddMeasurementModal';
+import AddMeasurementPointModal from 'src/features/measurement/components/AddMeasurementPointModal';
+import MeasurementCard from 'src/features/measurement/components/MeasurementCard';
+import useModal, { IUseModal, ModalType } from 'src/hooks/useModal';
+import { useGetMeasurementsQuery } from 'src/store/monkeylogApi';
 
 function MeasurementPage(props: IUseModal) {
   const { isOpen, close } = props;
@@ -33,7 +33,9 @@ function MeasurementPage(props: IUseModal) {
             <MeasurementCard
               key={measurement.id}
               measurement={measurement}
-              openAddMeasurementPointModal={() => measurementPointModal.open(measurement.id)}
+              openAddMeasurementPointModal={() =>
+                measurementPointModal.open(measurement.id)
+              }
             />
           </Grid>
         ))}

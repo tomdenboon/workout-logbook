@@ -1,16 +1,16 @@
 import { Dialog, Grid, IconButton, Stack } from '@mui/material';
 import { CalendarIcon, DateCalendar, PickersDay, PickersDayProps } from '@mui/x-date-pickers';
-import AppContainer from 'components/AppContainer';
-import Section from 'components/Section';
+import AppContainer from 'src/components/AppContainer';
+import Section from 'src/components/Section';
 import dayjs, { Dayjs } from 'dayjs';
-import WorkoutCompleteCard from 'features/workout/components/WorkoutCompleteCard';
-import useModal, { ModalType } from 'hooks/useModal';
+import WorkoutCompleteCard from 'src/features/workout/components/WorkoutCompleteCard';
+import useModal, { ModalType } from 'src/hooks/useModal';
 import { useState } from 'react';
-import { WorkoutFullResponse, useGetWorkoutsQuery } from 'store/monkeylogApi';
+import { WorkoutFullResponse, useGetWorkoutsQuery } from 'src/store/monkeylogApi';
 
 const FORMAT = 'YYYY-MM-DD';
 
-function ServerDay(props: PickersDayProps<Dayjs> & { highlightedDays?: String[] }) {
+function ServerDay(props: PickersDayProps<Dayjs> & { highlightedDays?: string[] }) {
   const { highlightedDays, day, outsideCurrentMonth, ...other } = props;
 
   const isSelected =

@@ -1,11 +1,11 @@
 import { ContentCopy, Delete, Edit } from '@mui/icons-material';
-import ActionDropdown from 'components/ActionDropdown';
-import useModal, { ModalType } from 'hooks/useModal';
+import ActionDropdown from 'src/components/ActionDropdown';
+import useModal, { ModalType } from 'src/hooks/useModal';
 import {
   WorkoutResponse,
   useDeleteWorkoutMutation,
   useDuplicateWorkoutMutation,
-} from 'store/monkeylogApi';
+} from 'src/store/monkeylogApi';
 
 function WorkoutActions(props: { workout: WorkoutResponse }) {
   const { workout } = props;

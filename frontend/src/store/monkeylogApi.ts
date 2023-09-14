@@ -1,6 +1,6 @@
-import { baseMonkeylogApi } from 'store/baseMonkeylogApi';
+import { baseMonkeylogApi } from 'src/store/baseMonkeylogApi';
 
-export * from 'store/baseMonkeylogApi';
+export * from 'src/store/baseMonkeylogApi';
 
 export const monkeyLogApi = baseMonkeylogApi.enhanceEndpoints({
   addTagTypes: ['Exercise', 'Measurement', 'Program', 'Workout'],
@@ -19,10 +19,14 @@ export const monkeyLogApi = baseMonkeylogApi.enhanceEndpoints({
       invalidatesTags: [{ type: 'Exercise', id: 'LIST' }],
     },
     deleteExercise: {
-      invalidatesTags: (result, error, args) => [{ type: 'Exercise', id: args.id }],
+      invalidatesTags: (result, error, args) => [
+        { type: 'Exercise', id: args.id },
+      ],
     },
     updateExercise: {
-      invalidatesTags: (result, error, args) => [{ type: 'Exercise', id: args.id }],
+      invalidatesTags: (result, error, args) => [
+        { type: 'Exercise', id: args.id },
+      ],
     },
     // MEASUREMENTS
     getMeasurements: {
@@ -35,7 +39,9 @@ export const monkeyLogApi = baseMonkeylogApi.enhanceEndpoints({
       invalidatesTags: () => [{ type: 'Measurement', id: 'LIST' }],
     },
     deleteMeasurement: {
-      invalidatesTags: (result, error, args) => [{ type: 'Measurement', id: args.id }],
+      invalidatesTags: (result, error, args) => [
+        { type: 'Measurement', id: args.id },
+      ],
     },
     createMeasurementPoint: {
       invalidatesTags: () => [{ type: 'Measurement', id: 'LIST' }],
@@ -43,7 +49,10 @@ export const monkeyLogApi = baseMonkeylogApi.enhanceEndpoints({
     // WORKOUTS
     getWorkouts: {
       providesTags: (result, errors, arg) => [
-        ...(result?.content ?? []).map((workout) => ({ type: 'Workout' as const, id: workout.id })),
+        ...(result?.content ?? []).map((workout) => ({
+          type: 'Workout' as const,
+          id: workout.id,
+        })),
         { type: 'Workout', id: `${arg.workoutType}_LIST` },
       ],
     },
@@ -60,7 +69,9 @@ export const monkeyLogApi = baseMonkeylogApi.enhanceEndpoints({
       invalidatesTags: () => [{ type: 'Workout', id: `TEMPLATE_LIST` }],
     },
     deleteWorkout: {
-      invalidatesTags: (result, error, args) => [{ type: 'Workout', id: args.id }],
+      invalidatesTags: (result, error, args) => [
+        { type: 'Workout', id: args.id },
+      ],
     },
     duplicateWorkout: {
       invalidatesTags: () => [{ type: 'Workout', id: 'TEMPLATE_LIST' }],
@@ -78,18 +89,29 @@ export const monkeyLogApi = baseMonkeylogApi.enhanceEndpoints({
       ],
     },
     createExerciseGroup: {
-      invalidatesTags: (result, error, args) => [{ type: 'Workout', id: args.workoutId }],
+      invalidatesTags: (result, error, args) => [
+        { type: 'Workout', id: args.workoutId },
+      ],
     },
     createExerciseRow: {
-      onQueryStarted: async ({ workoutId, exerciseGroupId }, { dispatch, queryFulfilled }) => {
+      onQueryStarted: async (
+        { workoutId, exerciseGroupId },
+        { dispatch, queryFulfilled },
+      ) => {
         queryFulfilled.then((result) => {
           dispatch(
-            monkeyLogApi.util.updateQueryData('getWorkout', { id: workoutId }, (draft) => {
-              const exerciseGroup = draft.exerciseGroups.find((eg) => eg.id === exerciseGroupId);
-              if (exerciseGroup) {
-                Object.assign(exerciseGroup, result.data);
-              }
-            })
+            monkeyLogApi.util.updateQueryData(
+              'getWorkout',
+              { id: workoutId },
+              (draft) => {
+                const exerciseGroup = draft.exerciseGroups.find(
+                  (eg) => eg.id === exerciseGroupId,
+                );
+                if (exerciseGroup) {
+                  Object.assign(exerciseGroup, result.data);
+                }
+              },
+            ),
           );
         });
       },
@@ -97,17 +119,21 @@ export const monkeyLogApi = baseMonkeylogApi.enhanceEndpoints({
     updateExerciseRow: {
       onQueryStarted: async (
         { workoutId, exerciseGroupId, exerciseRowId, exerciseRowUpdateRequest },
-        { dispatch, queryFulfilled }
+        { dispatch, queryFulfilled },
       ) => {
         const patchResult = dispatch(
-          monkeyLogApi.util.updateQueryData('getWorkout', { id: workoutId }, (draft) => {
-            const exerciseRow = draft.exerciseGroups
-              .find((eg) => eg.id === exerciseGroupId)
-              ?.exerciseRows.find((er) => er.id === exerciseRowId);
-            if (exerciseRow) {
-              Object.assign(exerciseRow, exerciseRowUpdateRequest);
-            }
-          })
+          monkeyLogApi.util.updateQueryData(
+            'getWorkout',
+            { id: workoutId },
+            (draft) => {
+              const exerciseRow = draft.exerciseGroups
+                .find((eg) => eg.id === exerciseGroupId)
+                ?.exerciseRows.find((er) => er.id === exerciseRowId);
+              if (exerciseRow) {
+                Object.assign(exerciseRow, exerciseRowUpdateRequest);
+              }
+            },
+          ),
         );
 
         queryFulfilled.catch(patchResult.undo);

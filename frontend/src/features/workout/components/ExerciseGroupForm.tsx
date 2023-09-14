@@ -1,9 +1,12 @@
 import { MoreHoriz } from '@mui/icons-material';
 import { Button, Card, Grid, Stack, Typography } from '@mui/material';
-import ExerciseRowForm from 'features/workout/components/ExerciseRowForm';
+import ExerciseRowForm from 'src/features/workout/components/ExerciseRowForm';
 import React from 'react';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
-import { ExerciseGroupResponse, useCreateExerciseRowMutation } from 'store/monkeylogApi';
+import {
+  ExerciseGroupResponse,
+  useCreateExerciseRowMutation,
+} from 'src/store/monkeylogApi';
 
 interface ExerciseGroupProps {
   exerciseGroup: ExerciseGroupResponse;
@@ -24,7 +27,10 @@ function ExerciseGroupForm(props: ExerciseGroupProps) {
             <Typography fontWeight={800} color="primary">
               {exerciseGroup.exercise.name}
             </Typography>
-            <Button variant="outlined" sx={{ ml: 'auto', height: 24, minWidth: 32, maxWidth: 32 }}>
+            <Button
+              variant="outlined"
+              sx={{ ml: 'auto', height: 24, minWidth: 32, maxWidth: 32 }}
+            >
               <MoreHoriz />
             </Button>
           </Stack>
@@ -37,23 +43,29 @@ function ExerciseGroupForm(props: ExerciseGroupProps) {
             >
               Set
             </Typography>
-            {exerciseGroup.exercise.exerciseCategory.exerciseTypes.map((exerciseType) => (
-              <Typography
-                key={exerciseType.id}
-                sx={{ flexGrow: 1 }}
-                variant="body2"
-                fontWeight={800}
-                align="center"
-              >
-                {exerciseType.name}
-              </Typography>
-            ))}
+            {exerciseGroup.exercise.exerciseCategory.exerciseTypes.map(
+              (exerciseType) => (
+                <Typography
+                  key={exerciseType.id}
+                  sx={{ flexGrow: 1 }}
+                  variant="body2"
+                  fontWeight={800}
+                  align="center"
+                >
+                  {exerciseType.name}
+                </Typography>
+              ),
+            )}
             <Typography sx={{ minWidth: 32, maxWidth: 32 }} align="center" />
           </Stack>
           <DragDropContext onDragEnd={() => null}>
             <Droppable droppableId="droppable">
               {(droppable) => (
-                <Stack spacing={0} {...droppable.droppableProps} ref={droppable.innerRef}>
+                <Stack
+                  spacing={0}
+                  {...droppable.droppableProps}
+                  ref={droppable.innerRef}
+                >
                   {exerciseGroup.exerciseRows.map((exerciseRow, index) => (
                     <ExerciseRowForm
                       key={exerciseRow.id}
@@ -72,7 +84,9 @@ function ExerciseGroupForm(props: ExerciseGroupProps) {
           <Button
             sx={{ height: 24 }}
             variant="text"
-            onClick={() => addExerciseRow({ workoutId, exerciseGroupId: exerciseGroup.id })}
+            onClick={() =>
+              addExerciseRow({ workoutId, exerciseGroupId: exerciseGroup.id })
+            }
           >
             Add exercise set
           </Button>

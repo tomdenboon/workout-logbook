@@ -1,12 +1,17 @@
-import FullScreenModal from 'components/FullScreenModal';
-import Section from 'components/Section';
-import { IUseModal } from 'hooks/useModal';
+import FullScreenModal from 'src/components/FullScreenModal';
+import Section from 'src/components/Section';
+import { IUseModal } from 'src/hooks/useModal';
 
 function SettingsPage(props: IUseModal) {
   const { isOpen, close } = props;
 
   return (
-    <FullScreenModal header={{ title: 'Settings' }} isOpen={isOpen} close={close} slideLeft>
+    <FullScreenModal
+      header={{ title: 'Settings' }}
+      isOpen={isOpen}
+      close={close}
+      slideLeft
+    >
       <Section title="Basic settings">
         <div className="grid grid-cols-1 gap-px">
           <div className="bg-surface p-2"> settings </div>

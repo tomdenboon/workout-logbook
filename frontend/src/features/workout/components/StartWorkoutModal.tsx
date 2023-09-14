@@ -6,17 +6,17 @@ import {
   Typography,
   DialogContent,
 } from '@mui/material';
-import useModal, { IUseModal, ModalType } from 'hooks/useModal';
+import useModal, { IUseModal, ModalType } from 'src/hooks/useModal';
 import {
   WorkoutFullResponse,
   useStartEmptyWorkoutMutation,
   useStartWorkoutMutation,
-} from 'store/monkeylogApi';
+} from 'src/store/monkeylogApi';
 
 function StartWorkoutModal(
   props: {
     workout?: WorkoutFullResponse;
-  } & IUseModal
+  } & IUseModal,
 ) {
   const { workout, isOpen, close } = props;
   const { open: setWorkoutId } = useModal(ModalType.Workout);
@@ -24,10 +24,12 @@ function StartWorkoutModal(
   const [startEmptyWorkout] = useStartEmptyWorkoutMutation();
 
   const startTheWorkout = (id?: string) =>
-    (id ? startWorkout({ id }) : startEmptyWorkout()).unwrap().then(({ id: finalId }) => {
-      setWorkoutId(finalId);
-      close();
-    });
+    (id ? startWorkout({ id }) : startEmptyWorkout())
+      .unwrap()
+      .then(({ id: finalId }) => {
+        setWorkoutId(finalId);
+        close();
+      });
 
   return (
     <Dialog open={isOpen} onClose={close}>

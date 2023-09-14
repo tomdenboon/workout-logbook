@@ -1,12 +1,17 @@
 import { Stack, TextField } from '@mui/material';
-import AppContainer from 'components/AppContainer';
+import AppContainer from 'src/components/AppContainer';
 
 function ProgramPage() {
   return (
     <AppContainer header={{ title: 'Program' }}>
       <Stack spacing={1}>
         <TextField size="small" label="Program title" />
-        <TextField size="small" rows={3} multiline label="Program description" />
+        <TextField
+          size="small"
+          rows={3}
+          multiline
+          label="Program description"
+        />
         {/* {program.weeks.map((week, i) => (
           <Section
             title={`Week ${i + 1}`}

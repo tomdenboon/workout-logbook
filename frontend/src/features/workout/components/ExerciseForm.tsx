@@ -11,7 +11,7 @@ import {
   Stack,
   TextField,
 } from '@mui/material';
-import useForm from 'hooks/useForm';
+import useForm from 'src/hooks/useForm';
 import { useCallback, useEffect } from 'react';
 import {
   ExerciseCategoryResponse,
@@ -19,7 +19,7 @@ import {
   useCreateExerciseMutation,
   useGetExerciseCategoriesQuery,
   useUpdateExerciseMutation,
-} from 'store/monkeylogApi';
+} from 'src/store/monkeylogApi';
 
 interface ExerciseFormProps {
   isOpen: boolean;
@@ -37,7 +37,10 @@ function ExerciseForm(props: ExerciseFormProps) {
     data: exerciseForm,
     update,
     init,
-  } = useForm<{ name: string; exerciseCategory?: ExerciseCategoryResponse['id'] }>({
+  } = useForm<{
+    name: string;
+    exerciseCategory?: ExerciseCategoryResponse['id'];
+  }>({
     name: '',
   });
 
@@ -68,7 +71,9 @@ function ExerciseForm(props: ExerciseFormProps) {
 
   return (
     <Dialog open={isOpen} onClose={close}>
-      <DialogTitle>{exercise ? 'Edit Exercise' : 'Create Exercise'}</DialogTitle>
+      <DialogTitle>
+        {exercise ? 'Edit Exercise' : 'Create Exercise'}
+      </DialogTitle>
       <DialogContent>
         <Stack spacing={2}>
           <TextField
@@ -87,7 +92,7 @@ function ExerciseForm(props: ExerciseFormProps) {
               onChange={(e) =>
                 update(
                   'exerciseCategory',
-                  e.target.value as typeof exerciseForm['exerciseCategory']
+                  e.target.value as (typeof exerciseForm)['exerciseCategory'],
                 )
               }
             >

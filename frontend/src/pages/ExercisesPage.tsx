@@ -1,13 +1,13 @@
 import { Add, ArrowBack } from '@mui/icons-material';
 import { Divider, Fab, IconButton, List, ListSubheader } from '@mui/material';
-import AppContainer from 'components/AppContainer';
-import ExerciseCard from 'features/workout/components/ExerciseCard';
-import ExerciseForm from 'features/workout/components/ExerciseForm';
-import useSelectIds from 'hooks/useSelectIds';
-import useAddExercises from 'features/workout/hooks/useAddExercises';
-import useExercises from 'features/workout/hooks/useExercises';
+import AppContainer from 'src/components/AppContainer';
+import ExerciseCard from 'src/features/workout/components/ExerciseCard';
+import ExerciseForm from 'src/features/workout/components/ExerciseForm';
+import useSelectIds from 'src/hooks/useSelectIds';
+import useAddExercises from 'src/features/workout/hooks/useAddExercises';
+import useExercises from 'src/features/workout/hooks/useExercises';
 import { Link, useParams } from 'react-router-dom';
-import useEditExerciseModal from 'features/workout/hooks/useEditExerciseModal';
+import useEditExerciseModal from 'src/features/workout/hooks/useEditExerciseModal';
 
 function Exercises() {
   const { workoutId } = useParams();
@@ -18,14 +18,19 @@ function Exercises() {
     toggleId: exerciseClicked,
   } = useSelectIds();
   const { groupedExercises } = useExercises();
-  const { isOpen, openEmpty, openWithExercise, close, editExercise } = useEditExerciseModal();
+  const { isOpen, openEmpty, openWithExercise, close, editExercise } =
+    useEditExerciseModal();
   const { add } = useAddExercises();
 
   return (
     <AppContainer
       header={{
         leftButton: workoutId && (
-          <IconButton component={Link} to={`/training/workouts/${workoutId}`} color="inherit">
+          <IconButton
+            component={Link}
+            to={`/training/workouts/${workoutId}`}
+            color="inherit"
+          >
             <ArrowBack />
           </IconButton>
         ),
@@ -52,7 +57,11 @@ function Exercises() {
                       key={exercise.id}
                       exercise={exercise}
                       isSelected={selectedExerciseIds[exercise.id]}
-                      onClick={workoutId ? () => exerciseClicked(exercise.id) : undefined}
+                      onClick={
+                        workoutId
+                          ? () => exerciseClicked(exercise.id)
+                          : undefined
+                      }
                       onEdit={() => openWithExercise(exercise)}
                     />
                     {index !== groupedExercises[key].length - 1 && <Divider />}
@@ -74,7 +83,9 @@ function Exercises() {
         </Fab>
       )}
 
-      {isOpen && <ExerciseForm isOpen={isOpen} close={close} exercise={editExercise} />}
+      {isOpen && (
+        <ExerciseForm isOpen={isOpen} close={close} exercise={editExercise} />
+      )}
     </AppContainer>
   );
 }

@@ -1,4 +1,9 @@
-import { FitnessCenter, History, LocalActivity, Person } from '@mui/icons-material';
+import {
+  FitnessCenter,
+  History,
+  LocalActivity,
+  Person,
+} from '@mui/icons-material';
 import {
   BottomNavigationAction,
   Paper,
@@ -8,9 +13,9 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import useModal, { ModalType } from 'hooks/useModal';
+import useModal, { ModalType } from 'src/hooks/useModal';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useGetActiveWorkoutQuery } from 'store/monkeylogApi';
+import { useGetActiveWorkoutQuery } from 'src/store/monkeylogApi';
 
 const NAVBAR_LIST = [
   { to: 'profile', text: 'Home', Icon: Person },
@@ -52,13 +57,20 @@ function AppSideBar() {
 
       <BottomNavigation
         showLabels
-        value={NAVBAR_LIST.find((obj) => location.pathname.includes(obj.to))?.to}
+        value={
+          NAVBAR_LIST.find((obj) => location.pathname.includes(obj.to))?.to
+        }
         onChange={(event, newValue) => {
           navigate(newValue);
         }}
       >
         {NAVBAR_LIST.map(({ to, text, Icon }) => (
-          <BottomNavigationAction key={to} value={to} label={text} icon={<Icon />} />
+          <BottomNavigationAction
+            key={to}
+            value={to}
+            label={text}
+            icon={<Icon />}
+          />
         ))}
       </BottomNavigation>
     </Paper>

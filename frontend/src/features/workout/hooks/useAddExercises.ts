@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { useCreateExerciseGroupMutation } from 'store/monkeylogApi';
+import { useCreateExerciseGroupMutation } from 'src/store/monkeylogApi';
 
 function useAddExercises() {
   const navigate = useNavigate();

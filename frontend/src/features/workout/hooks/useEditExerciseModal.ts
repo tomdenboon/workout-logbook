@@ -1,6 +1,6 @@
-import useModal, { ModalType } from 'hooks/useModal';
+import useModal, { ModalType } from 'src/hooks/useModal';
 import { useState } from 'react';
-import { ExerciseResponse } from 'store/baseMonkeylogApi';
+import { ExerciseResponse } from 'src/store/baseMonkeylogApi';
 
 function useEditExerciseModal() {
   const { open, isOpen, close } = useModal(ModalType.EditExercise);

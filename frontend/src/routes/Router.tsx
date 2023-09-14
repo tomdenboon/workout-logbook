@@ -1,13 +1,13 @@
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import ExercisesPage from 'pages/ExercisesPage';
-import HistoryPage from 'pages/HistoryPage';
-import TrainingPage from 'pages/TrainingPage';
-import AppLayout from 'layouts/AppLayout';
+import ExercisesPage from 'src/pages/ExercisesPage';
+import HistoryPage from 'src/pages/HistoryPage';
+import TrainingPage from 'src/pages/TrainingPage';
+import AppLayout from 'src/layouts/AppLayout';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import ProfilePage from 'pages/ProfilePage';
+import ProfilePage from 'src/pages/ProfilePage';
 
 function Router() {
   const mdTheme = createTheme({
@@ -31,8 +31,14 @@ function Router() {
             <Route element={<AppLayout />}>
               <Route index element={<Navigate to="/profile" />} />
               <Route path="profile" element={<ProfilePage />} />
-              <Route path="profile/settings" element={<ProfilePage modal="settings" />} />
-              <Route path="profile/measurements" element={<ProfilePage modal="measurements" />} />
+              <Route
+                path="profile/settings"
+                element={<ProfilePage modal="settings" />}
+              />
+              <Route
+                path="profile/measurements"
+                element={<ProfilePage modal="measurements" />}
+              />
               <Route path="history" element={<HistoryPage />} />
               <Route path="training" element={<TrainingPage />} />
               <Route path="exercises" element={<ExercisesPage />} />
