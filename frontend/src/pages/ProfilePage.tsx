@@ -29,6 +29,7 @@ function ProfilePage(props: ProfilePageProps) {
         ),
       }}
     >
+      Work in progressss
       <SettingsPage isOpen={modal === 'settings'} close={() => navigate('/profile')} />
       <MeasurementPage isOpen={modal === 'measurements'} close={() => navigate('/profile')} />
     </AppContainer>

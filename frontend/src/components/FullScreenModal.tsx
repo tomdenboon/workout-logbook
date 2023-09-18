@@ -9,8 +9,8 @@ const LeftTransitionComponent = forwardRef(
     props: TransitionProps & {
       children: React.ReactElement;
     },
-    ref: React.Ref<unknown>,
-  ) => <Slide direction="left" ref={ref} {...props} />,
+    ref: React.Ref<unknown>
+  ) => <Slide direction="left" ref={ref} {...props} />
 );
 
 const UpTransitionComponent = forwardRef(
@@ -18,8 +18,8 @@ const UpTransitionComponent = forwardRef(
     props: TransitionProps & {
       children: React.ReactElement;
     },
-    ref: React.Ref<unknown>,
-  ) => <Slide direction="up" ref={ref} {...props} />,
+    ref: React.Ref<unknown>
+  ) => <Slide direction="up" ref={ref} {...props} />
 );
 
 export default function FullScreenModal(props: {
@@ -39,9 +39,7 @@ export default function FullScreenModal(props: {
       fullScreen
       open={isOpen}
       onClose={close}
-      TransitionComponent={
-        slideLeft ? LeftTransitionComponent : UpTransitionComponent
-      }
+      TransitionComponent={slideLeft ? LeftTransitionComponent : UpTransitionComponent}
     >
       <AppContainer
         header={{

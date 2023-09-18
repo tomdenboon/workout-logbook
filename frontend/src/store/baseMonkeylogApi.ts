@@ -1,5 +1,4 @@
 import { emptyMonkeylogApi as api } from './emptyMonkeylogApi';
-
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
     getProgram: build.query<GetProgramResponse, GetProgramArg>({
@@ -438,17 +437,17 @@ export type MeasurementPointResponse = {
 export type MeasurementFullResponse = {
   id: string;
   name: string;
-  unit: string;
+  metric: 'WEIGHT' | 'DISTANCE' | 'TIME' | 'NUMBER' | 'PERCENTAGE';
   measurementPoints: MeasurementPointResponse[];
 };
 export type MeasurementResponse = {
   id: string;
   name: string;
-  unit: string;
+  metric: 'WEIGHT' | 'DISTANCE' | 'TIME' | 'NUMBER' | 'PERCENTAGE';
 };
 export type MeasurementCreateRequest = {
   name: string;
-  metricFormat: 'WEIGHT' | 'DISTANCE' | 'TIME' | 'NUMBER' | 'PERCENTAGE';
+  metric: 'WEIGHT' | 'DISTANCE' | 'TIME' | 'NUMBER' | 'PERCENTAGE';
 };
 export type MeasurementPointCreateRequest = {
   value: number;
@@ -465,7 +464,7 @@ export type ExerciseRowFieldUpdateRequest = {
 };
 export type MeasurementUpdateRequest = {
   name: string;
-  metricFormat: 'WEIGHT' | 'DISTANCE' | 'TIME' | 'NUMBER' | 'PERCENTAGE';
+  metric: 'WEIGHT' | 'DISTANCE' | 'TIME' | 'NUMBER' | 'PERCENTAGE';
 };
 export type MeasurementPointUpdateRequest = {
   value: number;

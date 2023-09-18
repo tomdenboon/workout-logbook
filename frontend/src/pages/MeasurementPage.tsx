@@ -29,13 +29,11 @@ function MeasurementPage(props: IUseModal) {
     >
       <Grid container spacing={2}>
         {data?.map((measurement) => (
-          <Grid item xs={12} md={6}>
+          <Grid key={measurement.id} item xs={12} md={6}>
             <MeasurementCard
               key={measurement.id}
               measurement={measurement}
-              openAddMeasurementPointModal={() =>
-                measurementPointModal.open(measurement.id)
-              }
+              openAddMeasurementPointModal={() => measurementPointModal.open(measurement.id)}
             />
           </Grid>
         ))}

@@ -1,8 +1,10 @@
 import { Add } from '@mui/icons-material';
 import { Button, Stack, useTheme } from '@mui/material';
 import { LineChart } from '@mui/x-charts';
+import dayjs from 'dayjs';
 import ActionDropdown from 'src/components/ActionDropdown';
 import AppCard from 'src/components/AppCard';
+import { METRIC_FORMAT_NICE } from 'src/features/measurement/types';
 import { MeasurementFullResponse } from 'src/store/monkeylogApi';
 
 interface MeasurementCardProps {
@@ -16,15 +18,14 @@ function MeasurementCard(props: MeasurementCardProps) {
   const theme = useTheme();
 
   const xAxis = measurement.measurementPoints.map(
-    (measurmentPoint) => new Date(measurmentPoint.createdAt),
+    (measurmentPoint) => new Date(measurmentPoint.createdAt)
   );
-  const seriesData = measurement.measurementPoints.map(
-    (measurmentPoint) => measurmentPoint.value,
-  );
+  const seriesData = measurement.measurementPoints.map((measurmentPoint) => measurmentPoint.value);
 
   return (
     <AppCard
       header={measurement.name}
+      subheader={METRIC_FORMAT_NICE[measurement.metric]}
       actions={
         <Stack direction="row" spacing={1}>
           <Button
@@ -35,9 +36,7 @@ function MeasurementCard(props: MeasurementCardProps) {
           >
             <Add />
           </Button>
-          <ActionDropdown
-            actions={[{ action: () => null, label: 'Graph action' }]}
-          />
+          <ActionDropdown actions={[{ action: () => null, label: 'Graph action' }]} />
         </Stack>
       }
     >
@@ -45,11 +44,11 @@ function MeasurementCard(props: MeasurementCardProps) {
         <LineChart
           xAxis={[
             {
-              min: xAxis[0].getTime(),
-              max: xAxis[xAxis.length - 1].getTime(),
+              min: dayjs().subtract(3, 'month').toDate(),
+              max: dayjs().toDate(),
               data: xAxis,
-              tickSpacing: 80,
               scaleType: 'time',
+              tickNumber: 3,
             },
           ]}
           series={[
@@ -58,7 +57,7 @@ function MeasurementCard(props: MeasurementCardProps) {
               data: seriesData,
             },
           ]}
-          margin={{ left: 30, top: 10, right: 10, bottom: 20 }}
+          margin={{ left: 30, top: 10, right: 10, bottom: 24 }}
           height={120}
         />
       )}
