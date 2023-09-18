@@ -1,0 +1,10 @@
+{
+  "schemaFile": "http://localhost/api/docs",
+  "apiFile": "./src/store/emptyMonkeylogApi.ts",
+  "apiImport": "emptyMonkeylogApi",
+  "outputFile": "./src/store/baseMonkeylogApi.ts",
+  "exportName": "baseMonkeylogApi",
+  "responseSuffix": "Response",
+  "requestSuffix": "Request",
+  "argSuffix": "Arg"
+}
