@@ -1,13 +1,5 @@
-FROM gradle:8-jdk17-jammy AS builder
+FROM openjdk:17-alpine
 
-ENV APP_HOME=/home/gradle
-WORKDIR $APP_HOME
-COPY build.gradle settings.gradle gradlew $APP_HOME
-COPY gradle $APP_HOME/gradle
-RUN ./gradlew build || return 0 
-COPY . .
-RUN ./gradlew build
+COPY build/libs/*.jar /app.jar
 
-FROM builder AS development
-
-CMD ["gradle", "bootRun"]
+ENTRYPOINT ["java","-jar","app.jar"]

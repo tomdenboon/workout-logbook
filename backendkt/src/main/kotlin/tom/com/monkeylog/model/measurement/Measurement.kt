@@ -13,9 +13,9 @@ class Measurement(
     @Id
     @GeneratedValue
     @UuidGenerator
-    var id: UUID,
+    var id: UUID? = null,
     var name: String,
-    override var userId: UUID?,
+    override var userId: UUID? = null,
     @Enumerated(EnumType.STRING)
     var metric: MetricFormat,
 

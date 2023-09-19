@@ -7,7 +7,7 @@ import java.util.*
 data class WorkoutResponse(
     val id: UUID,
     val name: String,
-    val note: String,
+    val note: String? = null,
     val workoutType: WorkoutType,
     val startDate: LocalDateTime? = null,
     val endDate: LocalDateTime? = null,

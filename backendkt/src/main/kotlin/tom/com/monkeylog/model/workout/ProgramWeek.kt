@@ -13,12 +13,12 @@ class ProgramWeek(
     var id: UUID? = null,
     @Column(nullable = false)
     var name: String,
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "program_id", nullable = false)
     var program: Program,
     @OneToMany(mappedBy = "programWeek")
     var workouts: MutableList<Workout> = ArrayList(),
-    override var userId: UUID?
+    override var userId: UUID? = null
 ) : UserOwned {
     fun clone(program: Program): ProgramWeek {
         return ProgramWeek(

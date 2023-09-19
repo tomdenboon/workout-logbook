@@ -58,7 +58,7 @@ const injectedRtkApi = api.injectEndpoints({
     completeWorkout: build.mutation<CompleteWorkoutResponse, CompleteWorkoutArg>({
       query: () => ({ url: `/workouts/complete`, method: 'POST' }),
     }),
-    getPrograms: build.query<GetProgramsResponse, GetProgramsArg>({
+    programs: build.query<ProgramsResponse, ProgramsArg>({
       query: () => ({ url: `/programs` }),
     }),
     createProgram: build.mutation<CreateProgramResponse, CreateProgramArg>({
@@ -75,7 +75,7 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.programWeekCreateRequest,
       }),
     }),
-    getMeasurements: build.query<GetMeasurementsResponse, GetMeasurementsArg>({
+    measurements: build.query<MeasurementsResponse, MeasurementsArg>({
       query: () => ({ url: `/measurements` }),
     }),
     createMeasurement: build.mutation<CreateMeasurementResponse, CreateMeasurementArg>({
@@ -95,7 +95,7 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.measurementPointCreateRequest,
       }),
     }),
-    getExercises: build.query<GetExercisesResponse, GetExercisesArg>({
+    exercises: build.query<ExercisesResponse, ExercisesArg>({
       query: () => ({ url: `/exercises` }),
     }),
     createExercise: build.mutation<CreateExerciseResponse, CreateExerciseArg>({
@@ -167,13 +167,13 @@ const injectedRtkApi = api.injectEndpoints({
     deleteWorkout: build.mutation<DeleteWorkoutResponse, DeleteWorkoutArg>({
       query: (queryArg) => ({ url: `/workouts/${queryArg.id}`, method: 'DELETE' }),
     }),
-    getActiveWorkout: build.query<GetActiveWorkoutResponse, GetActiveWorkoutArg>({
+    activeWorkout: build.query<ActiveWorkoutResponse, ActiveWorkoutArg>({
       query: () => ({ url: `/workouts/active` }),
     }),
-    getExerciseTypes: build.query<GetExerciseTypesResponse, GetExerciseTypesArg>({
+    exerciseTypes: build.query<ExerciseTypesResponse, ExerciseTypesArg>({
       query: () => ({ url: `/exercises/types` }),
     }),
-    getExerciseCategories: build.query<GetExerciseCategoriesResponse, GetExerciseCategoriesArg>({
+    exerciseCategories: build.query<ExerciseCategoriesResponse, ExerciseCategoriesArg>({
       query: () => ({ url: `/exercises/categories` }),
     }),
     deleteExerciseGroup: build.mutation<DeleteExerciseGroupResponse, DeleteExerciseGroupArg>({
@@ -245,8 +245,8 @@ export type StartEmptyWorkoutResponse = /** status 200 OK */ WorkoutResponse;
 export type StartEmptyWorkoutArg = void;
 export type CompleteWorkoutResponse = /** status 200 OK */ WorkoutResponse;
 export type CompleteWorkoutArg = void;
-export type GetProgramsResponse = /** status 200 OK */ ProgramResponse[];
-export type GetProgramsArg = void;
+export type ProgramsResponse = /** status 200 OK */ ProgramResponse[];
+export type ProgramsArg = void;
 export type CreateProgramResponse = /** status 200 OK */ ProgramResponse;
 export type CreateProgramArg = {
   programCreateRequest: ProgramCreateRequest;
@@ -256,8 +256,8 @@ export type CreateProgramWeekArg = {
   id: string;
   programWeekCreateRequest: ProgramWeekCreateRequest;
 };
-export type GetMeasurementsResponse = /** status 200 OK */ MeasurementFullResponse[];
-export type GetMeasurementsArg = void;
+export type MeasurementsResponse = /** status 200 OK */ MeasurementFullResponse[];
+export type MeasurementsArg = void;
 export type CreateMeasurementResponse = /** status 200 OK */ MeasurementResponse;
 export type CreateMeasurementArg = {
   measurementCreateRequest: MeasurementCreateRequest;
@@ -267,8 +267,8 @@ export type CreateMeasurementPointArg = {
   id: string;
   measurementPointCreateRequest: MeasurementPointCreateRequest;
 };
-export type GetExercisesResponse = /** status 200 OK */ ExerciseResponse[];
-export type GetExercisesArg = void;
+export type ExercisesResponse = /** status 200 OK */ ExerciseResponse[];
+export type ExercisesArg = void;
 export type CreateExerciseResponse = /** status 200 OK */ ExerciseResponse;
 export type CreateExerciseArg = {
   exerciseCreateRequest: ExerciseCreateRequest;
@@ -327,12 +327,12 @@ export type DeleteWorkoutResponse = unknown;
 export type DeleteWorkoutArg = {
   id: string;
 };
-export type GetActiveWorkoutResponse = /** status 200 OK */ WorkoutResponse;
-export type GetActiveWorkoutArg = void;
-export type GetExerciseTypesResponse = /** status 200 OK */ ExerciseTypeResponse[];
-export type GetExerciseTypesArg = void;
-export type GetExerciseCategoriesResponse = /** status 200 OK */ ExerciseCategoryResponse[];
-export type GetExerciseCategoriesArg = void;
+export type ActiveWorkoutResponse = /** status 200 OK */ WorkoutFullResponse;
+export type ActiveWorkoutArg = void;
+export type ExerciseTypesResponse = /** status 200 OK */ ExerciseTypeResponse[];
+export type ExerciseTypesArg = void;
+export type ExerciseCategoriesResponse = /** status 200 OK */ ExerciseCategoryResponse[];
+export type ExerciseCategoriesArg = void;
 export type DeleteExerciseGroupResponse = unknown;
 export type DeleteExerciseGroupArg = {
   workoutId: string;
@@ -353,10 +353,10 @@ export type ProgramWeekResponse = {
   name: string;
 };
 export type ProgramResponse = {
-  programWeeks: ProgramWeekResponse[];
   id: string;
   name: string;
   description: string;
+  weeks: ProgramWeekResponse[];
 };
 export type ProgramUpdateRequest = {
   name: string;
@@ -379,7 +379,7 @@ export type ExerciseResponse = {
 };
 export type ExerciseRowFieldResponse = {
   id: string;
-  value?: number;
+  value: number;
   exerciseType: 'REPS' | 'TIME' | 'DISTANCE' | 'WEIGHT';
 };
 export type ExerciseRowResponse = {
@@ -395,7 +395,7 @@ export type ExerciseGroupResponse = {
 export type WorkoutFullResponse = {
   id: string;
   name: string;
-  note: string;
+  note?: string;
   workoutType: 'TEMPLATE' | 'ACTIVE' | 'COMPLETED';
   startDate?: string;
   endDate?: string;
@@ -410,7 +410,7 @@ export type PageWorkoutFullResponse = {
 export type WorkoutResponse = {
   id: string;
   name: string;
-  note: string;
+  note?: string;
   workoutType: 'TEMPLATE' | 'ACTIVE' | 'COMPLETED';
   startDate?: string;
   endDate?: string;
@@ -438,7 +438,7 @@ export type MeasurementFullResponse = {
   id: string;
   name: string;
   metric: 'WEIGHT' | 'DISTANCE' | 'TIME' | 'NUMBER' | 'PERCENTAGE';
-  measurementPoints: MeasurementPointResponse[];
+  points: MeasurementPointResponse[];
 };
 export type MeasurementResponse = {
   id: string;
@@ -460,7 +460,7 @@ export type ExerciseRowUpdateRequest = {
   isLifted: boolean;
 };
 export type ExerciseRowFieldUpdateRequest = {
-  value?: number;
+  value: number;
 };
 export type MeasurementUpdateRequest = {
   name: string;

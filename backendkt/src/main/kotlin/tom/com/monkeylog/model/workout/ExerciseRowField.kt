@@ -12,7 +12,7 @@ class ExerciseRowField(
     @GeneratedValue
     @UuidGenerator
     var id: UUID? = null,
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "exercise_row_id", nullable = false)
     var exerciseRow: ExerciseRow,
     var value: Double,

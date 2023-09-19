@@ -18,9 +18,9 @@ class Program(
     var description: String,
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private var workoutType: WorkoutType,
+    var workoutType: WorkoutType,
     @OneToMany(mappedBy = "program", cascade = [CascadeType.ALL], orphanRemoval = true)
-    private var programWeeks: MutableList<ProgramWeek> = ArrayList()
+    var programWeeks: MutableList<ProgramWeek> = ArrayList()
 ) : UserOwned {
     fun clone(): Program {
         return Program(

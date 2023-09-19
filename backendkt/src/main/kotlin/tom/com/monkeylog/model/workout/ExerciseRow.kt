@@ -7,25 +7,24 @@ import java.util.*
 
 @Entity
 class ExerciseRow(
-
     @Id
     @GeneratedValue
     @UuidGenerator
     var id: UUID? = null,
     @Column(nullable = false)
     var isLifted: Boolean,
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "exercise_group_id", nullable = false)
     var exerciseGroup: ExerciseGroup,
     @OneToMany(mappedBy = "exerciseRow", cascade = [CascadeType.ALL], orphanRemoval = true)
-    var exerciseRowFields: MutableList<ExerciseRowField> = ArrayList(),
+    var exerciseRowFields: Set<ExerciseRowField> = HashSet(),
     override var userId: UUID? = null,
 ) : UserOwned {
     fun clone(exerciseGroup: ExerciseGroup): ExerciseRow {
         return ExerciseRow(
             isLifted = false,
             exerciseGroup = exerciseGroup,
-            exerciseRowFields = exerciseRowFields.map { it.clone(this) }.toMutableList(),
+            exerciseRowFields = exerciseRowFields.map { it.clone(this) }.toSet(),
             userId = userId
         )
     }

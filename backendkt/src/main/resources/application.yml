@@ -1,12 +1,13 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/monkeylog
+    url: jdbc:postgresql://db:5432/monkeylog
     username: postgres
     password: mysecretpassword
   jpa:
     generate-ddl: true
     hibernate.ddl-auto: create-drop
     show-sql: true
+    open-in-view: false
 
   mvc:
     format:

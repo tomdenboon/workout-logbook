@@ -7,6 +7,20 @@ import java.time.LocalDateTime
 import java.util.*
 
 @Entity
+@NamedEntityGraph(
+    name = "workout.exerciseGroups.exerciseRows.exerciseRowFields",
+    attributeNodes = [NamedAttributeNode(value = "exerciseGroups", subgraph = "subgraph.rows")],
+    subgraphs = [
+        NamedSubgraph(
+            name = "subgraph.rows",
+            attributeNodes = [NamedAttributeNode(value = "exerciseRows", subgraph = "subgraph.fields")]
+        ),
+        NamedSubgraph(
+            name = "subgraph.fields",
+            attributeNodes = [NamedAttributeNode(value = "exerciseRowFields")]
+        )
+    ]
+)
 class Workout(
     @Id
     @GeneratedValue
@@ -27,7 +41,7 @@ class Workout(
     )
     @OrderColumn(name = "sort_order")
     var exerciseGroups: MutableList<ExerciseGroup> = ArrayList(),
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "program_week_id")
     var programWeek: ProgramWeek? = null
 ) : UserOwned {

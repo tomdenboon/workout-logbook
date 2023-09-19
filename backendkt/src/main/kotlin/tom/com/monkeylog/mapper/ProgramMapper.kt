@@ -1,18 +1,37 @@
 package tom.com.monkeylog.mapper
 
-import org.mapstruct.Mapper
-import org.mapstruct.MappingTarget
-import org.mapstruct.ReportingPolicy
+import tom.com.monkeylog.common.notNull
 import tom.com.monkeylog.dto.program.*
 import tom.com.monkeylog.model.workout.Program
 import tom.com.monkeylog.model.workout.ProgramWeek
+import tom.com.monkeylog.model.workout.WorkoutType
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = [WorkoutMapper::class])
-interface ProgramMapper {
-    fun programToProgramResponse(program: Program): ProgramResponse
-    fun programListToProgramResponseList(programList: List<Program>): List<ProgramResponse>
-    fun programCreateRequestToProgram(programCreateRequest: ProgramCreateRequest): Program
-    fun updateProgram(@MappingTarget program: Program, programUpdateRequest: ProgramUpdateRequest)
-    fun programWeekCreateRequestToProgramWeek(programWeekCreateRequest: ProgramWeekCreateRequest): ProgramWeek
-    fun programWeekToProgramWeekResponse(programWeek: ProgramWeek): ProgramWeekResponse
+fun Program.toResponse() = ProgramResponse(
+    id = id.notNull(),
+    name = name,
+    description = description,
+    weeks = this.programWeeks.map { it.toResponse() }
+)
+
+fun ProgramWeek.toResponse() = ProgramWeekResponse(
+    id = id.notNull(),
+    name = name,
+)
+
+fun ProgramCreateRequest.toEntity() = Program(
+    name = name,
+    description = description,
+    workoutType = WorkoutType.TEMPLATE
+)
+
+fun Program.update(programUpdateRequest: ProgramUpdateRequest): Program {
+    name = programUpdateRequest.name
+    description = programUpdateRequest.description
+
+    return this
 }
+
+fun ProgramWeekCreateRequest.toEntity(program: Program) = ProgramWeek(
+    name = name,
+    program = program
+)

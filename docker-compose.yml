@@ -14,8 +14,7 @@ services:
       - backend
   backend:
     build:
-      context: backend
-      target: development
+      context: backendkt
     restart: always
     networks:
       - proxy-spring

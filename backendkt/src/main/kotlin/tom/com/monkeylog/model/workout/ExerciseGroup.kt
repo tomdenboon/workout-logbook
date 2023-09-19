@@ -19,6 +19,7 @@ class ExerciseGroup(
     @JoinColumn(name = "workout_id", nullable = false)
     var workout: Workout,
     @OneToMany(mappedBy = "exerciseGroup", cascade = [CascadeType.ALL], orphanRemoval = true)
+    @OrderColumn(name = "sort_order")
     var exerciseRows: MutableList<ExerciseRow> = ArrayList(),
     override var userId: UUID? = null
 ) : UserOwned {

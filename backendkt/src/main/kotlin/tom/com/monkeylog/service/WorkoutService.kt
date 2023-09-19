@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
 import tom.com.monkeylog.dto.workout.WorkoutCreateRequest
-import tom.com.monkeylog.mapper.WorkoutMapper
+import tom.com.monkeylog.mapper.toEntity
 import tom.com.monkeylog.model.workout.Workout
 import tom.com.monkeylog.model.workout.WorkoutType
 import tom.com.monkeylog.repository.workout.WorkoutRepository
@@ -18,7 +18,6 @@ import java.util.*
 @Service
 class WorkoutService(
     private val workoutRepository: WorkoutRepository,
-    private val workoutMapper: WorkoutMapper,
     private val programService: ProgramService,
 ) {
 
@@ -91,9 +90,9 @@ class WorkoutService(
     }
 
     fun save(workoutRequest: WorkoutCreateRequest): Workout {
-        val workout: Workout = workoutMapper.workoutRequestToWorkout(workoutRequest)
-        workout.workoutType = (WorkoutType.TEMPLATE)
-        workout.userId = (AuthenticatedUser.id)
+        val workout: Workout = workoutRequest.toEntity();
+        workout.workoutType = WorkoutType.TEMPLATE
+        workout.userId = AuthenticatedUser.id
         workout.programWeek = workoutRequest.programWeekId?.let { programService.getProgramWeek(it) }
 
         return workoutRepository.save(workout)

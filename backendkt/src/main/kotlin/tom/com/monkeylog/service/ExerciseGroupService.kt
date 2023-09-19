@@ -34,7 +34,7 @@ class ExerciseGroupService(
     fun save(exerciseGroupCreateRequest: ExerciseGroupCreateRequest, workoutId: UUID) {
         val workout: Workout = workoutService.getWorkout(workoutId)
 
-        exerciseService.allById(exerciseGroupCreateRequest.exerciseIds)
+        exerciseService.allExercisesById(exerciseGroupCreateRequest.exerciseIds)
             .map { exercise ->
                 val exerciseGroup = ExerciseGroup(
                     userId = AuthenticatedUser.id,
@@ -55,7 +55,7 @@ class ExerciseGroupService(
                         exerciseRow = exerciseRow,
                         value = 0.0
                     )
-                }.toMutableList()
+                }.toSet()
 
                 exerciseGroup
             }.forEach(workout.exerciseGroups::add)
