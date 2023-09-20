@@ -3,24 +3,26 @@ services:
     build:
       context: frontend
     restart: always
-    ports:
-      - 5173:5173
     volumes:
       - ./frontend:/app
       - /app/node_modules
-    networks:
-      - proxy-react
-    depends_on:
-      - backend
+    environment:
+      - VITE_HOST_API=http://${HOST_API}
+      - VIRTUAL_HOST=${HOST_APP}
+      - LETSENCRYPT_HOST=${HOST_APP}
+      - VIRTUAL_PORT=5173
   backend:
     build:
-      context: backendkt
+      context: backend
     restart: always
-    networks:
-      - proxy-spring
-      - spring-postgresql
-    depends_on:
-      - db
+    environment:
+      - DB_URL
+      - DB_USERNAME
+      - DB_PASSWORD
+      - ACTIVE_PROFILE
+      - VIRTUAL_HOST=${HOST_API}
+      - LETSENCRYPT_HOST=${HOST_API}
+      - VIRTUAL_PORT=8080
   db:
     image: postgres:12-alpine
     restart: always
@@ -28,40 +30,40 @@ services:
       - 5432:5432
     environment:
       - POSTGRES_DB=monkeylog
-      - POSTGRES_PASSWORD=mysecretpassword
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
     volumes:
-      - postgresql-data:/var/lib/postgresql/data
-    networks:
-      - spring-postgresql
+      - db:/var/lib/postgresql/data
+  # NGINX PROXY SETUP
   proxy:
-    image: nginx:1.15-alpine
+    image: nginxproxy/nginx-proxy
     ports:
       - 80:80
       - 443:443
-    restart: always
-    depends_on:
-      - frontend
-      - backend
-    networks:
-      - proxy-spring
-      - proxy-react
     volumes:
-      - ./proxy/nginx:/etc/nginx/conf.d
-  #     - ./proxy/certbot/conf:/etc/letsencrypt
-  #     - ./proxy/certbot/www:/var/www/certbot
-  #   command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
-  # certbot:
-  #   image: certbot/certbot
-  #   restart: unless-stopped
+      - conf:/etc/nginx/conf.d
+      - vhost:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+      - certs:/etc/nginx/certs:ro
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+  # ssl:
+  #   image: nginxproxy/acme-companion
+  #   environment:
+  #     - DEFAULT_EMAIL=tomdenboon@hotmail.com
+  #   volumes_from:
+  #     - proxy
   #   volumes:
-  #     - ./proxy/certbot/conf:/etc/letsencrypt
-  #     - ./proxy/certbot/www:/var/www/certbot
-  #   entrypoint: "/bin/sh -c 'trap exit term; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+  #     - certs:/etc/nginx/certs:rw
+  #     - acme:/etc/acme.sh
+  #     - /var/run/docker.sock:/var/run/docker.sock:ro
 
 volumes:
-  postgresql-data:
+  conf:
+  vhost:
+  html:
+  certs:
+  acme:
+  db:
 
 networks:
-  proxy-react:
-  proxy-spring:
-  spring-postgresql:
+  default:
+    name: monkeylog-private
