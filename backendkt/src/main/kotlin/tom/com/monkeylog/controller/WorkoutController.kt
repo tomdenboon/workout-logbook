@@ -27,10 +27,10 @@ class WorkoutController(
     fun getWorkout(@PathVariable id: UUID) = workoutService.getWorkout(id).toFullResponse()
 
     @GetMapping("/workouts/active")
-    fun activeWorkout() = workoutService.activeWorkout()?.toFullResponse()
+    fun getActiveWorkout() = workoutService.activeWorkout()?.toFullResponse()
 
     @GetMapping("/workouts")
-    fun get(
+    fun getWorkouts(
         @ParameterObject pageable: Pageable,
         @RequestParam workoutType: WorkoutType,
         @RequestParam(required = false) after: LocalDateTime?

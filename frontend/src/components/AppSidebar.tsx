@@ -1,9 +1,4 @@
-import {
-  FitnessCenter,
-  History,
-  LocalActivity,
-  Person,
-} from '@mui/icons-material';
+import { FitnessCenter, History, LocalActivity, Person } from '@mui/icons-material';
 import {
   BottomNavigationAction,
   Paper,
@@ -57,20 +52,13 @@ function AppSideBar() {
 
       <BottomNavigation
         showLabels
-        value={
-          NAVBAR_LIST.find((obj) => location.pathname.includes(obj.to))?.to
-        }
+        value={NAVBAR_LIST.find((obj) => location.pathname.includes(obj.to))?.to}
         onChange={(event, newValue) => {
           navigate(newValue);
         }}
       >
         {NAVBAR_LIST.map(({ to, text, Icon }) => (
-          <BottomNavigationAction
-            key={to}
-            value={to}
-            label={text}
-            icon={<Icon />}
-          />
+          <BottomNavigationAction key={to} value={to} label={text} icon={<Icon />} />
         ))}
       </BottomNavigation>
     </Paper>

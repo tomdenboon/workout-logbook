@@ -10,7 +10,7 @@ const LeftTransitionComponent = forwardRef(
       children: React.ReactElement;
     },
     ref: React.Ref<unknown>
-  ) => <Slide direction="left" ref={ref} {...props} />
+  ) => <Slide direction="left" ref={ref} {...props} appear={false} />
 );
 
 const UpTransitionComponent = forwardRef(
@@ -19,7 +19,7 @@ const UpTransitionComponent = forwardRef(
       children: React.ReactElement;
     },
     ref: React.Ref<unknown>
-  ) => <Slide direction="up" ref={ref} {...props} />
+  ) => <Slide direction="up" ref={ref} {...props} appear={false} />
 );
 
 export default function FullScreenModal(props: {

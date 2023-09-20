@@ -58,7 +58,7 @@ const injectedRtkApi = api.injectEndpoints({
     completeWorkout: build.mutation<CompleteWorkoutResponse, CompleteWorkoutArg>({
       query: () => ({ url: `/workouts/complete`, method: 'POST' }),
     }),
-    programs: build.query<ProgramsResponse, ProgramsArg>({
+    getPrograms: build.query<GetProgramsResponse, GetProgramsArg>({
       query: () => ({ url: `/programs` }),
     }),
     createProgram: build.mutation<CreateProgramResponse, CreateProgramArg>({
@@ -75,7 +75,7 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.programWeekCreateRequest,
       }),
     }),
-    measurements: build.query<MeasurementsResponse, MeasurementsArg>({
+    getMeasurements: build.query<GetMeasurementsResponse, GetMeasurementsArg>({
       query: () => ({ url: `/measurements` }),
     }),
     createMeasurement: build.mutation<CreateMeasurementResponse, CreateMeasurementArg>({
@@ -95,7 +95,7 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.measurementPointCreateRequest,
       }),
     }),
-    exercises: build.query<ExercisesResponse, ExercisesArg>({
+    getExercises: build.query<GetExercisesResponse, GetExercisesArg>({
       query: () => ({ url: `/exercises` }),
     }),
     createExercise: build.mutation<CreateExerciseResponse, CreateExerciseArg>({
@@ -167,13 +167,13 @@ const injectedRtkApi = api.injectEndpoints({
     deleteWorkout: build.mutation<DeleteWorkoutResponse, DeleteWorkoutArg>({
       query: (queryArg) => ({ url: `/workouts/${queryArg.id}`, method: 'DELETE' }),
     }),
-    activeWorkout: build.query<ActiveWorkoutResponse, ActiveWorkoutArg>({
+    getActiveWorkout: build.query<GetActiveWorkoutResponse, GetActiveWorkoutArg>({
       query: () => ({ url: `/workouts/active` }),
     }),
-    exerciseTypes: build.query<ExerciseTypesResponse, ExerciseTypesArg>({
+    getExerciseTypes: build.query<GetExerciseTypesResponse, GetExerciseTypesArg>({
       query: () => ({ url: `/exercises/types` }),
     }),
-    exerciseCategories: build.query<ExerciseCategoriesResponse, ExerciseCategoriesArg>({
+    getExerciseCategories: build.query<GetExerciseCategoriesResponse, GetExerciseCategoriesArg>({
       query: () => ({ url: `/exercises/categories` }),
     }),
     deleteExerciseGroup: build.mutation<DeleteExerciseGroupResponse, DeleteExerciseGroupArg>({
@@ -245,8 +245,8 @@ export type StartEmptyWorkoutResponse = /** status 200 OK */ WorkoutResponse;
 export type StartEmptyWorkoutArg = void;
 export type CompleteWorkoutResponse = /** status 200 OK */ WorkoutResponse;
 export type CompleteWorkoutArg = void;
-export type ProgramsResponse = /** status 200 OK */ ProgramResponse[];
-export type ProgramsArg = void;
+export type GetProgramsResponse = /** status 200 OK */ ProgramResponse[];
+export type GetProgramsArg = void;
 export type CreateProgramResponse = /** status 200 OK */ ProgramResponse;
 export type CreateProgramArg = {
   programCreateRequest: ProgramCreateRequest;
@@ -256,8 +256,8 @@ export type CreateProgramWeekArg = {
   id: string;
   programWeekCreateRequest: ProgramWeekCreateRequest;
 };
-export type MeasurementsResponse = /** status 200 OK */ MeasurementFullResponse[];
-export type MeasurementsArg = void;
+export type GetMeasurementsResponse = /** status 200 OK */ MeasurementFullResponse[];
+export type GetMeasurementsArg = void;
 export type CreateMeasurementResponse = /** status 200 OK */ MeasurementResponse;
 export type CreateMeasurementArg = {
   measurementCreateRequest: MeasurementCreateRequest;
@@ -267,8 +267,8 @@ export type CreateMeasurementPointArg = {
   id: string;
   measurementPointCreateRequest: MeasurementPointCreateRequest;
 };
-export type ExercisesResponse = /** status 200 OK */ ExerciseResponse[];
-export type ExercisesArg = void;
+export type GetExercisesResponse = /** status 200 OK */ ExerciseResponse[];
+export type GetExercisesArg = void;
 export type CreateExerciseResponse = /** status 200 OK */ ExerciseResponse;
 export type CreateExerciseArg = {
   exerciseCreateRequest: ExerciseCreateRequest;
@@ -327,12 +327,12 @@ export type DeleteWorkoutResponse = unknown;
 export type DeleteWorkoutArg = {
   id: string;
 };
-export type ActiveWorkoutResponse = /** status 200 OK */ WorkoutFullResponse;
-export type ActiveWorkoutArg = void;
-export type ExerciseTypesResponse = /** status 200 OK */ ExerciseTypeResponse[];
-export type ExerciseTypesArg = void;
-export type ExerciseCategoriesResponse = /** status 200 OK */ ExerciseCategoryResponse[];
-export type ExerciseCategoriesArg = void;
+export type GetActiveWorkoutResponse = /** status 200 OK */ WorkoutFullResponse;
+export type GetActiveWorkoutArg = void;
+export type GetExerciseTypesResponse = /** status 200 OK */ ExerciseTypeResponse[];
+export type GetExerciseTypesArg = void;
+export type GetExerciseCategoriesResponse = /** status 200 OK */ ExerciseCategoryResponse[];
+export type GetExerciseCategoriesArg = void;
 export type DeleteExerciseGroupResponse = unknown;
 export type DeleteExerciseGroupArg = {
   workoutId: string;

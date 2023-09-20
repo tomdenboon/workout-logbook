@@ -17,7 +17,7 @@ class ExerciseController(
     private val exerciseService: ExerciseService,
 ) {
     @GetMapping("/exercises")
-    fun exercises() = exerciseService.allExercises().map { it.toResponse() }
+    fun getExercises() = exerciseService.allExercises().map { it.toResponse() }
 
     @GetMapping("/exercises/{id}")
     fun getExercise(@PathVariable id: UUID) = exerciseService.getExercise(id).toResponse()
@@ -37,8 +37,8 @@ class ExerciseController(
     fun deleteExercise(@PathVariable id: UUID) = exerciseService.deleteExercise(id)
 
     @GetMapping("/exercises/types")
-    fun exerciseTypes() = ExerciseType.values().map { it.toResponse() }
+    fun getExerciseTypes() = ExerciseType.values().map { it.toResponse() }
 
     @GetMapping("/exercises/categories")
-    fun exerciseCategories() = ExerciseCategory.values().map { it.toResponse() }
+    fun getExerciseCategories() = ExerciseCategory.values().map { it.toResponse() }
 }

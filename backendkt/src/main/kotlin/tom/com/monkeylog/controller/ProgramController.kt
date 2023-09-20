@@ -18,7 +18,7 @@ class ProgramController
     private val programService: ProgramService,
 ) {
     @GetMapping("/programs")
-    fun programs() = programService.allPrograms().map { it.toResponse() }
+    fun getPrograms() = programService.allPrograms().map { it.toResponse() }
 
     @GetMapping("/programs/{id}")
     fun getProgram(@PathVariable id: UUID) = programService.getProgram(id).toResponse()

@@ -16,7 +16,7 @@ class MeasurementController(
     private val measurementService: MeasurementService,
 ) {
     @GetMapping("/measurements")
-    fun measurements() = measurementService.all().map { it.toFullResponse() }
+    fun getMeasurements() = measurementService.all().map { it.toFullResponse() }
 
     @PostMapping("/measurements")
     fun createMeasurement(@RequestBody measurementCreateRequest: @Valid MeasurementCreateRequest) =
