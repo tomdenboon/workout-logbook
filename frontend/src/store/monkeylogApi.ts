@@ -5,7 +5,6 @@ export * from 'src/store/baseMonkeylogApi';
 export const monkeyLogApi = baseMonkeylogApi.enhanceEndpoints({
   addTagTypes: ['Exercise', 'Measurement', 'Program', 'Workout'],
   endpoints: {
-    // EXERCISES
     getExercises: {
       providesTags: (result) => [
         ...(result ?? []).map(({ id }) => ({ type: 'Exercise' as const, id })),
@@ -19,10 +18,11 @@ export const monkeyLogApi = baseMonkeylogApi.enhanceEndpoints({
       invalidatesTags: [{ type: 'Exercise', id: 'LIST' }],
     },
     deleteExercise: {
-      invalidatesTags: (_result, error, args) => [{ type: 'Exercise', id: args.id }],
+      invalidatesTags: (_result, _error, args) => [{ type: 'Exercise', id: args.id }],
     },
     updateExercise: {
-      invalidatesTags: (result, error, args) => [{ type: 'Exercise', id: args.id }],
+      invalidatesTags: (_result, _error, args) => [{ type: 'Exercise', id: args.id }],
+
     },
     // MEASUREMENTS
     getMeasurements: {
@@ -35,14 +35,14 @@ export const monkeyLogApi = baseMonkeylogApi.enhanceEndpoints({
       invalidatesTags: () => [{ type: 'Measurement', id: 'LIST' }],
     },
     deleteMeasurement: {
-      invalidatesTags: (result, error, args) => [{ type: 'Measurement', id: args.id }],
+      invalidatesTags: (_, __, args) => [{ type: 'Measurement', id: args.id }],
     },
     createMeasurementPoint: {
       invalidatesTags: () => [{ type: 'Measurement', id: 'LIST' }],
     },
     // WORKOUTS
     getWorkouts: {
-      providesTags: (result, errors, arg) => [
+      providesTags: (result, _errors, arg) => [
         ...(result?.content ?? []).map((workout) => ({
           type: 'Workout' as const,
           id: workout.id,
@@ -63,7 +63,7 @@ export const monkeyLogApi = baseMonkeylogApi.enhanceEndpoints({
       invalidatesTags: () => [{ type: 'Workout', id: `TEMPLATE_LIST` }],
     },
     deleteWorkout: {
-      invalidatesTags: (result, error, args) => [{ type: 'Workout', id: args.id }],
+      invalidatesTags: (_result, _error, args) => [{ type: 'Workout', id: args.id }],
     },
     duplicateWorkout: {
       invalidatesTags: () => [{ type: 'Workout', id: 'TEMPLATE_LIST' }],
@@ -81,7 +81,7 @@ export const monkeyLogApi = baseMonkeylogApi.enhanceEndpoints({
       ],
     },
     createExerciseGroup: {
-      invalidatesTags: (result, error, args) => [{ type: 'Workout', id: args.workoutId }],
+      invalidatesTags: (_result, _error, args) => [{ type: 'Workout', id: args.workoutId }],
     },
     createExerciseRow: {
       onQueryStarted: async ({ workoutId, exerciseGroupId }, { dispatch, queryFulfilled }) => {

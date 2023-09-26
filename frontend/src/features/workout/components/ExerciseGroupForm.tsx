@@ -1,12 +1,12 @@
 import { MoreHoriz } from '@mui/icons-material';
 import { Button, Card, Grid, Stack, Typography } from '@mui/material';
 import ExerciseRowForm from 'src/features/workout/components/ExerciseRowForm';
-import React from 'react';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import {
   ExerciseGroupResponse,
   useCreateExerciseRowMutation,
 } from 'src/store/monkeylogApi';
+import React from 'react';
 
 interface ExerciseGroupProps {
   exerciseGroup: ExerciseGroupResponse;
@@ -96,4 +96,5 @@ function ExerciseGroupForm(props: ExerciseGroupProps) {
   );
 }
 
-export default React.memo(ExerciseGroupForm);
+const MemoizedExerciseGroupForm = React.memo(ExerciseGroupForm);
+export default MemoizedExerciseGroupForm;

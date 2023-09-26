@@ -17,10 +17,8 @@ function MeasurementCard(props: MeasurementCardProps) {
 
   const theme = useTheme();
 
-  const xAxis = measurement.measurementPoints.map(
-    (measurmentPoint) => new Date(measurmentPoint.createdAt)
-  );
-  const seriesData = measurement.measurementPoints.map((measurmentPoint) => measurmentPoint.value);
+  const xAxis = measurement.points.map((measurmentPoint) => new Date(measurmentPoint.createdAt));
+  const seriesData = measurement.points.map((measurmentPoint) => measurmentPoint.value);
 
   return (
     <AppCard

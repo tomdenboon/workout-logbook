@@ -2,19 +2,13 @@ services:
   frontend:
     build:
       context: frontend
-    restart: always
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
     environment:
-      - VITE_HOST_API=http://${HOST_API}
       - VIRTUAL_HOST=${HOST_APP}
       - LETSENCRYPT_HOST=${HOST_APP}
-      - VIRTUAL_PORT=5173
+
   backend:
     build:
       context: backend
-    restart: always
     environment:
       - DB_URL
       - DB_USERNAME
@@ -23,9 +17,9 @@ services:
       - VIRTUAL_HOST=${HOST_API}
       - LETSENCRYPT_HOST=${HOST_API}
       - VIRTUAL_PORT=8080
+
   db:
     image: postgres:12-alpine
-    restart: always
     ports:
       - 5432:5432
     environment:
@@ -33,7 +27,7 @@ services:
       - POSTGRES_PASSWORD=${DB_PASSWORD}
     volumes:
       - db:/var/lib/postgresql/data
-  # NGINX PROXY SETUP
+
   proxy:
     image: nginxproxy/nginx-proxy
     ports:
@@ -45,6 +39,7 @@ services:
       - html:/usr/share/nginx/html
       - certs:/etc/nginx/certs:ro
       - /var/run/docker.sock:/tmp/docker.sock:ro
+
   # ssl:
   #   image: nginxproxy/acme-companion
   #   environment:

@@ -36,8 +36,7 @@ function useTimer(start?: string, end?: string) {
   }, [timerInfo]);
 
   useEffect(() => {
-    let intervalId: NodeJS.Timer;
-
+    let intervalId: number;
     if (!end) {
       intervalId = setInterval(() => {
         setEndDate(new Date());

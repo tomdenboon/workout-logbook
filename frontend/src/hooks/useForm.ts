@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-function useForm<T extends Object>(initialState: T) {
+function useForm<T extends object>(initialState: T) {
   const [data, setData] = useState(initialState);
 
   function update<Key extends keyof T, Val extends T[Key]>(key: Key, value: Val) {

@@ -51,7 +51,7 @@ function ExerciseForm(props: ExerciseFormProps) {
         exerciseCategory: exercise.exerciseCategory.id,
       });
     }
-  }, [exercise]);
+  }, [exercise, init]);
 
   const submitForm = useCallback(() => {
     const { name, exerciseCategory } = exerciseForm;
@@ -67,7 +67,7 @@ function ExerciseForm(props: ExerciseFormProps) {
     }
 
     close();
-  }, [exercise, exerciseForm]);
+  }, [exercise, exerciseForm, close, addExercise, updateExercise]);
 
   return (
     <Dialog open={isOpen} onClose={close}>

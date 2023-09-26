@@ -1,88 +1,13 @@
 import { Check } from '@mui/icons-material';
-import { Button, Stack, TextField } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import { Button, Stack } from '@mui/material';
+import React from 'react';
 import { Draggable } from 'react-beautiful-dnd';
+import ExerciseRowFieldForm from 'src/features/workout/components/ExerciseRowFieldForm';
 import {
-  ExerciseRowFieldResponse,
   ExerciseRowResponse,
   WorkoutResponse,
-  useUpdateExerciseRowFieldMutation,
   useUpdateExerciseRowMutation,
 } from 'src/store/monkeylogApi';
-
-interface ExerciseRowFieldProps {
-  workoutId: string;
-  exerciseGroupId: string;
-  exerciseRowId: string;
-  exerciseRowField: ExerciseRowFieldResponse;
-  isLifted: boolean;
-}
-
-function ExerciseRowFieldForm(props: ExerciseRowFieldProps) {
-  const {
-    workoutId,
-    exerciseGroupId,
-    exerciseRowId,
-    exerciseRowField,
-    isLifted,
-  } = props;
-  const [field, setField] = useState(exerciseRowField);
-  const [newField, setNewField] = useState(exerciseRowField);
-  const [updateExerciseRowField] = useUpdateExerciseRowFieldMutation();
-
-  useEffect(() => {
-    if (!isLifted) {
-      setNewField({ ...newField, value: undefined });
-    } else {
-      setNewField({ ...field });
-    }
-  }, [isLifted]);
-
-  const updateField = async () => {
-    if (newField.value === undefined || newField.value === field.value) {
-      return;
-    }
-
-    updateExerciseRowField({
-      workoutId,
-      exerciseGroupId,
-      exerciseRowId,
-      exerciseRowFieldId: newField.id,
-      exerciseRowFieldUpdateRequest: newField,
-    });
-    setField(newField);
-  };
-
-  const cleanFieldInput = (newInput: string) => {
-    if (newInput === '') {
-      return undefined;
-    }
-
-    return Number(newInput.replace(/\D/g, ''));
-  };
-
-  return (
-    <TextField
-      sx={{
-        '& .MuiInputBase-root': {
-          '& input': {
-            textAlign: 'center',
-          },
-          height: 24,
-        },
-      }}
-      fullWidth
-      hiddenLabel
-      type="tel"
-      value={newField.value?.toString() ?? ''}
-      placeholder={field.value?.toString() ?? '0'}
-      onChange={(e) =>
-        setNewField({ ...newField, value: cleanFieldInput(e.target.value) })
-      }
-      onBlur={updateField}
-    />
-  );
-}
 
 interface ExerciseRowFormProps {
   exerciseRow: ExerciseRowResponse;
@@ -93,13 +18,7 @@ interface ExerciseRowFormProps {
 }
 
 function ExerciseRowForm(props: ExerciseRowFormProps) {
-  const {
-    workoutId,
-    exerciseGroupId,
-    exerciseRow,
-    workoutType,
-    exerciseRowIndex,
-  } = props;
+  const { workoutId, exerciseGroupId, exerciseRow, workoutType, exerciseRowIndex } = props;
   const [updateRow] = useUpdateExerciseRowMutation();
 
   return (
@@ -156,4 +75,5 @@ function ExerciseRowForm(props: ExerciseRowFormProps) {
   );
 }
 
-export default React.memo(ExerciseRowForm);
+const MemoizedExerciseRow = React.memo(ExerciseRowForm);
+export default MemoizedExerciseRow;

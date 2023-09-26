@@ -1,0 +1,20 @@
+spring:
+  profiles:
+    active: ${ACTIVE_PROFILE:dev}
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    generate-ddl: true
+    hibernate.ddl-auto: create-drop
+    show-sql: true
+    open-in-view: false
+
+  mvc:
+    format:
+      date-time: iso
+
+springdoc:
+  api-docs:
+    path: /docs

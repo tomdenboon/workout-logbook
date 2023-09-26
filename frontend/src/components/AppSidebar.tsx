@@ -53,7 +53,7 @@ function AppSideBar() {
       <BottomNavigation
         showLabels
         value={NAVBAR_LIST.find((obj) => location.pathname.includes(obj.to))?.to}
-        onChange={(event, newValue) => {
+        onChange={(_, newValue) => {
           navigate(newValue);
         }}
       >
