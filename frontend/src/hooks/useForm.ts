@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
-function useForm<T extends object>(initialState: T) {
+function useForm<T = unknown>(initialState: T) {
   const [data, setData] = useState(initialState);
 
   function update<Key extends keyof T, Val extends T[Key]>(key: Key, value: Val) {
@@ -10,9 +10,7 @@ function useForm<T extends object>(initialState: T) {
     }));
   }
 
-  function init(newData: T) {
-    setData(newData);
-  }
+  const init = useCallback((newData: T) => setData(newData), []);
 
   function reset() {
     setData(initialState);

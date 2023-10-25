@@ -15,7 +15,7 @@ import tom.com.monkeylog.mapper.toFullResponse
 import tom.com.monkeylog.mapper.toResponse
 import tom.com.monkeylog.model.workout.WorkoutType
 import tom.com.monkeylog.service.WorkoutService
-import java.time.LocalDateTime
+import java.time.Instant
 import java.util.*
 
 @RestController
@@ -33,7 +33,7 @@ class WorkoutController(
     fun getWorkouts(
         @ParameterObject pageable: Pageable,
         @RequestParam workoutType: WorkoutType,
-        @RequestParam(required = false) after: LocalDateTime?
+        @RequestParam(required = false) after: Instant?
     ): Page<WorkoutFullResponse> =
         workoutService.getWorkouts(workoutType, after, pageable).toResponse { it.toFullResponse() }
 

@@ -1,16 +1,10 @@
 import { Scale, Settings } from '@mui/icons-material';
 import { IconButton, Stack } from '@mui/material';
 import AppContainer from 'src/components/AppContainer';
-import MeasurementPage from 'src/pages/MeasurementPage';
-import SettingsPage from 'src/pages/SettingsPage';
 import { useNavigate } from 'react-router-dom';
+import { ModalOutlet } from 'src/components/ModalOutlet';
 
-interface ProfilePageProps {
-  modal?: 'measurements' | 'settings';
-}
-
-function ProfilePage(props: ProfilePageProps) {
-  const { modal } = props;
+function ProfilePage() {
   const navigate = useNavigate();
 
   return (
@@ -30,8 +24,7 @@ function ProfilePage(props: ProfilePageProps) {
       }}
     >
       Work in progressss
-      <SettingsPage isOpen={modal === 'settings'} close={() => navigate('/profile')} />
-      <MeasurementPage isOpen={modal === 'measurements'} close={() => navigate('/profile')} />
+      <ModalOutlet />
     </AppContainer>
   );
 }

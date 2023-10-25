@@ -23,6 +23,7 @@ function ActionDropdown(props: ActionDropdownProps) {
       <Button
         color="primary"
         variant="outlined"
+        onMouseDown={(event) => event.stopPropagation()}
         onClick={handleClick}
         sx={{ height: 24, px: 1, py: 0, minWidth: 0 }}
       >

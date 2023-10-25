@@ -1,39 +1,23 @@
 import { Button, Grid, Stack } from '@mui/material';
 import { Add } from '@mui/icons-material';
-import { useState } from 'react';
 import AddItemCard from 'src/components/AddItemCard';
 import Section from 'src/components/Section';
-import AddWorkoutModal from 'src/features/workout/components/AddWorkoutModal';
 import WorkoutCard from 'src/features/workout/components/WorkoutCard';
+import { useGetWorkoutsQuery } from 'src/store/monkeylogApi';
+import { ModalOutlet } from 'src/components/ModalOutlet';
+import { useNavigate, useParams } from 'react-router-dom';
 import AppContainer from 'src/components/AppContainer';
-import StartWorkoutModal from 'src/features/workout/components/StartWorkoutModal';
-import useModal, { ModalType } from 'src/hooks/useModal';
-import {
-  WorkoutFullResponse,
-  useGetWorkoutsQuery,
-} from 'src/store/monkeylogApi';
-
-const useWorkoutModalState = () => {
-  const [workout, setWorkout] = useState<WorkoutFullResponse | undefined>();
-  const modalState = useModal(ModalType.StartWorkout);
-
-  const open = (newWorkout?: WorkoutFullResponse) => {
-    setWorkout(newWorkout);
-    modalState.open();
-  };
-
-  return { ...modalState, open, workout };
-};
 
 function TrainingPage() {
+  const navigate = useNavigate();
   const { data: workouts } = useGetWorkoutsQuery({ workoutType: 'TEMPLATE' });
-  const startWorkoutModal = useWorkoutModalState();
-  const addWorkoutModal = useModal(ModalType.AddWorkout);
+  const { workoutId } = useParams();
+  const startWorkout = workouts?.content?.find((val) => val.id === workoutId);
 
   return (
     <AppContainer header={{ title: 'Workouts' }}>
       <Stack spacing={2}>
-        <Button onClick={() => startWorkoutModal.open()} variant="contained">
+        <Button onClick={() => navigate('workouts/new/start')} variant="contained">
           Start empty workout
         </Button>
         <Stack spacing={1}>
@@ -43,7 +27,7 @@ function TrainingPage() {
             rightNode={
               <Button
                 startIcon={<Add />}
-                onClick={() => addWorkoutModal.open()}
+                onClick={() => navigate('workouts/add')}
                 variant="outlined"
                 sx={{ height: 24, px: 1, minWidth: 0, py: 0 }}
               >
@@ -55,13 +39,13 @@ function TrainingPage() {
               <Grid container spacing={1}>
                 {workouts.content.length === 0 && (
                   <Grid item xs={12} sm={6} md={4}>
-                    <AddItemCard onClick={addWorkoutModal.open} />
+                    <AddItemCard item="template" onClick={() => navigate('workouts/add')} />
                   </Grid>
                 )}
                 {workouts.content.map((val) => (
                   <Grid item xs={12} sm={6} md={4} key={val.id}>
                     <WorkoutCard
-                      onClick={() => startWorkoutModal.open(val)}
+                      onClick={() => navigate(`workouts/${val.id}/start`)}
                       key={val.id}
                       workout={val}
                     />
@@ -93,8 +77,7 @@ function TrainingPage() {
           </Section> */}
         </Stack>
       </Stack>
-      <AddWorkoutModal {...addWorkoutModal} />
-      <StartWorkoutModal {...startWorkoutModal} />
+      <ModalOutlet workout={startWorkout} />
     </AppContainer>
   );
 }

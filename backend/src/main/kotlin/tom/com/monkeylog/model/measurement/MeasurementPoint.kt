@@ -4,7 +4,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UuidGenerator
 import tom.com.monkeylog.model.user.UserOwned
-import java.time.LocalDateTime
+import java.time.Instant
 import java.util.*
 
 @Entity
@@ -18,6 +18,6 @@ class MeasurementPoint(
     @JoinColumn(name = "measurement_id", nullable = false)
     var measurement: Measurement,
     @CreationTimestamp
-    var createdAt: LocalDateTime? = null,
+    var createdAt: Instant? = null,
     override var userId: UUID? = null
 ) : UserOwned

@@ -12,20 +12,11 @@ class ExerciseRowField(
     @GeneratedValue
     @UuidGenerator
     var id: UUID? = null,
+    @Enumerated(EnumType.STRING)
+    var exerciseType: ExerciseType,
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "exercise_row_id", nullable = false)
     var exerciseRow: ExerciseRow,
-    var value: Double,
-    @Enumerated(EnumType.STRING)
-    var exerciseType: ExerciseType,
+    var value: Double? = null,
     override var userId: UUID? = null,
-) : UserOwned {
-
-    fun clone(exerciseRow: ExerciseRow): ExerciseRowField {
-        return ExerciseRowField(
-            exerciseRow = exerciseRow,
-            value = value,
-            exerciseType = exerciseType,
-        )
-    }
-}
+) : UserOwned

@@ -379,7 +379,7 @@ export type ExerciseResponse = {
 };
 export type ExerciseRowFieldResponse = {
   id: string;
-  value: number;
+  value: number | null;
   exerciseType: 'REPS' | 'TIME' | 'DISTANCE' | 'WEIGHT';
 };
 export type ExerciseRowResponse = {
@@ -460,7 +460,7 @@ export type ExerciseRowUpdateRequest = {
   isLifted: boolean;
 };
 export type ExerciseRowFieldUpdateRequest = {
-  value: number;
+  value: number | null;
 };
 export type MeasurementUpdateRequest = {
   name: string;

@@ -3,6 +3,7 @@ package tom.com.monkeylog.model.workout
 import jakarta.persistence.*
 import org.hibernate.annotations.UuidGenerator
 import tom.com.monkeylog.model.user.UserOwned
+import tom.com.monkeylog.service.clone
 import java.util.*
 
 @Entity

@@ -9,11 +9,7 @@ spring:
     generate-ddl: true
     hibernate.ddl-auto: create-drop
     show-sql: true
-    open-in-view: false
-
-  mvc:
-    format:
-      date-time: iso
+    open-in-view: true
 
 springdoc:
   api-docs:

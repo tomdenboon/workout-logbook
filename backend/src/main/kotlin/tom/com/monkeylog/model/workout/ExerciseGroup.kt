@@ -22,13 +22,4 @@ class ExerciseGroup(
     @OrderColumn(name = "sort_order")
     var exerciseRows: MutableList<ExerciseRow> = ArrayList(),
     override var userId: UUID? = null
-) : UserOwned {
-    fun clone(workout: Workout): ExerciseGroup {
-        return ExerciseGroup(
-            exercise = exercise,
-            workout = workout,
-            exerciseRows = this.exerciseRows.map { it.clone(this) }.toMutableList(),
-            userId = userId
-        )
-    }
-}
+) : UserOwned

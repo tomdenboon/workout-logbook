@@ -6,34 +6,28 @@ import {
   Typography,
   DialogContent,
 } from '@mui/material';
-import useModal, { IUseModal, ModalType } from 'src/hooks/useModal';
+import { useNavigate } from 'react-router-dom';
+import { useModalOutletContext } from 'src/components/ModalOutlet';
 import {
   WorkoutFullResponse,
   useStartEmptyWorkoutMutation,
   useStartWorkoutMutation,
 } from 'src/store/monkeylogApi';
 
-function StartWorkoutModal(
-  props: {
-    workout?: WorkoutFullResponse;
-  } & IUseModal,
-) {
-  const { workout, isOpen, close } = props;
-  const { open: setWorkoutId } = useModal(ModalType.Workout);
+function StartWorkoutModal() {
+  const { workout, open, onClose } = useModalOutletContext<{ workout?: WorkoutFullResponse }>();
+  const navigate = useNavigate();
   const [startWorkout] = useStartWorkoutMutation();
   const [startEmptyWorkout] = useStartEmptyWorkoutMutation();
 
   const startTheWorkout = (id?: string) =>
     (id ? startWorkout({ id }) : startEmptyWorkout())
       .unwrap()
-      .then(({ id: finalId }) => {
-        setWorkoutId(finalId);
-        close();
-      });
+      .then(({ id: finalId }) => navigate('../workouts/' + finalId));
 
   return (
-    <Dialog open={isOpen} onClose={close}>
-      <DialogTitle>Start workout</DialogTitle>
+    <Dialog open={open} onClose={onClose}>
+      <DialogTitle>Start {workout?.name ?? 'workout'}</DialogTitle>
       <DialogContent>
         {workout?.exerciseGroups.map((exerciseGroup) => (
           <Typography key={exerciseGroup.id} color="text.secondary">

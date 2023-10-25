@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import tom.com.monkeylog.model.workout.Workout
 import tom.com.monkeylog.model.workout.WorkoutType
-import java.time.LocalDateTime
+import java.time.Instant
 import java.util.*
 
 interface WorkoutRepository : JpaRepository<Workout, UUID> {
@@ -23,7 +23,7 @@ interface WorkoutRepository : JpaRepository<Workout, UUID> {
     fun findAllByWorkoutTypeAndUserIdAndStartDateAfter(
         workoutType: WorkoutType,
         userId: UUID,
-        start: LocalDateTime,
+        start: Instant,
         pageable: Pageable
     ): Page<Workout>
 }

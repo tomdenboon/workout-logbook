@@ -1,4 +1,3 @@
-import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import { Box, Collapse, Stack, Typography } from '@mui/material';
 import { useState } from 'react';
 
@@ -17,12 +16,6 @@ function Section(props: SectionProps) {
     <Stack spacing={1}>
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <Stack direction="row" spacing={1} onClick={() => setOpen(!open)}>
-          {collapse &&
-            (open ? (
-              <ExpandLess sx={{ color: 'text.secondary' }} />
-            ) : (
-              <ExpandMore sx={{ color: 'text.secondary' }} />
-            ))}
           <Typography color="text.secondary">{title}</Typography>
         </Stack>
         {rightNode}

@@ -1,7 +1,7 @@
 package tom.com.monkeylog.dto.workout
 
 import tom.com.monkeylog.model.workout.WorkoutType
-import java.time.LocalDateTime
+import java.time.Instant
 import java.util.*
 
 data class WorkoutResponse(
@@ -9,6 +9,6 @@ data class WorkoutResponse(
     val name: String,
     val note: String? = null,
     val workoutType: WorkoutType,
-    val startDate: LocalDateTime? = null,
-    val endDate: LocalDateTime? = null,
+    val startDate: Instant? = null,
+    val endDate: Instant? = null,
 )

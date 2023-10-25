@@ -22,12 +22,11 @@ export const monkeyLogApi = baseMonkeylogApi.enhanceEndpoints({
     },
     updateExercise: {
       invalidatesTags: (_result, _error, args) => [{ type: 'Exercise', id: args.id }],
-
     },
     // MEASUREMENTS
     getMeasurements: {
       providesTags: (result) => [
-        ...(result ?? []).map(({ id }) => ({ type: 'Exercise' as const, id })),
+        ...(result ?? []).map(({ id }) => ({ type: 'Measurement' as const, id })),
         { type: 'Measurement', id: 'LIST' },
       ],
     },
@@ -83,6 +82,9 @@ export const monkeyLogApi = baseMonkeylogApi.enhanceEndpoints({
     createExerciseGroup: {
       invalidatesTags: (_result, _error, args) => [{ type: 'Workout', id: args.workoutId }],
     },
+    deleteExerciseGroup: {
+      invalidatesTags: (_result, _error, args) => [{ type: 'Workout', id: args.workoutId }],
+    },
     createExerciseRow: {
       onQueryStarted: async ({ workoutId, exerciseGroupId }, { dispatch, queryFulfilled }) => {
         queryFulfilled.then((result) => {
@@ -109,6 +111,33 @@ export const monkeyLogApi = baseMonkeylogApi.enhanceEndpoints({
               ?.exerciseRows.find((er) => er.id === exerciseRowId);
             if (exerciseRow) {
               Object.assign(exerciseRow, exerciseRowUpdateRequest);
+            }
+          })
+        );
+
+        queryFulfilled.catch(patchResult.undo);
+      },
+    },
+    updateExerciseRowField: {
+      onQueryStarted: async (
+        {
+          workoutId,
+          exerciseGroupId,
+          exerciseRowId,
+          exerciseRowFieldId,
+          exerciseRowFieldUpdateRequest,
+        },
+        { dispatch, queryFulfilled }
+      ) => {
+        const patchResult = dispatch(
+          monkeyLogApi.util.updateQueryData('getWorkout', { id: workoutId }, (draft) => {
+            const exerciseRowField = draft.exerciseGroups
+              .find((eg) => eg.id === exerciseGroupId)
+              ?.exerciseRows.find((er) => er.id === exerciseRowId)
+              ?.exerciseRowFields.find((erf) => erf.id === exerciseRowFieldId);
+
+            if (exerciseRowField) {
+              Object.assign(exerciseRowField, exerciseRowFieldUpdateRequest);
             }
           })
         );
@@ -144,4 +173,6 @@ export const {
   useCreateMeasurementPointMutation,
   useGetExerciseTypesQuery,
   useGetExerciseCategoriesQuery,
+  useDeleteMeasurementMutation,
+  useDeleteExerciseGroupMutation,
 } = monkeyLogApi;

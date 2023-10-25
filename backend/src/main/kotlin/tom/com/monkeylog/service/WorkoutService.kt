@@ -11,7 +11,7 @@ import tom.com.monkeylog.model.workout.Workout
 import tom.com.monkeylog.model.workout.WorkoutType
 import tom.com.monkeylog.repository.workout.WorkoutRepository
 import tom.com.monkeylog.security.AuthenticatedUser
-import java.time.LocalDateTime
+import java.time.Instant
 import java.util.*
 
 
@@ -21,7 +21,7 @@ class WorkoutService(
     private val programService: ProgramService,
 ) {
 
-    fun getWorkouts(workoutType: WorkoutType, after: LocalDateTime?, pageable: Pageable): Page<Workout> {
+    fun getWorkouts(workoutType: WorkoutType, after: Instant?, pageable: Pageable): Page<Workout> {
         return after?.let {
             workoutRepository.findAllByWorkoutTypeAndUserIdAndStartDateAfter(
                 workoutType,
@@ -55,16 +55,18 @@ class WorkoutService(
     }
 
     private fun startWorkout(workout: Workout): Workout {
-        workout.startDate = (LocalDateTime.now())
-        workout.workoutType = (WorkoutType.ACTIVE)
+        workout.startDate = Instant.now()
+        workout.workoutType = WorkoutType.ACTIVE
         workout.userId = AuthenticatedUser.id
-        clearActive()
-        return workoutRepository.save(workout)
-    }
 
-    private fun clearActive() {
-        workoutRepository
-            .deleteAll(workoutRepository.findAllByWorkoutTypeAndUserId(WorkoutType.ACTIVE, AuthenticatedUser.id))
+        workoutRepository.deleteAll(
+            workoutRepository.findAllByWorkoutTypeAndUserId(
+                WorkoutType.ACTIVE,
+                AuthenticatedUser.id
+            )
+        );
+
+        return workoutRepository.save(workout)
     }
 
     fun complete(): Workout {
@@ -72,28 +74,23 @@ class WorkoutService(
             workoutRepository.findAllByWorkoutTypeAndUserId(WorkoutType.ACTIVE, AuthenticatedUser.id).firstOrNull()
                 ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, WORKOUT_NOT_FOUND)
 
-        workout.exerciseGroups.forEach { exerciseGroup -> exerciseGroup.exerciseRows.removeIf { exerciseRow -> !exerciseRow.isLifted } }
+        workout.exerciseGroups.forEach { exerciseGroup ->
+            exerciseGroup.exerciseRows.removeIf { exerciseRow -> !exerciseRow.isLifted }
+        }
         workout.exerciseGroups.filter { exerciseGroup -> exerciseGroup.exerciseRows.isEmpty() }
-        workout.endDate = (LocalDateTime.now())
-        workout.workoutType = (WorkoutType.COMPLETED)
+        workout.endDate = Instant.now()
+        workout.workoutType = WorkoutType.COMPLETED
         return workoutRepository.save(workout)
     }
 
-    fun cloneToTemplate(id: UUID): Workout {
-        val workout: Workout = getWorkout(id)
-        val newWorkout: Workout = workout.clone()
-        newWorkout.name = "${workout.name} - copy"
-        newWorkout.workoutType = WorkoutType.TEMPLATE
-        newWorkout.userId = AuthenticatedUser.id
-
-        return workoutRepository.save(newWorkout)
-    }
+    fun cloneToTemplate(id: UUID) = workoutRepository.save(getWorkout(id).clone())
 
     fun save(workoutRequest: WorkoutCreateRequest): Workout {
-        val workout: Workout = workoutRequest.toEntity();
-        workout.workoutType = WorkoutType.TEMPLATE
-        workout.userId = AuthenticatedUser.id
-        workout.programWeek = workoutRequest.programWeekId?.let { programService.getProgramWeek(it) }
+        val workout: Workout = workoutRequest.toEntity().apply {
+            workoutType = WorkoutType.TEMPLATE
+            userId = AuthenticatedUser.id
+            programWeek = workoutRequest.programWeekId?.let { programService.getProgramWeek(it) }
+        }
 
         return workoutRepository.save(workout)
     }

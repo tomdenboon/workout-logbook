@@ -5,6 +5,6 @@ import java.util.*
 
 data class ExerciseRowFieldResponse(
     val id: UUID,
-    val value: Double,
+    val value: Double?,
     val exerciseType: ExerciseType,
 )

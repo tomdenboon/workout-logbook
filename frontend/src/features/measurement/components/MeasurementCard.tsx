@@ -2,20 +2,22 @@ import { Add } from '@mui/icons-material';
 import { Button, Stack, useTheme } from '@mui/material';
 import { LineChart } from '@mui/x-charts';
 import dayjs from 'dayjs';
+import { useNavigate } from 'react-router-dom';
 import ActionDropdown from 'src/components/ActionDropdown';
 import AppCard from 'src/components/AppCard';
 import { METRIC_FORMAT_NICE } from 'src/features/measurement/types';
-import { MeasurementFullResponse } from 'src/store/monkeylogApi';
+import { MeasurementFullResponse, useDeleteMeasurementMutation } from 'src/store/monkeylogApi';
 
 interface MeasurementCardProps {
   measurement: MeasurementFullResponse;
-  openAddMeasurementPointModal: () => void;
 }
 
 function MeasurementCard(props: MeasurementCardProps) {
-  const { measurement, openAddMeasurementPointModal } = props;
+  const { measurement } = props;
+  const [deleteMeasurement] = useDeleteMeasurementMutation();
 
   const theme = useTheme();
+  const navigate = useNavigate();
 
   const xAxis = measurement.points.map((measurmentPoint) => new Date(measurmentPoint.createdAt));
   const seriesData = measurement.points.map((measurmentPoint) => measurmentPoint.value);
@@ -29,12 +31,14 @@ function MeasurementCard(props: MeasurementCardProps) {
           <Button
             color="primary"
             variant="outlined"
-            onClick={openAddMeasurementPointModal}
+            onClick={() => navigate(`${measurement.id}/point`)}
             sx={{ height: 24, px: 1, py: 0, minWidth: 0 }}
           >
             <Add />
           </Button>
-          <ActionDropdown actions={[{ action: () => null, label: 'Graph action' }]} />
+          <ActionDropdown
+            actions={[{ action: () => deleteMeasurement({ id: measurement.id }), label: 'Delete' }]}
+          />
         </Stack>
       }
     >

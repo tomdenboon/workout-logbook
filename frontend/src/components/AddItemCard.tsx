@@ -3,10 +3,11 @@ import { Card, CardActionArea, CardContent, Stack, Typography } from '@mui/mater
 
 interface AddItemCardProps {
   onClick: () => void;
+  item: string;
 }
 
 function AddItemCard(props: AddItemCardProps) {
-  const { onClick } = props;
+  const { item, onClick } = props;
 
   return (
     <Card variant="outlined">
@@ -14,7 +15,7 @@ function AddItemCard(props: AddItemCardProps) {
         <CardContent>
           <Stack direction="row" alignItems="center" justifyContent="center" gap={2}>
             <Add color="primary" />
-            <Typography color="primary">Click to add new template</Typography>
+            <Typography color="primary">Click to add new {item}</Typography>
           </Stack>
         </CardContent>
       </CardActionArea>

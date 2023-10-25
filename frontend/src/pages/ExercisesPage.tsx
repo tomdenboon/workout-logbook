@@ -1,92 +1,151 @@
-import { Add, ArrowBack } from '@mui/icons-material';
-import { Divider, Fab, IconButton, List, ListSubheader } from '@mui/material';
+import { Add, Search as SearchIcon } from '@mui/icons-material';
+import {
+  Divider,
+  Fab,
+  IconButton,
+  InputBase,
+  List,
+  ListSubheader,
+  Stack,
+  alpha,
+  styled,
+} from '@mui/material';
 import AppContainer from 'src/components/AppContainer';
 import ExerciseCard from 'src/features/workout/components/ExerciseCard';
-import ExerciseForm from 'src/features/workout/components/ExerciseForm';
-import useSelectIds from 'src/hooks/useSelectIds';
-import useAddExercises from 'src/features/workout/hooks/useAddExercises';
 import useExercises from 'src/features/workout/hooks/useExercises';
 import { Link, useParams } from 'react-router-dom';
-import useEditExerciseModal from 'src/features/workout/hooks/useEditExerciseModal';
+import { ModalOutlet, useModalOutletContext } from 'src/components/ModalOutlet';
+import FullScreenModal from 'src/components/FullScreenModal';
+import useSelectIds from 'src/hooks/useSelectIds';
+import React, { useState } from 'react';
+import useAddExercises from 'src/features/workout/hooks/useAddExercises';
+
+const Search = styled('div')(({ theme }) => ({
+  position: 'relative',
+  borderRadius: theme.shape.borderRadius,
+  backgroundColor: alpha(theme.palette.common.white, 0.15),
+  '&:hover': {
+    backgroundColor: alpha(theme.palette.common.white, 0.25),
+  },
+  width: '100%',
+}));
+
+const SearchIconWrapper = styled('div')(({ theme }) => ({
+  padding: theme.spacing(0, 2),
+  height: '100%',
+  position: 'absolute',
+  pointerEvents: 'none',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+}));
+
+const StyledInputBase = styled(InputBase)(({ theme }) => ({
+  color: 'inherit',
+  width: '100%',
+  '& .MuiInputBase-input': {
+    padding: theme.spacing(1, 1, 1, 0),
+    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    width: '100%',
+  },
+}));
 
 function Exercises() {
-  const { workoutId } = useParams();
-  const {
-    idMap: selectedExerciseIds,
-    toIdList,
-    hasSelection: hasSelectedExercises,
-    toggleId: exerciseClicked,
-  } = useSelectIds();
-  const { groupedExercises } = useExercises();
-  const { isOpen, openEmpty, openWithExercise, close, editExercise } =
-    useEditExerciseModal();
+  const { workoutId, exerciseId } = useParams();
+  const [search, setSearch] = useState('');
+  const { exercises, groupedExercises, filteredExercises } = useExercises(search);
+  const { selectedIds, toggleId, hasSelection } = useSelectIds();
+  const { modalControls } = useModalOutletContext();
   const { add } = useAddExercises();
+  const editExercise = exercises?.find((val) => val.id === exerciseId);
+
+  const Component = open != undefined ? FullScreenModal : AppContainer;
+
+  const searchComponent = (
+    <Search>
+      <SearchIconWrapper>
+        <SearchIcon />
+      </SearchIconWrapper>
+      <StyledInputBase
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        placeholder="Search…"
+        inputProps={{ 'aria-label': 'search' }}
+      />
+    </Search>
+  );
 
   return (
-    <AppContainer
+    <Component
       header={{
-        leftButton: workoutId && (
-          <IconButton
-            component={Link}
-            to={`/training/workouts/${workoutId}`}
-            color="inherit"
-          >
-            <ArrowBack />
-          </IconButton>
-        ),
         rightButton: (
-          <IconButton onClick={openEmpty} color="inherit">
+          <IconButton component={Link} to="add" color="inherit">
             <Add />
           </IconButton>
         ),
+        afterTitle: searchComponent,
         title: 'Exercises',
       }}
-      sx={{ px: 0, pt: 6 }}
+      {...modalControls}
+      sx={{ paddingTop: 12, paddingX: 0 }}
+      slideLeft
     >
-      {groupedExercises &&
+      {search &&
+        filteredExercises?.map((exercise) => (
+          <React.Fragment key={exercise.id}>
+            <ExerciseCard
+              exercise={exercise}
+              onClick={() => toggleId(exercise.id)}
+              isSelected={selectedIds.includes(exercise.id)}
+            />
+            <Divider />
+          </React.Fragment>
+        ))}
+      {!search &&
+        groupedExercises &&
         Object.keys(groupedExercises)
           .sort((a, b) => a.localeCompare(b))
           .map((key) => (
-            <>
-              <List sx={{ py: 0 }}>
-                <ListSubheader>{key.toLocaleUpperCase()}</ListSubheader>
+            <React.Fragment key={key}>
+              <List
+                sx={{ pb: 0 }}
+                key={key}
+                subheader={<ListSubheader disableSticky>{key.toLocaleUpperCase()}</ListSubheader>}
+              >
                 <Divider />
                 {groupedExercises[key].map((exercise, index) => (
-                  <>
+                  <React.Fragment key={exercise.id}>
                     <ExerciseCard
-                      key={exercise.id}
                       exercise={exercise}
-                      isSelected={selectedExerciseIds[exercise.id]}
-                      onClick={
-                        workoutId
-                          ? () => exerciseClicked(exercise.id)
-                          : undefined
-                      }
-                      onEdit={() => openWithExercise(exercise)}
+                      onClick={() => toggleId(exercise.id)}
+                      isSelected={selectedIds.includes(exercise.id)}
                     />
                     {index !== groupedExercises[key].length - 1 && <Divider />}
-                  </>
+                  </React.Fragment>
                 ))}
               </List>
               <Divider />
-            </>
+            </React.Fragment>
           ))}
-
+      <ModalOutlet exercise={editExercise} />
       {workoutId && (
-        <Fab
-          sx={{ position: 'fixed', bottom: 64, left: 8 }}
-          color="primary"
-          onClick={() => add(workoutId, toIdList())}
-          disabled={!hasSelectedExercises}
+        <Stack
+          sx={{ position: 'fixed', bottom: 16, right: 16 }}
+          direction="row"
+          spacing={1}
+          justifyContent="center"
         >
-          <Add />
-        </Fab>
+          <Fab
+            disabled={!hasSelection}
+            variant="extended"
+            color="primary"
+            onClick={() => add(workoutId, selectedIds)}
+          >
+            Add exercise{selectedIds.length > 1 ? 's' : ''} ({selectedIds.length})
+          </Fab>
+        </Stack>
       )}
-
-      {isOpen && (
-        <ExerciseForm isOpen={isOpen} close={close} exercise={editExercise} />
-      )}
-    </AppContainer>
+    </Component>
   );
 }
 

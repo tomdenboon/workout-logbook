@@ -1,12 +1,13 @@
-import { Box, Button, Card, Grid, Stack, Typography } from '@mui/material';
+import { Button, Collapse, Stack, Typography } from '@mui/material';
 import FullScreenModal from 'src/components/FullScreenModal';
 import SimpleTimer from 'src/components/SimpleTimer';
-import DeleteWorkoutModal from 'src/features/workout/components/DeleteWorkoutModal';
-import ExerciseGroupForm from 'src/features/workout/components/ExerciseGroupForm';
 import useModal, { ModalType } from 'src/hooks/useModal';
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useCompleteWorkoutMutation, useLazyGetWorkoutQuery } from 'src/store/monkeylogApi';
+import { ModalOutlet, useModalOutletContext } from 'src/components/ModalOutlet';
+import ExerciseGroupForm from 'src/features/workout/components/ExerciseGroupForm';
+import { TransitionGroup } from 'react-transition-group';
 
 const TITLE_MAP = {
   COMPLETED: 'Edit workout',
@@ -16,9 +17,10 @@ const TITLE_MAP = {
 
 function WorkoutPage() {
   const navigate = useNavigate();
-  const { value: workoutId, close: closeWorkoutModal } = useModal(ModalType.Workout);
-  const [completeWorkout] = useCompleteWorkoutMutation();
   const deleteWorkoutModal = useModal(ModalType.DeleteWorkout);
+  const { workoutId } = useParams();
+  const { modalControls } = useModalOutletContext();
+  const [completeWorkout] = useCompleteWorkoutMutation();
   const [getWorkout, { data: workout }] = useLazyGetWorkoutQuery();
 
   useEffect(() => {
@@ -35,63 +37,49 @@ function WorkoutPage() {
           <Button
             color="inherit"
             variant="text"
-            onClick={() =>
-              completeWorkout()
-                .unwrap()
-                .then(() => closeWorkoutModal())
-            }
+            onClick={() => completeWorkout().unwrap().then(modalControls.onClose)}
           >
-            COMPLETE
+            Complete
           </Button>
         ),
       }}
-      isOpen={!!workoutId && !!workout}
-      close={closeWorkoutModal}
+      {...modalControls}
     >
-      <Stack spacing={2}>
-        <Card sx={{ p: 2 }} variant="outlined">
+      <Stack spacing={4}>
+        <div>
           <Typography>{workout.name}</Typography>
           <Typography>{workout.note}</Typography>
           {workout.workoutType !== 'TEMPLATE' && (
             <SimpleTimer startDate={workout.startDate} endDate={workout.endDate} />
           )}
-        </Card>
+        </div>
         {workout.exerciseGroups?.length > 0 && (
-          <Box>
-            <Grid container spacing={1}>
-              {workout.exerciseGroups.map((exerciseGroup, index) => (
+          <Stack component={TransitionGroup}>
+            {workout.exerciseGroups.map((exerciseGroup, index) => (
+              <Collapse key={exerciseGroup.id}>
                 <ExerciseGroupForm
-                  key={exerciseGroup.id}
                   exerciseGroup={exerciseGroup}
                   exerciseGroupIndex={index}
                   workoutId={workout.id}
                   workoutType={workout.workoutType}
                 />
-              ))}
-            </Grid>
-          </Box>
+              </Collapse>
+            ))}
+          </Stack>
         )}
-        <Stack spacing={1}>
-          <Button variant="outlined" size="small" onClick={() => navigate('exercises')}>
-            Add exercise
-          </Button>
-          {workout.workoutType === 'ACTIVE' && (
-            <Button
-              variant="outlined"
-              color="error"
-              size="small"
-              onClick={() => deleteWorkoutModal.open()}
-            >
-              Cancel workout
-            </Button>
-          )}
-        </Stack>
+        <Button variant="outlined" sx={{ height: 24 }} onClick={() => navigate('exercises')}>
+          Add exercise
+        </Button>
+        <Button
+          variant="outlined"
+          sx={{ height: 24 }}
+          color="error"
+          onClick={() => deleteWorkoutModal.open()}
+        >
+          {workout.workoutType === 'ACTIVE' ? 'Cancel workout' : 'Delete workout'}
+        </Button>
       </Stack>
-      <DeleteWorkoutModal
-        workoutId={workout.id}
-        closeWorkoutModal={closeWorkoutModal}
-        {...deleteWorkoutModal}
-      />
+      <ModalOutlet />
     </FullScreenModal>
   ) : null;
 }

@@ -1,3 +1,5 @@
 package tom.com.monkeylog.dto.workout
 
-data class ExerciseUpdateRequest(val name: String)
+import jakarta.validation.constraints.NotBlank
+
+data class ExerciseUpdateRequest(@NotBlank val name: String)

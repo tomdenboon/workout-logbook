@@ -48,14 +48,15 @@ class ExerciseGroupService(
                     isLifted = workout.workoutType === WorkoutType.COMPLETED,
                 )
 
+                exerciseGroup.exerciseRows.add(exerciseRow)
+
                 exerciseRow.exerciseRowFields = exercise.exerciseCategory.types.map { exerciseType ->
                     ExerciseRowField(
                         exerciseType = exerciseType,
                         userId = AuthenticatedUser.id,
-                        exerciseRow = exerciseRow,
-                        value = 0.0
+                        exerciseRow = exerciseRow
                     )
-                }.toSet()
+                }
 
                 exerciseGroup
             }.forEach(workout.exerciseGroups::add)

@@ -1,6 +1,6 @@
 import { ContentCopy, Delete, Edit } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 import ActionDropdown from 'src/components/ActionDropdown';
-import useModal, { ModalType } from 'src/hooks/useModal';
 import {
   WorkoutResponse,
   useDeleteWorkoutMutation,
@@ -9,7 +9,7 @@ import {
 
 function WorkoutActions(props: { workout: WorkoutResponse }) {
   const { workout } = props;
-  const { open: setWorkoutId } = useModal(ModalType.Workout);
+  const navigate = useNavigate();
   const [cloneWorkout] = useDuplicateWorkoutMutation();
   const [deleteWorkout] = useDeleteWorkoutMutation();
 
@@ -18,7 +18,7 @@ function WorkoutActions(props: { workout: WorkoutResponse }) {
       actions={[
         {
           label: 'Edit',
-          action: () => setWorkoutId(workout.id.toString()),
+          action: () => navigate('workouts/' + workout.id.toString()),
           icon: <Edit />,
         },
         {

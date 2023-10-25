@@ -3,24 +3,10 @@ package tom.com.monkeylog.model.workout
 import jakarta.persistence.*
 import org.hibernate.annotations.UuidGenerator
 import tom.com.monkeylog.model.user.UserOwned
-import java.time.LocalDateTime
+import java.time.Instant
 import java.util.*
 
 @Entity
-@NamedEntityGraph(
-    name = "workout.exerciseGroups.exerciseRows.exerciseRowFields",
-    attributeNodes = [NamedAttributeNode(value = "exerciseGroups", subgraph = "subgraph.rows")],
-    subgraphs = [
-        NamedSubgraph(
-            name = "subgraph.rows",
-            attributeNodes = [NamedAttributeNode(value = "exerciseRows", subgraph = "subgraph.fields")]
-        ),
-        NamedSubgraph(
-            name = "subgraph.fields",
-            attributeNodes = [NamedAttributeNode(value = "exerciseRowFields")]
-        )
-    ]
-)
 class Workout(
     @Id
     @GeneratedValue
@@ -32,8 +18,8 @@ class Workout(
     override var userId: UUID? = null,
     @Enumerated(EnumType.STRING)
     var workoutType: WorkoutType = WorkoutType.TEMPLATE,
-    var startDate: LocalDateTime? = null,
-    var endDate: LocalDateTime? = null,
+    var startDate: Instant? = null,
+    var endDate: Instant? = null,
     @OneToMany(
         mappedBy = "workout",
         cascade = [CascadeType.ALL],
@@ -44,17 +30,4 @@ class Workout(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "program_week_id")
     var programWeek: ProgramWeek? = null
-) : UserOwned {
-    fun clone(): Workout {
-        return Workout(
-            name = name,
-            note = note,
-            userId = userId,
-            workoutType = workoutType,
-            startDate = startDate,
-            endDate = endDate,
-            programWeek = programWeek,
-            exerciseGroups = exerciseGroups.map { it.clone(this) }.toMutableList()
-        )
-    }
-}
+) : UserOwned

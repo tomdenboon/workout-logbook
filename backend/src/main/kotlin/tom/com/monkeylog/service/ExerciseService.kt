@@ -32,7 +32,7 @@ class ExerciseService(
         return exerciseRepository.save(
             Exercise(
                 userId = AuthenticatedUser.id,
-                name = "AS",
+                name = exerciseCreateRequest.name,
                 exerciseCategory = exerciseCreateRequest.exerciseCategory
             )
         )
@@ -40,7 +40,7 @@ class ExerciseService(
 
     fun updateExercise(exerciseUpdateRequest: ExerciseUpdateRequest, id: UUID): Exercise {
         val exercise: Exercise = getExercise(id)
-        exercise.name = (exerciseUpdateRequest.name)
+        exercise.name = exerciseUpdateRequest.name
         return exerciseRepository.save(exercise)
     }
 

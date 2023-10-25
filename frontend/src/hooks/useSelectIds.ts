@@ -1,23 +1,25 @@
 import { useMemo, useState } from 'react';
 
 function useSelectIds() {
-  const [idMap, setIdMap] = useState<Record<string, boolean>>({});
+  const [selectedIds, setIdList] = useState<string[]>([]);
 
-  const hasSelection = useMemo(() => Object.values(idMap).some((x) => x), [idMap]);
+  const hasSelection = useMemo(() => selectedIds.length > 0, [selectedIds]);
 
   const toggleId = (id: string) => {
-    const selectedExercise = idMap[id];
-    setIdMap({
-      ...idMap,
-      [id]: selectedExercise ? !selectedExercise : true,
-    });
+    const index = selectedIds.findIndex((item) => item === id);
+
+    if (index === -1) {
+      setIdList([...selectedIds, id]);
+    } else {
+      setIdList(selectedIds.filter((item) => item !== id));
+    }
   };
 
   return {
-    idMap,
-    toIdList: () => Object.keys(idMap).filter((id) => idMap[id]),
+    selectedIds,
     hasSelection,
     toggleId,
+    clearSelection: () => setIdList([]),
   };
 }
 

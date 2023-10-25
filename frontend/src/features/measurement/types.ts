@@ -8,4 +8,9 @@ export const METRIC_FORMAT_NICE: Record<MetricFormat, string> = {
   PERCENTAGE: 'Percentage',
 };
 
+export const TEST = METRIC_FORMATS.map((format) => ({
+  value: format,
+  label: METRIC_FORMAT_NICE[format],
+}));
+
 export type MetricFormat = (typeof METRIC_FORMATS)[number];

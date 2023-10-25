@@ -8,7 +8,6 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import useModal, { ModalType } from 'src/hooks/useModal';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useGetActiveWorkoutQuery } from 'src/store/monkeylogApi';
 
@@ -21,7 +20,6 @@ const NAVBAR_LIST = [
 
 function AppSideBar() {
   const { data: activeWorkout } = useGetActiveWorkoutQuery();
-  const { open: setWorkoutId } = useModal(ModalType.Workout);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -41,7 +39,9 @@ function AppSideBar() {
               sx={{ height: 24 }}
               size="small"
               variant="contained"
-              onClick={() => setWorkoutId(activeWorkout.id.toString())}
+              onClick={() =>
+                navigate('workouts/' + activeWorkout.id.toString(), { relative: 'path' })
+              }
             >
               Resume
             </Button>

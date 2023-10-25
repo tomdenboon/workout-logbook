@@ -1,65 +1,22 @@
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  TextField,
-  DialogActions,
-  Button,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-} from '@mui/material';
-import { METRIC_FORMATS, METRIC_FORMAT_NICE } from 'src/features/measurement/types';
-import useForm from 'src/hooks/useForm';
-import { IUseModal } from 'src/hooks/useModal';
-import { MeasurementCreateRequest } from 'src/store/baseMonkeylogApi';
-import { useCreateMeasurementMutation } from 'src/store/monkeylogApi';
+import ModalForm from 'src/components/ModalForm';
+import { useModalOutletContext } from 'src/components/ModalOutlet';
+import { TEST } from 'src/features/measurement/types';
+import { MeasurementCreateRequest, useCreateMeasurementMutation } from 'src/store/monkeylogApi';
 
-export default function AddMeasurementModal(props: IUseModal) {
-  const { isOpen, close } = props;
-  const { data: measurementForm, update } = useForm<MeasurementCreateRequest>({
-    name: '',
-    metric: 'WEIGHT',
-  });
+export default function AddMeasurementModal() {
+  const { modalControls } = useModalOutletContext();
   const [addMeasurement] = useCreateMeasurementMutation();
 
   return (
-    <Dialog open={isOpen} onClose={close}>
-      <DialogTitle>Add measurement</DialogTitle>
-      <DialogContent>
-        <TextField
-          label="Name"
-          size="small"
-          margin="dense"
-          value={measurementForm.name}
-          onChange={(e) => update('name', e.target.value)}
-        />
-        <FormControl size="small">
-          <InputLabel id="metric_format_label">Type</InputLabel>
-          <Select
-            label="Type"
-            labelId="metric_format_label"
-            value={measurementForm.metric}
-            onChange={(e) => update('metric', e.target.value as (typeof measurementForm)['metric'])}
-          >
-            {METRIC_FORMATS.map((et) => (
-              <MenuItem key={et} value={et}>
-                {METRIC_FORMAT_NICE[et]}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </DialogContent>
-      <DialogActions>
-        <Button
-          onClick={() =>
-            addMeasurement({ measurementCreateRequest: measurementForm }).unwrap().then(close)
-          }
-        >
-          Submit
-        </Button>
-      </DialogActions>
-    </Dialog>
+    <ModalForm<MeasurementCreateRequest>
+      {...modalControls}
+      title="Add measurement"
+      initialState={{ name: '', metric: 'WEIGHT' }}
+      renderOptions={[
+        { key: 'name', label: 'Name' },
+        { key: 'metric', label: 'Metric', options: TEST },
+      ]}
+      onSubmit={(measurementCreateRequest) => addMeasurement({ measurementCreateRequest }).unwrap()}
+    />
   );
 }

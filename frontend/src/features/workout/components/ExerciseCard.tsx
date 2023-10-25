@@ -1,20 +1,17 @@
 import { ListItem, ListItemButton, ListItemText } from '@mui/material';
 import ActionDropdown from 'src/components/ActionDropdown';
 import { useNavigate } from 'react-router-dom';
-import {
-  ExerciseResponse,
-  useDeleteExerciseMutation,
-} from 'src/store/monkeylogApi';
+import { ExerciseResponse, useDeleteExerciseMutation } from 'src/store/monkeylogApi';
+import { Check } from '@mui/icons-material';
 
 interface ExerciseCardProps {
   exercise: ExerciseResponse;
-  onEdit: () => void;
   isSelected?: boolean;
   onClick?: () => void;
 }
 
 function ExerciseCard(props: ExerciseCardProps) {
-  const { exercise, onClick, isSelected = false, onEdit } = props;
+  const { exercise, onClick, isSelected = false } = props;
   const navigate = useNavigate();
   const [deleteExercise] = useDeleteExerciseMutation();
 
@@ -22,15 +19,17 @@ function ExerciseCard(props: ExerciseCardProps) {
     <ListItem
       disablePadding
       secondaryAction={
-        <ActionDropdown
-          actions={[
-            { label: 'Edit', action: () => onEdit() },
-            {
-              label: 'Delete',
-              action: () => deleteExercise({ id: exercise.id }),
-            },
-          ]}
-        />
+        !isSelected && (
+          <ActionDropdown
+            actions={[
+              { label: 'Edit', action: () => navigate(`${exercise.id}`) },
+              {
+                label: 'Delete',
+                action: () => deleteExercise({ id: exercise.id }),
+              },
+            ]}
+          />
+        )
       }
     >
       <ListItemButton
@@ -38,6 +37,7 @@ function ExerciseCard(props: ExerciseCardProps) {
         onClick={() => (onClick ? onClick() : navigate(exercise.id.toString()))}
       >
         <ListItemText primary={exercise.name} />
+        {isSelected && <Check color="primary" sx={{ mr: 1 }} />}
       </ListItemButton>
     </ListItem>
   );

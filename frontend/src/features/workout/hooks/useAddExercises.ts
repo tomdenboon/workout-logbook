@@ -13,7 +13,9 @@ function useAddExercises() {
       },
     })
       .unwrap()
-      .then(() => navigate(`/training/workouts/${workoutId}`));
+      .then(() => {
+        navigate('..');
+      });
 
   return { add };
 }

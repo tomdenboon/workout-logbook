@@ -16,14 +16,14 @@ fun Exercise.toResponse() = ExerciseResponse(
 
 fun ExerciseType.toResponse() = ExerciseTypeResponse(
     this,
-    name,
+    niceName,
     metricFormat
 )
 
 fun ExerciseCategory.toResponse(): ExerciseCategoryResponse {
     return ExerciseCategoryResponse(
         this,
-        this.niceName,
-        this.types.map { it.toResponse() }.toList()
+        niceName,
+        types.map { it.toResponse() }.toList()
     )
 }

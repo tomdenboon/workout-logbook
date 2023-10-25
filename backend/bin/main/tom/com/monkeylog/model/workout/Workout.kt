@@ -3,7 +3,7 @@ package tom.com.monkeylog.model.workout
 import jakarta.persistence.*
 import org.hibernate.annotations.UuidGenerator
 import tom.com.monkeylog.model.user.UserOwned
-import java.time.LocalDateTime
+import java.time.Instant
 import java.util.*
 
 @Entity
@@ -32,8 +32,8 @@ class Workout(
     override var userId: UUID? = null,
     @Enumerated(EnumType.STRING)
     var workoutType: WorkoutType = WorkoutType.TEMPLATE,
-    var startDate: LocalDateTime? = null,
-    var endDate: LocalDateTime? = null,
+    var startDate: Instant? = null,
+    var endDate: Instant? = null,
     @OneToMany(
         mappedBy = "workout",
         cascade = [CascadeType.ALL],

@@ -7,6 +7,7 @@ import WorkoutCompleteCard from 'src/features/workout/components/WorkoutComplete
 import useModal, { ModalType } from 'src/hooks/useModal';
 import { useState } from 'react';
 import { WorkoutFullResponse, useGetWorkoutsQuery } from 'src/store/monkeylogApi';
+import { ModalOutlet } from 'src/components/ModalOutlet';
 
 const FORMAT = 'YYYY-MM-DD';
 
@@ -93,6 +94,7 @@ function HistoryPage() {
           </Section>
         ))}
       </Stack>
+      <ModalOutlet />
     </AppContainer>
   );
 }

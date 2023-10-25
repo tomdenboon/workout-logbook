@@ -1,32 +1,22 @@
-import { TextField } from "@mui/material";
-import React, { useState, useEffect } from "react";
-import { ExerciseRowFieldResponse } from "src/store/baseMonkeylogApi";
-import { useUpdateExerciseRowFieldMutation } from "src/store/monkeylogApi";
+import { TextField } from '@mui/material';
+import React, { useState } from 'react';
+import { ExerciseRowFieldResponse } from 'src/store/baseMonkeylogApi';
+import { useUpdateExerciseRowFieldMutation } from 'src/store/monkeylogApi';
 
 interface ExerciseRowFieldProps {
   workoutId: string;
   exerciseGroupId: string;
   exerciseRowId: string;
   exerciseRowField: ExerciseRowFieldResponse;
-  isLifted: boolean;
 }
 
 function ExerciseRowFieldForm(props: ExerciseRowFieldProps) {
-  const { workoutId, exerciseGroupId, exerciseRowId, exerciseRowField, isLifted } = props;
+  const { workoutId, exerciseGroupId, exerciseRowId, exerciseRowField } = props;
   const [field, setField] = useState(exerciseRowField);
-  const [newField, setNewField] = useState(exerciseRowField);
   const [updateExerciseRowField] = useUpdateExerciseRowFieldMutation();
 
-  useEffect(() => {
-    if (!isLifted) {
-      setNewField((newField) => ({ ...newField, value: 0 }));
-    } else {
-      setNewField({ ...field });
-    }
-  }, [field, isLifted]);
-
   const updateField = async () => {
-    if (newField.value === undefined || newField.value === field.value) {
+    if (exerciseRowField.value === field.value) {
       return;
     }
 
@@ -34,15 +24,15 @@ function ExerciseRowFieldForm(props: ExerciseRowFieldProps) {
       workoutId,
       exerciseGroupId,
       exerciseRowId,
-      exerciseRowFieldId: newField.id,
-      exerciseRowFieldUpdateRequest: newField,
+      exerciseRowFieldId: field.id,
+      exerciseRowFieldUpdateRequest: field,
     });
-    setField(newField);
   };
 
   const cleanFieldInput = (newInput: string) => {
     // also clear trim 0's in front of string
-    return Number(newInput.replace(/\D/g, '').replace(/^0+/, ''));
+    const x = newInput.replace(/\D/g, '').replace(/^0+/, '');
+    return x ? Number(x) : null;
   };
 
   return (
@@ -57,10 +47,9 @@ function ExerciseRowFieldForm(props: ExerciseRowFieldProps) {
       }}
       fullWidth
       hiddenLabel
-      type="tel"
-      value={newField.value}
-      placeholder={field.value.toString()}
-      onChange={(e) => setNewField({ ...newField, value: cleanFieldInput(e.target.value) })}
+      value={field.value ?? ''}
+      onChange={(e) => setField({ ...field, value: cleanFieldInput(e.target.value) })}
+      onFocus={(e) => e.target.select()}
       onBlur={updateField}
     />
   );
