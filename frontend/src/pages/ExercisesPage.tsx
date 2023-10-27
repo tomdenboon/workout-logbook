@@ -59,7 +59,7 @@ function Exercises() {
   const { add } = useAddExercises();
   const editExercise = exercises?.find((val) => val.id === exerciseId);
 
-  const Component = open != undefined ? FullScreenModal : AppContainer;
+  const Component = modalControls != undefined ? FullScreenModal : AppContainer;
 
   const searchComponent = (
     <Search>

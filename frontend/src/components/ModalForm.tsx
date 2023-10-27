@@ -16,6 +16,7 @@ import useForm from 'src/hooks/useForm';
 function ModalForm<Form extends Record<string, string | number>>(props: {
   open: boolean;
   onClose: () => void;
+  onTransitionExited?: () => void;
   title: string;
   initialState: Form;
   renderOptions: {
@@ -26,11 +27,11 @@ function ModalForm<Form extends Record<string, string | number>>(props: {
   }[];
   onSubmit: (form: Form) => Promise<unknown> | void;
 }) {
-  const { title, open, onClose, initialState, renderOptions, onSubmit } = props;
+  const { title, open, onClose, initialState, renderOptions, onSubmit, onTransitionExited } = props;
   const { data: formState, update } = useForm(initialState);
 
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open} onClose={onClose} onTransitionExited={onTransitionExited}>
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
         <Stack>

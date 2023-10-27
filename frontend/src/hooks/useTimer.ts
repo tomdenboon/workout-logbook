@@ -17,10 +17,11 @@ function useTimer(start?: string, end?: string) {
   }, [startDate, endDate]);
 
   const digitalTimerFormat = useMemo(() => {
-    const minutes = timerInfo.hrs * 60 + timerInfo.mins;
-    const seconds = timerInfo.secs;
+    const { hrs, mins, secs } = timerInfo;
 
-    return `${minutes >= 10 ? minutes : `0${minutes}`}:${seconds >= 10 ? seconds : `0${seconds}`}`;
+    const prependZero = (num: number) => (num >= 10 ? num : `0${num}`);
+
+    return `${hrs > 0 ? hrs + ':' : ''}${prependZero(mins)}:${prependZero(secs)}`;
   }, [timerInfo]);
 
   const prettyTimerFormat = useMemo(() => {

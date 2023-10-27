@@ -30,7 +30,6 @@ dependencies {
     implementation("org.mapstruct:mapstruct:1.5.3.Final")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
-
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
     runtimeOnly("org.postgresql:postgresql")
