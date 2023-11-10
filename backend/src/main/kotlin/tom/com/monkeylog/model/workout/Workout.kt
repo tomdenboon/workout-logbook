@@ -20,11 +20,7 @@ class Workout(
     var workoutType: WorkoutType = WorkoutType.TEMPLATE,
     var startDate: Instant? = null,
     var endDate: Instant? = null,
-    @OneToMany(
-        mappedBy = "workout",
-        cascade = [CascadeType.ALL],
-        orphanRemoval = true
-    )
+    @OneToMany(mappedBy = "workout", cascade = [CascadeType.ALL], orphanRemoval = true)
     @OrderColumn(name = "sort_order")
     var exerciseGroups: MutableList<ExerciseGroup> = ArrayList(),
     @ManyToOne(fetch = FetchType.LAZY)

@@ -1,4 +1,4 @@
-package tom.com.monkeylog.repository.user
+package tom.com.monkeylog.repository
 
 import org.springframework.data.jpa.repository.JpaRepository
 import tom.com.monkeylog.model.user.User

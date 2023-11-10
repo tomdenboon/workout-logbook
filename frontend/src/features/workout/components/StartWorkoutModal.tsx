@@ -15,7 +15,7 @@ import {
 } from 'src/store/monkeylogApi';
 
 function StartWorkoutModal() {
-  const { workout, open, onClose } = useModalOutletContext<{ workout?: WorkoutFullResponse }>();
+  const { workout, modalControls } = useModalOutletContext<{ workout?: WorkoutFullResponse }>();
   const navigate = useNavigate();
   const [startWorkout] = useStartWorkoutMutation();
   const [startEmptyWorkout] = useStartEmptyWorkoutMutation();
@@ -26,7 +26,7 @@ function StartWorkoutModal() {
       .then(({ id: finalId }) => navigate('../workouts/' + finalId));
 
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog {...modalControls}>
       <DialogTitle>Start {workout?.name ?? 'workout'}</DialogTitle>
       <DialogContent>
         {workout?.exerciseGroups.map((exerciseGroup) => (

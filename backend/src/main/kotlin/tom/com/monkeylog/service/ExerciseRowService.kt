@@ -7,9 +7,9 @@ import tom.com.monkeylog.dto.workout.ExerciseRowFieldUpdateRequest
 import tom.com.monkeylog.dto.workout.ExerciseRowUpdateRequest
 import tom.com.monkeylog.model.workout.ExerciseRow
 import tom.com.monkeylog.model.workout.ExerciseRowField
-import tom.com.monkeylog.repository.workout.ExerciseGroupRepository
-import tom.com.monkeylog.repository.workout.ExerciseRowFieldRepository
-import tom.com.monkeylog.repository.workout.ExerciseRowRepository
+import tom.com.monkeylog.repository.ExerciseGroupRepository
+import tom.com.monkeylog.repository.ExerciseRowFieldRepository
+import tom.com.monkeylog.repository.ExerciseRowRepository
 import tom.com.monkeylog.security.AuthenticatedUser
 import java.util.*
 
@@ -19,7 +19,7 @@ class ExerciseRowService(
     private val exerciseRowRepository: ExerciseRowRepository,
     private val exerciseRowFieldRepository: ExerciseRowFieldRepository,
 ) {
-    operator fun get(id: UUID): ExerciseRow {
+    fun get(id: UUID): ExerciseRow {
         return exerciseRowRepository.findById(id)
             .filter(AuthenticatedUser::isResourceOwner)
             .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, ROW_NOT_FOUND) }
@@ -33,7 +33,7 @@ class ExerciseRowService(
 
     fun update(exerciseRowUpdateRequest: ExerciseRowUpdateRequest, id: UUID): ExerciseRow {
         val exerciseRow: ExerciseRow = get(id)
-        exerciseRow.isLifted = exerciseRowUpdateRequest.isLifted
+        exerciseRow.lifted = exerciseRowUpdateRequest.lifted
         return exerciseRowRepository.save(exerciseRow)
     }
 
@@ -41,9 +41,9 @@ class ExerciseRowService(
         exerciseRowFieldUpdateRequest: ExerciseRowFieldUpdateRequest,
         exerciseRowFieldId: UUID
     ): ExerciseRowField {
-        val exerciseRowField: ExerciseRowField = getField(exerciseRowFieldId)
-        exerciseRowField.value = exerciseRowFieldUpdateRequest.value
-        return exerciseRowFieldRepository.save(exerciseRowField)
+        return exerciseRowFieldRepository.save(getField(exerciseRowFieldId).apply {
+            value = exerciseRowFieldUpdateRequest.value
+        })
     }
 
     fun delete(id: UUID) {

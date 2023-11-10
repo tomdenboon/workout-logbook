@@ -10,8 +10,8 @@ import tom.com.monkeylog.mapper.toEntity
 import tom.com.monkeylog.mapper.update
 import tom.com.monkeylog.model.workout.Program
 import tom.com.monkeylog.model.workout.ProgramWeek
-import tom.com.monkeylog.repository.workout.ProgramRepository
-import tom.com.monkeylog.repository.workout.ProgramWeekRepository
+import tom.com.monkeylog.repository.ProgramRepository
+import tom.com.monkeylog.repository.ProgramWeekRepository
 import tom.com.monkeylog.security.AuthenticatedUser
 import java.util.*
 

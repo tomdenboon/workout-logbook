@@ -11,8 +11,8 @@ import tom.com.monkeylog.mapper.toEntity
 import tom.com.monkeylog.mapper.update
 import tom.com.monkeylog.model.measurement.Measurement
 import tom.com.monkeylog.model.measurement.MeasurementPoint
-import tom.com.monkeylog.repository.measurement.MeasurementPointRepository
-import tom.com.monkeylog.repository.measurement.MeasurementRepository
+import tom.com.monkeylog.repository.MeasurementPointRepository
+import tom.com.monkeylog.repository.MeasurementRepository
 import tom.com.monkeylog.security.AuthenticatedUser
 import java.util.*
 

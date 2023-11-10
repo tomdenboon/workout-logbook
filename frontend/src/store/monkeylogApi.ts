@@ -42,7 +42,7 @@ export const monkeyLogApi = baseMonkeylogApi.enhanceEndpoints({
     // WORKOUTS
     getWorkouts: {
       providesTags: (result, _errors, arg) => [
-        ...(result?.content ?? []).map((workout) => ({
+        ...(result ?? []).map((workout) => ({
           type: 'Workout' as const,
           id: workout.id,
         })),

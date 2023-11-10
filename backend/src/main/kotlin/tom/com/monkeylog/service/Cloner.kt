@@ -30,7 +30,7 @@ fun ExerciseGroup.clone(workout: Workout): ExerciseGroup {
 
 fun ExerciseRow.clone(exerciseGroup: ExerciseGroup): ExerciseRow {
     return ExerciseRow(
-        isLifted = false,
+        lifted = false,
         exerciseGroup = exerciseGroup,
         userId = AuthenticatedUser.id
     ).apply {

@@ -12,7 +12,7 @@ class ExerciseRow(
     @UuidGenerator
     var id: UUID? = null,
     @Column(nullable = false)
-    var isLifted: Boolean,
+    var lifted: Boolean,
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "exercise_group_id", nullable = false)
     var exerciseGroup: ExerciseGroup,

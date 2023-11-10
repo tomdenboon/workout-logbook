@@ -32,18 +32,19 @@ function ServerDay(props: PickersDayProps<Dayjs> & { highlightedDays?: string[] 
 function HistoryPage() {
   const calendarModal = useModal(ModalType.Calendar);
   const [date, setDate] = useState<Dayjs | null>();
-  const { data: pageWorkout } = useGetWorkoutsQuery({
+  const { data: workouts } = useGetWorkoutsQuery({
     workoutType: 'COMPLETED',
-    size: 20,
-    after: date?.format('YYYY-MM-DDT00:00:00'),
   });
 
-  const monthGrouped = pageWorkout?.content.reduce((acc, val) => {
+  const monthGrouped = workouts?.reduce((acc, val) => {
     const month = dayjs(val.endDate).format('MMMM YYYY');
+
     if (!acc[month]) {
       acc[month] = [];
     }
+
     acc[month].push(val);
+
     return acc;
   }, {} as Record<string, WorkoutFullResponse[]>);
 
@@ -58,41 +59,40 @@ function HistoryPage() {
         ),
       }}
     >
-      {pageWorkout && pageWorkout.content.length > 0 && (
+      {workouts && workouts.length > 0 && (
         <Dialog open={calendarModal.isOpen} onClose={calendarModal.close}>
           <DateCalendar
             loading={false}
             value={date}
-            maxDate={dayjs(pageWorkout.content[pageWorkout.content.length - 1].endDate)}
-            minDate={dayjs(pageWorkout.content[0].endDate)}
+            maxDate={dayjs(workouts[workouts.length - 1].endDate)}
+            minDate={dayjs(workouts[0].endDate)}
             slots={{ day: ServerDay }}
             slotProps={{
               day: {
-                highlightedDays: pageWorkout.content.map((val) =>
-                  dayjs(val.endDate).format(FORMAT)
-                ),
+                highlightedDays: workouts.map((val) => dayjs(val.endDate).format(FORMAT)),
               } as any,
             }}
             onChange={(d) => {
               setDate(d);
-              calendarModal.close();
+              // calendarModal.close();
             }}
           />
         </Dialog>
       )}
-
       <Stack spacing={1}>
-        {Object.entries(monthGrouped ?? {}).map(([month, workouts]) => (
-          <Section title={month} key={month}>
-            <Grid container spacing={1}>
-              {workouts.map((val) => (
-                <Grid item xs={12} sm={6} md={4} key={val.id}>
-                  <WorkoutCompleteCard workout={val} />
-                </Grid>
-              ))}
-            </Grid>
-          </Section>
-        ))}
+        {Object.entries(monthGrouped ?? {})
+          .sort(([a], [b]) => dayjs(b).unix() - dayjs(a).unix())
+          .map(([month, workouts]) => (
+            <Section title={month} key={month}>
+              <Grid container spacing={1}>
+                {workouts.map((val) => (
+                  <Grid item xs={12} sm={6} md={4} key={val.id}>
+                    <WorkoutCompleteCard workout={val} />
+                  </Grid>
+                ))}
+              </Grid>
+            </Section>
+          ))}
       </Stack>
       <ModalOutlet />
     </AppContainer>

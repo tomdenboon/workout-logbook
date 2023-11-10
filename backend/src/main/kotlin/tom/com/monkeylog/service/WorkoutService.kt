@@ -1,7 +1,5 @@
 package tom.com.monkeylog.service
 
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
@@ -9,7 +7,7 @@ import tom.com.monkeylog.dto.workout.WorkoutCreateRequest
 import tom.com.monkeylog.mapper.toEntity
 import tom.com.monkeylog.model.workout.Workout
 import tom.com.monkeylog.model.workout.WorkoutType
-import tom.com.monkeylog.repository.workout.WorkoutRepository
+import tom.com.monkeylog.repository.WorkoutRepository
 import tom.com.monkeylog.security.AuthenticatedUser
 import java.time.Instant
 import java.util.*
@@ -21,18 +19,10 @@ class WorkoutService(
     private val programService: ProgramService,
 ) {
 
-    fun getWorkouts(workoutType: WorkoutType, after: Instant?, pageable: Pageable): Page<Workout> {
-        return after?.let {
-            workoutRepository.findAllByWorkoutTypeAndUserIdAndStartDateAfter(
-                workoutType,
-                AuthenticatedUser.id,
-                it,
-                pageable
-            )
-        } ?: workoutRepository.findAllByWorkoutTypeAndUserId(
+    fun getWorkouts(workoutType: WorkoutType): List<Workout> {
+        return workoutRepository.findAllByWorkoutTypeAndUserId(
             workoutType,
-            AuthenticatedUser.id,
-            pageable
+            AuthenticatedUser.id
         )
     }
 
@@ -75,9 +65,9 @@ class WorkoutService(
                 ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, WORKOUT_NOT_FOUND)
 
         workout.exerciseGroups.forEach { exerciseGroup ->
-            exerciseGroup.exerciseRows.removeIf { exerciseRow -> !exerciseRow.isLifted }
+            exerciseGroup.exerciseRows.removeIf { exerciseRow -> !exerciseRow.lifted }
         }
-        workout.exerciseGroups.filter { exerciseGroup -> exerciseGroup.exerciseRows.isEmpty() }
+        workout.exerciseGroups.removeIf { exerciseGroup -> exerciseGroup.exerciseRows.isEmpty() }
         workout.endDate = Instant.now()
         workout.workoutType = WorkoutType.COMPLETED
         return workoutRepository.save(workout)

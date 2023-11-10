@@ -22,7 +22,7 @@ function ExerciseGroupForm(props: ExerciseGroupProps) {
   const [deleteExerciseGroup] = useDeleteExerciseGroupMutation();
 
   return (
-    <Stack sx={{ pt: 1 }}>
+    <Stack sx={{ pt: 4 }}>
       <Stack direction="row" sx={{ mb: 1 }} justifyContent="space-between">
         <Typography fontWeight={800} color="primary">
           {exerciseGroup.exercise.name}

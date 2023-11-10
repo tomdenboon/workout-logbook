@@ -6,7 +6,7 @@ import org.springframework.web.server.ResponseStatusException
 import tom.com.monkeylog.dto.workout.ExerciseCreateRequest
 import tom.com.monkeylog.dto.workout.ExerciseUpdateRequest
 import tom.com.monkeylog.model.exercise.Exercise
-import tom.com.monkeylog.repository.workout.ExerciseRepository
+import tom.com.monkeylog.repository.ExerciseRepository
 import tom.com.monkeylog.security.AuthenticatedUser
 import java.util.*
 

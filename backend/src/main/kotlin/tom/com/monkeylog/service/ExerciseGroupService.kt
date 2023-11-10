@@ -5,8 +5,8 @@ import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
 import tom.com.monkeylog.dto.workout.ExerciseGroupCreateRequest
 import tom.com.monkeylog.model.workout.*
-import tom.com.monkeylog.repository.workout.ExerciseGroupRepository
-import tom.com.monkeylog.repository.workout.WorkoutRepository
+import tom.com.monkeylog.repository.ExerciseGroupRepository
+import tom.com.monkeylog.repository.WorkoutRepository
 import tom.com.monkeylog.security.AuthenticatedUser
 import java.util.*
 
@@ -25,7 +25,7 @@ class ExerciseGroupService(
     fun addRow(id: UUID): ExerciseGroup {
         val exerciseGroup: ExerciseGroup = get(id)
         val exerciseRow: ExerciseRow = exerciseGroup.exerciseRows.last().clone(exerciseGroup)
-        exerciseRow.isLifted = exerciseGroup.workout.workoutType === WorkoutType.COMPLETED
+        exerciseRow.lifted = exerciseGroup.workout.workoutType === WorkoutType.COMPLETED
         exerciseGroup.exerciseRows.add(exerciseRow)
 
         return exerciseGroupRepository.save(exerciseGroup)
@@ -45,7 +45,7 @@ class ExerciseGroupService(
                 val exerciseRow = ExerciseRow(
                     exerciseGroup = exerciseGroup,
                     userId = AuthenticatedUser.id,
-                    isLifted = workout.workoutType === WorkoutType.COMPLETED,
+                    lifted = workout.workoutType === WorkoutType.COMPLETED,
                 )
 
                 exerciseGroup.exerciseRows.add(exerciseRow)
@@ -69,5 +69,13 @@ class ExerciseGroupService(
         val workout: Workout = exerciseGroup.workout
         workout.exerciseGroups.remove(exerciseGroup)
         workoutRepository.save(workout)
+    }
+
+    fun getByExerciseId(exerciseId: UUID): List<ExerciseGroup> {
+        return exerciseGroupRepository.findAllByExerciseIdAndUserIdAndWorkoutWorkoutType(
+            exerciseId,
+            AuthenticatedUser.id,
+            WorkoutType.COMPLETED,
+        )
     }
 }

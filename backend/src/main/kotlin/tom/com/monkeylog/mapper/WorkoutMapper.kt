@@ -32,11 +32,18 @@ fun ExerciseGroup.toResponse() = ExerciseGroupResponse(
     exerciseRows = exerciseRows.map(ExerciseRow::toResponse).toList()
 )
 
+fun ExerciseGroup.toResponseWithWorkout() = ExerciseGroupWithWorkoutResponse(
+    id = id.notNull(),
+    exercise = exercise.toResponse(),
+    exerciseRows = exerciseRows.map(ExerciseRow::toResponse).toList(),
+    workout = workout.toResponse()
+)
+
 fun ExerciseRow.toResponse() = ExerciseRowResponse(
     id = id.notNull(),
-    isLifted = isLifted,
+    lifted = lifted,
     exerciseRowFields = exerciseRowFields.map(ExerciseRowField::toResponse).toList()
-).apply { this }
+)
 
 fun ExerciseRowField.toResponse() = ExerciseRowFieldResponse(
     id = id.notNull(),

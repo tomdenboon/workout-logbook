@@ -1,10 +1,10 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 function useTimer(start?: string, end?: string) {
-  const [endDate, setEndDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(end ? new Date(end) : new Date());
   const startDate = useMemo(() => (start ? new Date(start) : new Date()), [start]);
 
-  const timerInfo = useMemo(() => {
+  const getTimerInfo = useCallback(() => {
     let milliseconds = endDate.getTime() - startDate.getTime();
     const ms = milliseconds % 1000;
     milliseconds = (milliseconds - ms) / 1000;
@@ -17,14 +17,16 @@ function useTimer(start?: string, end?: string) {
   }, [startDate, endDate]);
 
   const digitalTimerFormat = useMemo(() => {
-    const { hrs, mins, secs } = timerInfo;
+    const { hrs, mins, secs } = getTimerInfo();
 
     const prependZero = (num: number) => (num >= 10 ? num : `0${num}`);
 
     return `${hrs > 0 ? hrs + ':' : ''}${prependZero(mins)}:${prependZero(secs)}`;
-  }, [timerInfo]);
+  }, [getTimerInfo]);
 
   const prettyTimerFormat = useMemo(() => {
+    const timerInfo = getTimerInfo();
+
     if (timerInfo.hrs > 0) {
       return `${timerInfo.hrs} hrs ${timerInfo.mins} mins`;
     }
@@ -34,7 +36,9 @@ function useTimer(start?: string, end?: string) {
     }
 
     return `${timerInfo.secs} secs`;
-  }, [timerInfo]);
+  }, [getTimerInfo]);
+
+  console.log(prettyTimerFormat);
 
   useEffect(() => {
     let intervalId: number;
@@ -42,14 +46,12 @@ function useTimer(start?: string, end?: string) {
       intervalId = setInterval(() => {
         setEndDate(new Date());
       }, 100);
-    } else {
-      setEndDate(new Date(end));
     }
 
     return () => clearInterval(intervalId);
   }, [end]);
 
-  return { digitalTimerFormat, prettyTimerFormat, timerInfo };
+  return { digitalTimerFormat, prettyTimerFormat };
 }
 
 export default useTimer;

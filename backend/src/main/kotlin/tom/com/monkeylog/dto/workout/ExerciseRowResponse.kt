@@ -5,5 +5,5 @@ import java.util.*
 data class ExerciseRowResponse(
     val id: UUID,
     val exerciseRowFields: List<ExerciseRowFieldResponse>,
-    val isLifted: Boolean,
+    val lifted: Boolean,
 )

@@ -4,9 +4,12 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import tom.com.monkeylog.dto.workout.ExerciseGroupCreateRequest
+import tom.com.monkeylog.dto.workout.ExerciseRowFieldResponse
 import tom.com.monkeylog.dto.workout.ExerciseRowFieldUpdateRequest
 import tom.com.monkeylog.dto.workout.ExerciseRowUpdateRequest
 import tom.com.monkeylog.mapper.toResponse
+import tom.com.monkeylog.mapper.toResponseWithWorkout
+import tom.com.monkeylog.model.workout.ExerciseGroup
 import tom.com.monkeylog.service.ExerciseGroupService
 import tom.com.monkeylog.service.ExerciseRowService
 import java.util.*
@@ -41,7 +44,9 @@ class ExerciseGroupController(
         @PathVariable exerciseRowId: UUID,
         @PathVariable exerciseRowFieldId: UUID,
         @RequestBody exerciseRowFieldUpdateRequest: ExerciseRowFieldUpdateRequest
-    ) = exerciseRowService.updateField(exerciseRowFieldUpdateRequest, exerciseRowFieldId).toResponse()
+    ): ExerciseRowFieldResponse {
+        return exerciseRowService.updateField(exerciseRowFieldUpdateRequest, exerciseRowFieldId).toResponse()
+    }
 
     @PostMapping("/workouts/{workoutId}/exercise-groups")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -64,4 +69,9 @@ class ExerciseGroupController(
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteExerciseGroup(@PathVariable workoutId: UUID, @PathVariable exerciseGroupId: UUID) =
         exerciseGroupService.delete(exerciseGroupId)
+
+    @GetMapping("/exercises/{exerciseId}/exercise-groups")
+    fun getExerciseGroups(@PathVariable exerciseId: UUID) =
+        exerciseGroupService.getByExerciseId(exerciseId).map(ExerciseGroup::toResponseWithWorkout)
 }
+

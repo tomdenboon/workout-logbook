@@ -1,4 +1,4 @@
-package tom.com.monkeylog.repository.measurement
+package tom.com.monkeylog.repository
 
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository

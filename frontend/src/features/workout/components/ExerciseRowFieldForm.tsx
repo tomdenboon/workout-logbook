@@ -32,7 +32,7 @@ function ExerciseRowFieldForm(props: ExerciseRowFieldProps) {
   const cleanFieldInput = (newInput: string) => {
     // also clear trim 0's in front of string
     const x = newInput.replace(/\D/g, '').replace(/^0+/, '');
-    return x ? Number(x) : null;
+    return x ? Number(x) : undefined;
   };
 
   return (

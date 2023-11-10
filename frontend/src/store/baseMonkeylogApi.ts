@@ -1,6 +1,16 @@
 import { emptyMonkeylogApi as api } from './emptyMonkeylogApi';
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
+    getSettings: build.query<GetSettingsResponse, GetSettingsArg>({
+      query: () => ({ url: `/settings` }),
+    }),
+    updateSettings: build.mutation<UpdateSettingsResponse, UpdateSettingsArg>({
+      query: (queryArg) => ({
+        url: `/settings`,
+        method: 'PUT',
+        body: queryArg.settingsUpdateRequest,
+      }),
+    }),
     getProgram: build.query<GetProgramResponse, GetProgramArg>({
       query: (queryArg) => ({ url: `/programs/${queryArg.id}` }),
     }),
@@ -195,6 +205,12 @@ const injectedRtkApi = api.injectEndpoints({
   overrideExisting: false,
 });
 export { injectedRtkApi as baseMonkeylogApi };
+export type GetSettingsResponse = /** status 200 OK */ SettingsResponse;
+export type GetSettingsArg = void;
+export type UpdateSettingsResponse = /** status 200 OK */ SettingsResponse;
+export type UpdateSettingsArg = {
+  settingsUpdateRequest: SettingsUpdateRequest;
+};
 export type GetProgramResponse = /** status 200 OK */ ProgramResponse;
 export type GetProgramArg = {
   id: string;
@@ -208,7 +224,7 @@ export type DeleteProgramResponse = unknown;
 export type DeleteProgramArg = {
   id: string;
 };
-export type GetWorkoutsResponse = /** status 200 OK */ PageWorkoutFullResponse;
+export type GetWorkoutsResponse = /** status 200 OK */ WorkoutFullResponse[];
 export type GetWorkoutsArg = {
   /** Zero-based page index (0..N) */
   page?: number;
@@ -348,6 +364,13 @@ export type DeleteProgramWeekResponse = unknown;
 export type DeleteProgramWeekArg = {
   id: string;
 };
+export type SettingsResponse = {
+  id: string;
+  measurementSystem: 'METRIC' | 'IMPERIAL';
+};
+export type SettingsUpdateRequest = {
+  measurementSystem: 'METRIC' | 'IMPERIAL';
+};
 export type ProgramWeekResponse = {
   id: string;
   name: string;
@@ -379,7 +402,7 @@ export type ExerciseResponse = {
 };
 export type ExerciseRowFieldResponse = {
   id: string;
-  value: number | null;
+  value?: number;
   exerciseType: 'REPS' | 'TIME' | 'DISTANCE' | 'WEIGHT';
 };
 export type ExerciseRowResponse = {
@@ -400,12 +423,6 @@ export type WorkoutFullResponse = {
   startDate?: string;
   endDate?: string;
   exerciseGroups: ExerciseGroupResponse[];
-};
-export type PageWorkoutFullResponse = {
-  number: number;
-  size: number;
-  numberOfElements: number;
-  content: WorkoutFullResponse[];
 };
 export type WorkoutResponse = {
   id: string;
@@ -460,7 +477,7 @@ export type ExerciseRowUpdateRequest = {
   isLifted: boolean;
 };
 export type ExerciseRowFieldUpdateRequest = {
-  value: number | null;
+  value?: number;
 };
 export type MeasurementUpdateRequest = {
   name: string;

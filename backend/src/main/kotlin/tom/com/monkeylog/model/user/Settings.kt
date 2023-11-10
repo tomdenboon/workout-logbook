@@ -7,12 +7,11 @@ import org.hibernate.annotations.UuidGenerator
 import java.util.*
 
 @Entity
-class UserSettings(
+class Settings(
     @Id
     @GeneratedValue
     @UuidGenerator
     var id: UUID? = null,
-    var metric: String,
-    var theme: String,
+    var measurementSystem: MeasurementSystem,
     override var userId: UUID? = null,
 ) : UserOwned

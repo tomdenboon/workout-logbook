@@ -19,7 +19,8 @@ class Measurement(
     @Enumerated(EnumType.STRING)
     var metric: MetricFormat,
 
-    @OneToMany(mappedBy = "measurement")
+    @OneToMany(mappedBy = "measurement", cascade = [CascadeType.ALL])
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @OrderBy("createdAt DESC")
     var measurementPoints: List<MeasurementPoint> = emptyList()
 ) : UserOwned

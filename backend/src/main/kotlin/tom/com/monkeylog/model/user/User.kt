@@ -7,10 +7,10 @@ import org.hibernate.annotations.UuidGenerator
 import java.util.*
 
 @Entity(name = "users")
-class User (
+class User(
     @Id
     @GeneratedValue
     @UuidGenerator
-    val id: UUID,
+    val id: UUID? = null,
     val name: String
 )

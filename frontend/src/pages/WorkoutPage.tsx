@@ -45,7 +45,7 @@ function WorkoutPage() {
       }}
       {...modalControls}
     >
-      <Stack spacing={4}>
+      <Stack>
         <div>
           <Typography>{workout.name}</Typography>
           <Typography>{workout.note}</Typography>
@@ -67,12 +67,12 @@ function WorkoutPage() {
             ))}
           </Stack>
         )}
-        <Button variant="outlined" sx={{ height: 24 }} onClick={() => navigate('exercises')}>
+        <Button variant="outlined" sx={{ height: 24, mt: 4 }} onClick={() => navigate('exercises')}>
           Add exercise
         </Button>
         <Button
           variant="outlined"
-          sx={{ height: 24 }}
+          sx={{ height: 24, mt: 4 }}
           color="error"
           onClick={() => deleteWorkoutModal.open()}
         >

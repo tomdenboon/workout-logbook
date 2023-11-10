@@ -12,7 +12,7 @@ function TrainingPage() {
   const navigate = useNavigate();
   const { data: workouts } = useGetWorkoutsQuery({ workoutType: 'TEMPLATE' });
   const { workoutId } = useParams();
-  const startWorkout = workouts?.content?.find((val) => val.id === workoutId);
+  const startWorkout = workouts?.find((val) => val.id === workoutId);
 
   return (
     <AppContainer header={{ title: 'Workouts' }}>
@@ -37,12 +37,12 @@ function TrainingPage() {
           >
             {workouts && (
               <Grid container spacing={1}>
-                {workouts.content.length === 0 && (
+                {workouts.length === 0 && (
                   <Grid item xs={12} sm={6} md={4}>
                     <AddItemCard item="template" onClick={() => navigate('workouts/add')} />
                   </Grid>
                 )}
-                {workouts.content.map((val) => (
+                {workouts.map((val) => (
                   <Grid item xs={12} sm={6} md={4} key={val.id}>
                     <WorkoutCard
                       onClick={() => navigate(`workouts/${val.id}/start`)}

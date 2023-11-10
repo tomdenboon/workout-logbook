@@ -1,7 +1,6 @@
 package tom.com.monkeylog.model.measurement
 
 import jakarta.persistence.*
-import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UuidGenerator
 import tom.com.monkeylog.model.user.UserOwned
 import java.time.Instant
@@ -17,7 +16,6 @@ class MeasurementPoint(
     @ManyToOne
     @JoinColumn(name = "measurement_id", nullable = false)
     var measurement: Measurement,
-    @CreationTimestamp
     var createdAt: Instant? = null,
     override var userId: UUID? = null
 ) : UserOwned
