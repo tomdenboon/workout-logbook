@@ -10,7 +10,7 @@ fun Program.toResponse() = ProgramResponse(
     id = id.notNull(),
     name = name,
     description = description,
-    weeks = this.programWeeks.map { it.toResponse() }
+    weeks = this.programWeeks.map(ProgramWeek::toResponse)
 )
 
 fun ProgramWeek.toResponse() = ProgramWeekResponse(

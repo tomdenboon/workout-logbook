@@ -1,10 +1,9 @@
 package tom.com.monkeylog.dto.workout
 
-import java.util.*
+import com.fasterxml.jackson.annotation.JsonUnwrapped
 
 data class ExerciseGroupWithWorkoutResponse(
-    val id: UUID,
-    val exercise: ExerciseResponse,
-    val exerciseRows: List<ExerciseRowResponse>,
+    @JsonUnwrapped
+    val exerciseGroup: ExerciseGroupResponse,
     val workout: WorkoutResponse
 )

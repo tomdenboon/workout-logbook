@@ -3,10 +3,7 @@ package tom.com.monkeylog.controller
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
-import tom.com.monkeylog.dto.workout.ExerciseGroupCreateRequest
-import tom.com.monkeylog.dto.workout.ExerciseRowFieldResponse
-import tom.com.monkeylog.dto.workout.ExerciseRowFieldUpdateRequest
-import tom.com.monkeylog.dto.workout.ExerciseRowUpdateRequest
+import tom.com.monkeylog.dto.workout.*
 import tom.com.monkeylog.mapper.toResponse
 import tom.com.monkeylog.mapper.toResponseWithWorkout
 import tom.com.monkeylog.model.workout.ExerciseGroup
@@ -71,7 +68,7 @@ class ExerciseGroupController(
         exerciseGroupService.delete(exerciseGroupId)
 
     @GetMapping("/exercises/{exerciseId}/exercise-groups")
-    fun getExerciseGroups(@PathVariable exerciseId: UUID) =
+    fun getExerciseGroups(@PathVariable exerciseId: UUID): List<ExerciseGroupWithWorkoutResponse> =
         exerciseGroupService.getByExerciseId(exerciseId).map(ExerciseGroup::toResponseWithWorkout)
 }
 

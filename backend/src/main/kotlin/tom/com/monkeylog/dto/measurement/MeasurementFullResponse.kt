@@ -1,11 +1,9 @@
 package tom.com.monkeylog.dto.measurement
 
-import tom.com.monkeylog.model.MetricFormat
-import java.util.*
+import com.fasterxml.jackson.annotation.JsonUnwrapped
 
 data class MeasurementFullResponse(
-    val id: UUID,
-    val name: String,
-    val metric: MetricFormat,
+    @JsonUnwrapped
+    val measurement: MeasurementResponse,
     val points: List<MeasurementPointResponse>
 )

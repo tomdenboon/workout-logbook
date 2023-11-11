@@ -23,26 +23,24 @@ fun Workout.toResponse() = WorkoutResponse(
 
 fun Workout.toFullResponse() = WorkoutFullResponse(
     workout = toResponse(),
-    exerciseGroups = exerciseGroups.map(ExerciseGroup::toResponse).toList()
+    exerciseGroups = exerciseGroups.map(ExerciseGroup::toResponse)
 )
 
 fun ExerciseGroup.toResponse() = ExerciseGroupResponse(
     id = id.notNull(),
     exercise = exercise.toResponse(),
-    exerciseRows = exerciseRows.map(ExerciseRow::toResponse).toList()
+    exerciseRows = exerciseRows.map(ExerciseRow::toResponse)
 )
 
 fun ExerciseGroup.toResponseWithWorkout() = ExerciseGroupWithWorkoutResponse(
-    id = id.notNull(),
-    exercise = exercise.toResponse(),
-    exerciseRows = exerciseRows.map(ExerciseRow::toResponse).toList(),
+    exerciseGroup = toResponse(),
     workout = workout.toResponse()
 )
 
 fun ExerciseRow.toResponse() = ExerciseRowResponse(
     id = id.notNull(),
     lifted = lifted,
-    exerciseRowFields = exerciseRowFields.map(ExerciseRowField::toResponse).toList()
+    exerciseRowFields = exerciseRowFields.map(ExerciseRowField::toResponse)
 )
 
 fun ExerciseRowField.toResponse() = ExerciseRowFieldResponse(

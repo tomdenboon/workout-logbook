@@ -7,10 +7,8 @@ import tom.com.monkeylog.model.measurement.MeasurementPoint
 
 
 fun Measurement.toFullResponse() = MeasurementFullResponse(
-    id = id.notNull(),
-    name = name,
-    metric = metric,
-    points = measurementPoints.map { it.toResponse() }.toList()
+    measurement = toResponse(),
+    points = measurementPoints.map(MeasurementPoint::toResponse)
 )
 
 fun Measurement.toResponse() = MeasurementResponse(

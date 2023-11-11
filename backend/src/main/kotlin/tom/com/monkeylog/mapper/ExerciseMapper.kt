@@ -24,6 +24,6 @@ fun ExerciseCategory.toResponse(): ExerciseCategoryResponse {
     return ExerciseCategoryResponse(
         this,
         niceName,
-        types.map { it.toResponse() }.toList()
+        types.map(ExerciseType::toResponse)
     )
 }
