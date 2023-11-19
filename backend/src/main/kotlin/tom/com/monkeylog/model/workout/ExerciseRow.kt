@@ -6,6 +6,7 @@ import tom.com.monkeylog.model.user.UserOwned
 import java.util.*
 
 @Entity
+@Table(indexes = [Index(name = "idx_exercise_row_exercise_group_id", columnList = "exercise_group_id")])
 class ExerciseRow(
     @Id
     @GeneratedValue
@@ -16,7 +17,25 @@ class ExerciseRow(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "exercise_group_id", nullable = false)
     var exerciseGroup: ExerciseGroup,
-    @OneToMany(mappedBy = "exerciseRow", cascade = [CascadeType.ALL], orphanRemoval = true)
-    var exerciseRowFields: List<ExerciseRowField> = ArrayList(),
+    var reps: Int? = null,
+    var weight: Double? = null,
+    var time: Int? = null,
+    var distance: Double? = null,
     override var userId: UUID? = null,
-) : UserOwned
+) : UserOwned {
+    fun weightNotNull(): Double {
+        return weight ?: 0.0
+    }
+
+    fun repsNotNull(): Int {
+        return reps ?: 0
+    }
+
+    fun timeNotNull(): Int {
+        return time ?: 0
+    }
+
+    fun distanceNotNull(): Double {
+        return distance ?: 0.0
+    }
+}

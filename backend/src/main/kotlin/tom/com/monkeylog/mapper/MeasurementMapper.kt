@@ -32,5 +32,5 @@ fun Measurement.update(measurementUpdateRequest: MeasurementUpdateRequest): Meas
     name = measurementUpdateRequest.name
     metric = measurementUpdateRequest.metric
 
-    return this;
+    return this
 }

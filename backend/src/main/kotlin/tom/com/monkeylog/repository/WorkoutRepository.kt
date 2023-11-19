@@ -7,9 +7,9 @@ import tom.com.monkeylog.model.workout.WorkoutType
 import java.util.*
 
 interface WorkoutRepository : JpaRepository<Workout, UUID> {
-    @EntityGraph(attributePaths = ["exerciseGroups.exercise", "exerciseGroups.exerciseRows.exerciseRowFields"])
+    @EntityGraph(attributePaths = ["exerciseGroups.exercise", "exerciseGroups.exerciseRows"])
     override fun findById(id: UUID): Optional<Workout>
 
-    @EntityGraph(attributePaths = ["exerciseGroups.exercise", "exerciseGroups.exerciseRows.exerciseRowFields"])
+    @EntityGraph(attributePaths = ["exerciseGroups.exercise", "exerciseGroups.exerciseRows"])
     fun findAllByWorkoutTypeAndUserId(workoutType: WorkoutType, userId: UUID): List<Workout>
 }

@@ -21,6 +21,6 @@ class Measurement(
 
     @OneToMany(mappedBy = "measurement", cascade = [CascadeType.ALL])
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @OrderBy("createdAt DESC")
+    @OrderBy("createdAt ASC")
     var measurementPoints: List<MeasurementPoint> = emptyList()
 ) : UserOwned

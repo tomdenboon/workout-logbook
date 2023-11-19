@@ -34,17 +34,6 @@ class ExerciseGroupController(
         exerciseRowId
     ).toResponse()
 
-    @PatchMapping("/workouts/{workoutId}/exercise-groups/{exerciseGroupId}/exercise-rows/{exerciseRowId}/exercise-row-fields/{exerciseRowFieldId}")
-    fun updateExerciseRowField(
-        @PathVariable workoutId: UUID,
-        @PathVariable exerciseGroupId: UUID,
-        @PathVariable exerciseRowId: UUID,
-        @PathVariable exerciseRowFieldId: UUID,
-        @RequestBody exerciseRowFieldUpdateRequest: ExerciseRowFieldUpdateRequest
-    ): ExerciseRowFieldResponse {
-        return exerciseRowService.updateField(exerciseRowFieldUpdateRequest, exerciseRowFieldId).toResponse()
-    }
-
     @PostMapping("/workouts/{workoutId}/exercise-groups")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun createExerciseGroup(

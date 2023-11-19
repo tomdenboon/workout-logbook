@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*
 import tom.com.monkeylog.dto.measurement.*
 import tom.com.monkeylog.mapper.toFullResponse
 import tom.com.monkeylog.mapper.toResponse
+import tom.com.monkeylog.model.measurement.Measurement
 import tom.com.monkeylog.service.MeasurementService
 import java.util.*
 
@@ -16,7 +17,7 @@ class MeasurementController(
     private val measurementService: MeasurementService,
 ) {
     @GetMapping("/measurements")
-    fun getMeasurements() = measurementService.all().map { it.toFullResponse() }
+    fun getMeasurements() = measurementService.all().map(Measurement::toFullResponse)
 
     @PostMapping("/measurements")
     fun createMeasurement(@RequestBody measurementCreateRequest: @Valid MeasurementCreateRequest) =

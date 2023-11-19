@@ -1,3 +1,3 @@
-package tom.com.monkeylog.common;
+package tom.com.monkeylog.common
 
-fun <T> T?.notNull() = this ?: throw IllegalArgumentException("Created at is null")
+fun <T> T?.notNull() = this ?: throw IllegalArgumentException("This parameter can not be null")

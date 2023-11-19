@@ -9,12 +9,12 @@ import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import tom.com.monkeylog.dto.workout.WorkoutCreateRequest
 import tom.com.monkeylog.dto.workout.WorkoutFullResponse
+import tom.com.monkeylog.dto.workout.WorkoutResponse
 import tom.com.monkeylog.mapper.toFullResponse
 import tom.com.monkeylog.mapper.toResponse
 import tom.com.monkeylog.model.workout.Workout
 import tom.com.monkeylog.model.workout.WorkoutType
 import tom.com.monkeylog.service.WorkoutService
-import java.time.Instant
 import java.util.*
 
 @RestController
@@ -23,38 +23,39 @@ class WorkoutController(
     private val workoutService: WorkoutService,
 ) {
     @GetMapping("/workouts/{id}")
-    fun getWorkout(@PathVariable id: UUID) = workoutService.getWorkout(id).toFullResponse()
+    fun getWorkout(@PathVariable id: UUID): WorkoutFullResponse = workoutService.getWorkout(id).toFullResponse()
 
     @GetMapping("/workouts/active")
-    fun getActiveWorkout() = workoutService.activeWorkout()?.toFullResponse()
+    fun getActiveWorkout(): WorkoutFullResponse? = workoutService.activeWorkout()?.toFullResponse()
 
     @GetMapping("/workouts")
     fun getWorkouts(
         @ParameterObject pageable: Pageable,
-        @RequestParam workoutType: WorkoutType,
-        @RequestParam(required = false) after: Instant?
+        @RequestParam workoutType: WorkoutType
     ): List<WorkoutFullResponse> =
         workoutService.getWorkouts(workoutType).map(Workout::toFullResponse)
 
     @PostMapping("/workouts")
-    fun createWorkout(@RequestBody workoutRequest: @Valid WorkoutCreateRequest) =
+    fun createWorkout(@RequestBody workoutRequest: @Valid WorkoutCreateRequest): WorkoutResponse =
         workoutService.save(workoutRequest).toResponse()
 
     @PostMapping("/workouts/{id}/duplicate")
-    fun duplicateWorkout(@PathVariable id: UUID) =
+    fun duplicateWorkout(@PathVariable id: UUID): WorkoutResponse =
         workoutService.cloneToTemplate(id).toResponse()
 
     @PostMapping("/workouts/start")
-    fun startEmptyWorkout() = workoutService.startWorkout().toResponse()
+    fun startEmptyWorkout(): WorkoutResponse = workoutService.startWorkout().toResponse()
 
     @PostMapping("/workouts/{id}/start")
-    fun startWorkout(@PathVariable id: UUID) = workoutService.startWorkout(id).toResponse()
+    fun startWorkout(@PathVariable id: UUID): WorkoutResponse = workoutService.startWorkout(id).toResponse()
 
     @PostMapping("/workouts/complete")
-    fun completeWorkout() = workoutService.complete().toResponse()
+    fun completeWorkout(): WorkoutResponse = workoutService.complete().toResponse()
 
     @DeleteMapping("/workouts/{id}")
     @ApiResponse(responseCode = "204")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun deleteWorkout(@PathVariable id: UUID) = workoutService.delete(id)
+    fun deleteWorkout(@PathVariable id: UUID) {
+        workoutService.delete(id)
+    }
 }

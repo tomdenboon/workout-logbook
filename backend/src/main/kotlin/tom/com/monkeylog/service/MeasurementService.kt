@@ -14,6 +14,7 @@ import tom.com.monkeylog.model.measurement.MeasurementPoint
 import tom.com.monkeylog.repository.MeasurementPointRepository
 import tom.com.monkeylog.repository.MeasurementRepository
 import tom.com.monkeylog.security.AuthenticatedUser
+import java.time.Instant
 import java.util.*
 
 @Service
@@ -25,11 +26,11 @@ class MeasurementService(
 
     fun get(id: UUID): Measurement = measurementRepository.findById(id)
         .filter(AuthenticatedUser::isResourceOwner)
-        .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, MEASUREMENT_NOT_FOUND) }
+        .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Measurement not found.") }
 
     fun getPoint(id: UUID): MeasurementPoint = measurementPointRepository.findById(id)
         .filter(AuthenticatedUser::isResourceOwner)
-        .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, MEASUREMENT_POINT_NOT_FOUND) }
+        .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Measurement point not found.") }
 
     fun create(measurementCreateRequest: MeasurementCreateRequest): Measurement {
         val measurement: Measurement = measurementCreateRequest.toEntity()
@@ -46,6 +47,7 @@ class MeasurementService(
     ): MeasurementPoint = measurementPointRepository.save(
         MeasurementPoint(
             value = measurementPointCreateRequest.value,
+            createdAt = Instant.now(),
             measurement = get(measurementId)
         )
     )
@@ -59,9 +61,4 @@ class MeasurementService(
     fun delete(id: UUID) = measurementRepository.delete(get(id))
 
     fun deletePoint(id: UUID) = measurementPointRepository.delete(getPoint(id))
-
-    companion object {
-        private const val MEASUREMENT_NOT_FOUND = "Measurement not found."
-        private const val MEASUREMENT_POINT_NOT_FOUND = "Measurement point not found."
-    }
 }

@@ -8,7 +8,10 @@ import tom.com.monkeylog.model.exercise.Exercise
 import tom.com.monkeylog.model.exercise.ExerciseCategory
 import tom.com.monkeylog.model.measurement.Measurement
 import tom.com.monkeylog.model.measurement.MeasurementPoint
-import tom.com.monkeylog.model.workout.*
+import tom.com.monkeylog.model.workout.ExerciseGroup
+import tom.com.monkeylog.model.workout.ExerciseRow
+import tom.com.monkeylog.model.workout.Workout
+import tom.com.monkeylog.model.workout.WorkoutType
 import tom.com.monkeylog.repository.ExerciseRepository
 import tom.com.monkeylog.repository.MeasurementRepository
 import tom.com.monkeylog.repository.UserRepository
@@ -27,7 +30,7 @@ class DatabaseSeeder(
 ) {
     @EventListener
     fun seed(event: ContextRefreshedEvent?) {
-        val id = UUID.fromString("00000000-0000-0000-0000-000000000000");
+        val id = UUID.fromString("00000000-0000-0000-0000-000000000000")
         seedExercisesTable(id)
         seedMeasurementsTable(id)
 //        List(2) { seedExercisesTable(UUID.randomUUID()) }
@@ -65,13 +68,13 @@ class DatabaseSeeder(
                 exerciseCategory = ExerciseCategory.WEIGHTED,
                 userId = userId
             )
-        );
+        )
 
-        seedWorkoutTable(userId, exerciseRepository.saveAll(exercises));
+        seedWorkoutTable(userId, exerciseRepository.saveAll(exercises))
     }
 
     private fun seedWorkoutTable(user: UUID, exercises: List<Exercise>) {
-        val multipleWorkouts = List(100) { createWorkout(user, exercises) }
+        val multipleWorkouts = List(1000) { createWorkout(user, exercises) }
 
         workoutRepository.saveAll(multipleWorkouts)
     }
@@ -99,17 +102,12 @@ class DatabaseSeeder(
                         ExerciseRow(
                             lifted = true,
                             userId = user,
-                            exerciseGroup = this
-                        ).apply {
-                            exerciseRowFields = exercise.exerciseCategory.types.map {
-                                ExerciseRowField(
-                                    exerciseRow = this,
-                                    exerciseType = it,
-                                    userId = user,
-                                    value = Random.nextInt(100).toDouble()
-                                )
-                            }
-                        }
+                            exerciseGroup = this,
+                            weight = Random.nextInt(1, 100).toDouble(),
+                            distance = Random.nextDouble(1.0, 100.0),
+                            reps = Random.nextInt(1, 20),
+                            time = Random.nextInt(1, 100)
+                        )
                     }
                 }
             }.toMutableList()
@@ -128,7 +126,7 @@ class DatabaseSeeder(
     }
 
     private fun createMeasurement(index: Int, userId: UUID): Measurement {
-        measurementRepository.deleteAll();
+        measurementRepository.deleteAll()
 
         return Measurement(
             name = "Measurement $index",

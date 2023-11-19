@@ -7,6 +7,12 @@ import tom.com.monkeylog.model.user.UserOwned
 import java.util.*
 
 @Entity
+@Table(
+    indexes = [
+        Index(name = "idx_exercise_group_exercise_id", columnList = "exercise_id"),
+        Index(name = "idx_exercise_group_workout_id", columnList = "workout_id")
+    ]
+)
 class ExerciseGroup(
     @Id
     @GeneratedValue

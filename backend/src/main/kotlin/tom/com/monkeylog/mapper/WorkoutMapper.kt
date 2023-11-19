@@ -4,7 +4,6 @@ import tom.com.monkeylog.common.notNull
 import tom.com.monkeylog.dto.workout.*
 import tom.com.monkeylog.model.workout.ExerciseGroup
 import tom.com.monkeylog.model.workout.ExerciseRow
-import tom.com.monkeylog.model.workout.ExerciseRowField
 import tom.com.monkeylog.model.workout.Workout
 
 
@@ -40,11 +39,8 @@ fun ExerciseGroup.toResponseWithWorkout() = ExerciseGroupWithWorkoutResponse(
 fun ExerciseRow.toResponse() = ExerciseRowResponse(
     id = id.notNull(),
     lifted = lifted,
-    exerciseRowFields = exerciseRowFields.map(ExerciseRowField::toResponse)
-)
-
-fun ExerciseRowField.toResponse() = ExerciseRowFieldResponse(
-    id = id.notNull(),
-    value = value,
-    exerciseType = exerciseType
+    time = time,
+    reps = reps,
+    distance = distance,
+    weight = weight
 )

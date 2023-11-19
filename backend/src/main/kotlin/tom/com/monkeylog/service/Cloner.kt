@@ -1,6 +1,9 @@
 package tom.com.monkeylog.service
 
-import tom.com.monkeylog.model.workout.*
+import tom.com.monkeylog.model.workout.ExerciseGroup
+import tom.com.monkeylog.model.workout.ExerciseRow
+import tom.com.monkeylog.model.workout.Workout
+import tom.com.monkeylog.model.workout.WorkoutType
 import tom.com.monkeylog.security.AuthenticatedUser
 
 
@@ -24,7 +27,7 @@ fun ExerciseGroup.clone(workout: Workout): ExerciseGroup {
         userId = AuthenticatedUser.id
     ).apply {
         exerciseRows =
-            this@clone.exerciseRows.map { exerciseRow -> exerciseRow.clone(this) }.toMutableList();
+            this@clone.exerciseRows.map { exerciseRow -> exerciseRow.clone(this) }.toMutableList()
     }
 }
 
@@ -32,17 +35,10 @@ fun ExerciseRow.clone(exerciseGroup: ExerciseGroup): ExerciseRow {
     return ExerciseRow(
         lifted = false,
         exerciseGroup = exerciseGroup,
-        userId = AuthenticatedUser.id
-    ).apply {
-        exerciseRowFields = this@clone.exerciseRowFields.map { exerciseRowField -> exerciseRowField.clone(this) }
-    }
-}
-
-fun ExerciseRowField.clone(exerciseRow: ExerciseRow): ExerciseRowField {
-    return ExerciseRowField(
-        exerciseRow = exerciseRow,
-        value = value,
-        exerciseType = exerciseType,
-        userId = AuthenticatedUser.id
+        userId = AuthenticatedUser.id,
+        reps = reps,
+        weight = weight,
+        time = time,
+        distance = distance
     )
 }

@@ -4,7 +4,10 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
 import tom.com.monkeylog.dto.workout.ExerciseGroupCreateRequest
-import tom.com.monkeylog.model.workout.*
+import tom.com.monkeylog.model.workout.ExerciseGroup
+import tom.com.monkeylog.model.workout.ExerciseRow
+import tom.com.monkeylog.model.workout.Workout
+import tom.com.monkeylog.model.workout.WorkoutType
 import tom.com.monkeylog.repository.ExerciseGroupRepository
 import tom.com.monkeylog.repository.WorkoutRepository
 import tom.com.monkeylog.security.AuthenticatedUser
@@ -49,14 +52,6 @@ class ExerciseGroupService(
                 )
 
                 exerciseGroup.exerciseRows.add(exerciseRow)
-
-                exerciseRow.exerciseRowFields = exercise.exerciseCategory.types.map { exerciseType ->
-                    ExerciseRowField(
-                        exerciseType = exerciseType,
-                        userId = AuthenticatedUser.id,
-                        exerciseRow = exerciseRow
-                    )
-                }
 
                 exerciseGroup
             }.forEach(workout.exerciseGroups::add)
