@@ -30,13 +30,15 @@ function ServerDay(props: PickersDayProps<Dayjs> & { highlightedDays?: string[] 
 }
 
 function HistoryPage() {
-  const calendarModal = useModal(ModalType.Calendar);
+  const calendarModal = useModal();
   const [date, setDate] = useState<Dayjs | null>();
   const { data: workouts } = useGetWorkoutsQuery({
     workoutType: 'COMPLETED',
+    size: 9,
+    sort: ['startDate', 'DESC'],
   });
 
-  const monthGrouped = workouts?.reduce((acc, val) => {
+  const monthGrouped = workouts?.content.reduce((acc, val) => {
     const month = dayjs(val.endDate).format('MMMM YYYY');
 
     if (!acc[month]) {
@@ -59,13 +61,13 @@ function HistoryPage() {
         ),
       }}
     >
-      {workouts && workouts.length > 0 && (
+      {/* {workouts && workouts.length > 0 && (
         <Dialog open={calendarModal.isOpen} onClose={calendarModal.close}>
           <DateCalendar
             loading={false}
             value={date}
-            maxDate={dayjs(workouts[workouts.length - 1].endDate)}
-            minDate={dayjs(workouts[0].endDate)}
+            maxDate={dayjs(workouts.content[workouts.length - 1].endDate)}
+            minDate={dayjs(workouts.content[0].endDate)}
             slots={{ day: ServerDay }}
             slotProps={{
               day: {
@@ -78,8 +80,8 @@ function HistoryPage() {
             }}
           />
         </Dialog>
-      )}
-      <Stack spacing={1}>
+      )} */}
+      <Stack spacing={4}>
         {Object.entries(monthGrouped ?? {})
           .sort(([a], [b]) => dayjs(b).unix() - dayjs(a).unix())
           .map(([month, workouts]) => (

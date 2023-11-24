@@ -16,6 +16,8 @@ import ExerciseForm from 'src/features/workout/components/ExerciseForm';
 import AddWorkoutModal from 'src/features/workout/components/AddWorkoutModal';
 import StartWorkoutModal from 'src/features/workout/components/StartWorkoutModal';
 import WorkoutPage from 'src/pages/WorkoutPage';
+import ExercisePage from 'src/pages/ExercisePage';
+import DeleteWorkoutModal from 'src/features/workout/components/DeleteWorkoutModal';
 
 function Router() {
   const mdTheme = createTheme({
@@ -38,6 +40,8 @@ function Router() {
 
   const renderExerciseModalRoutes = () => (
     <Route path="workouts/:workoutId" element={<WorkoutPage />}>
+      <Route path="delete" element={<DeleteWorkoutModal />} />
+      <Route path="exercises/:exerciseId/about" element={<ExercisePage />} />
       <Route path="exercises" element={<ExercisesPage />}>
         <Route path=":exerciseId" element={<ExerciseForm />} />
       </Route>
@@ -69,6 +73,7 @@ function Router() {
               </Route>
               <Route path="exercises" element={<ExercisesPage />}>
                 <Route path=":exerciseId" element={<ExerciseForm />} />
+                <Route path=":exerciseId/about" element={<ExercisePage />} />
                 {renderExerciseModalRoutes()}
               </Route>
             </Route>

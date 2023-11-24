@@ -33,7 +33,8 @@ class DatabaseSeeder(
         val id = UUID.fromString("00000000-0000-0000-0000-000000000000")
         seedExercisesTable(id)
         seedMeasurementsTable(id)
-//        List(2) { seedExercisesTable(UUID.randomUUID()) }
+
+//        List(100) { seedExercisesTable(UUID.randomUUID()) }
     }
 
     private fun seedExercisesTable(userId: UUID) {
@@ -74,7 +75,7 @@ class DatabaseSeeder(
     }
 
     private fun seedWorkoutTable(user: UUID, exercises: List<Exercise>) {
-        val multipleWorkouts = List(1000) { createWorkout(user, exercises) }
+        val multipleWorkouts = List(400) { createWorkout(user, exercises) }
 
         workoutRepository.saveAll(multipleWorkouts)
     }

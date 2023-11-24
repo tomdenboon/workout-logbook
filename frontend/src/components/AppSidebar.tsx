@@ -40,7 +40,7 @@ function AppSideBar() {
               size="small"
               variant="contained"
               onClick={() =>
-                navigate('workouts/' + activeWorkout.id.toString(), { relative: 'path' })
+                navigate(location.pathname + '/workouts/' + activeWorkout.id.toString())
               }
             >
               Resume

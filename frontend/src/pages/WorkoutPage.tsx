@@ -1,7 +1,6 @@
 import { Button, Collapse, Stack, Typography } from '@mui/material';
 import FullScreenModal from 'src/components/FullScreenModal';
 import SimpleTimer from 'src/components/SimpleTimer';
-import useModal, { ModalType } from 'src/hooks/useModal';
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useCompleteWorkoutMutation, useLazyGetWorkoutQuery } from 'src/store/monkeylogApi';
@@ -17,7 +16,6 @@ const TITLE_MAP = {
 
 function WorkoutPage() {
   const navigate = useNavigate();
-  const deleteWorkoutModal = useModal(ModalType.DeleteWorkout);
   const { workoutId } = useParams();
   const { modalControls } = useModalOutletContext();
   const [completeWorkout] = useCompleteWorkoutMutation();
@@ -74,7 +72,7 @@ function WorkoutPage() {
           variant="outlined"
           sx={{ height: 24, mt: 4 }}
           color="error"
-          onClick={() => deleteWorkoutModal.open()}
+          onClick={() => navigate('delete')}
         >
           {workout.workoutType === 'ACTIVE' ? 'Cancel workout' : 'Delete workout'}
         </Button>

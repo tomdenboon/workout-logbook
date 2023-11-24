@@ -42,7 +42,7 @@ export const monkeyLogApi = baseMonkeylogApi.enhanceEndpoints({
     // WORKOUTS
     getWorkouts: {
       providesTags: (result, _errors, arg) => [
-        ...(result ?? []).map((workout) => ({
+        ...(result?.content ?? []).map((workout) => ({
           type: 'Workout' as const,
           id: workout.id,
         })),
@@ -118,33 +118,6 @@ export const monkeyLogApi = baseMonkeylogApi.enhanceEndpoints({
         queryFulfilled.catch(patchResult.undo);
       },
     },
-    updateExerciseRowField: {
-      onQueryStarted: async (
-        {
-          workoutId,
-          exerciseGroupId,
-          exerciseRowId,
-          exerciseRowFieldId,
-          exerciseRowFieldUpdateRequest,
-        },
-        { dispatch, queryFulfilled }
-      ) => {
-        const patchResult = dispatch(
-          monkeyLogApi.util.updateQueryData('getWorkout', { id: workoutId }, (draft) => {
-            const exerciseRowField = draft.exerciseGroups
-              .find((eg) => eg.id === exerciseGroupId)
-              ?.exerciseRows.find((er) => er.id === exerciseRowId)
-              ?.exerciseRowFields.find((erf) => erf.id === exerciseRowFieldId);
-
-            if (exerciseRowField) {
-              Object.assign(exerciseRowField, exerciseRowFieldUpdateRequest);
-            }
-          })
-        );
-
-        queryFulfilled.catch(patchResult.undo);
-      },
-    },
   },
 });
 
@@ -164,15 +137,16 @@ export const {
   useCreateExerciseGroupMutation,
   useGetMeasurementsQuery,
   useCreateMeasurementMutation,
-  useUpdateExerciseRowFieldMutation,
   useCreateExerciseMutation,
   useUpdateExerciseMutation,
   useDuplicateWorkoutMutation,
   useStartEmptyWorkoutMutation,
   useStartWorkoutMutation,
   useCreateMeasurementPointMutation,
-  useGetExerciseTypesQuery,
-  useGetExerciseCategoriesQuery,
   useDeleteMeasurementMutation,
   useDeleteExerciseGroupMutation,
+  useGetStatisticsQuery,
+  useGetExerciseGroupsQuery,
+  useGetExerciseQuery,
+  useGetExerciseCategoriesQuery,
 } = monkeyLogApi;

@@ -38,8 +38,6 @@ function useTimer(start?: string, end?: string) {
     return `${timerInfo.secs} secs`;
   }, [getTimerInfo]);
 
-  console.log(prettyTimerFormat);
-
   useEffect(() => {
     let intervalId: number;
     if (!end) {

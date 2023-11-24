@@ -22,8 +22,15 @@ class ExerciseRowService(
     }
 
     fun update(exerciseRowUpdateRequest: ExerciseRowUpdateRequest, id: UUID): ExerciseRow {
-        val exerciseRow: ExerciseRow = get(id)
-        exerciseRow.lifted = exerciseRowUpdateRequest.lifted
+        val exerciseRow: ExerciseRow = get(id).apply {
+            lifted = exerciseRowUpdateRequest.lifted
+            weight = exerciseRowUpdateRequest.weight
+            distance = exerciseRowUpdateRequest.distance
+            time = exerciseRowUpdateRequest.time
+            reps = exerciseRowUpdateRequest.reps
+            rpe = exerciseRowUpdateRequest.rpe
+        }
+
         return exerciseRowRepository.save(exerciseRow)
     }
 

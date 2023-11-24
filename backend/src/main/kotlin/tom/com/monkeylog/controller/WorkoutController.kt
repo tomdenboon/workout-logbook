@@ -7,12 +7,13 @@ import org.springdoc.core.annotations.ParameterObject
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
+import tom.com.monkeylog.common.dto.Page
+import tom.com.monkeylog.common.mapper.toResponse
 import tom.com.monkeylog.dto.workout.WorkoutCreateRequest
 import tom.com.monkeylog.dto.workout.WorkoutFullResponse
 import tom.com.monkeylog.dto.workout.WorkoutResponse
 import tom.com.monkeylog.mapper.toFullResponse
 import tom.com.monkeylog.mapper.toResponse
-import tom.com.monkeylog.model.workout.Workout
 import tom.com.monkeylog.model.workout.WorkoutType
 import tom.com.monkeylog.service.WorkoutService
 import java.util.*
@@ -32,8 +33,12 @@ class WorkoutController(
     fun getWorkouts(
         @ParameterObject pageable: Pageable,
         @RequestParam workoutType: WorkoutType
-    ): List<WorkoutFullResponse> =
-        workoutService.getWorkouts(workoutType).map(Workout::toFullResponse)
+    ): Page<WorkoutFullResponse> {
+        val uuids = workoutService.getPagedWorkoutIds(workoutType, pageable);
+        val workouts = workoutService.getWorkouts(uuids.content).associate { it.id!! to it.toFullResponse() }
+
+        return uuids.toResponse { workouts[it]!! }
+    }
 
     @PostMapping("/workouts")
     fun createWorkout(@RequestBody workoutRequest: @Valid WorkoutCreateRequest): WorkoutResponse =

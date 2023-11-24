@@ -1,5 +1,7 @@
 package tom.com.monkeylog.service
 
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
@@ -66,11 +68,16 @@ class ExerciseGroupService(
         workoutRepository.save(workout)
     }
 
-    fun getByExerciseId(exerciseId: UUID): List<ExerciseGroup> {
+    fun getExerciseGroupsByExerciseId(exerciseId: UUID, pageable: Pageable): Page<UUID> {
         return exerciseGroupRepository.findAllByExerciseIdAndUserIdAndWorkoutWorkoutType(
             exerciseId,
             AuthenticatedUser.id,
             WorkoutType.COMPLETED,
+            pageable
         )
+    }
+
+    fun getExerciseGroups(ids: List<UUID>): List<ExerciseGroup> {
+        return exerciseGroupRepository.findAllByIdIn(ids)
     }
 }

@@ -1,12 +1,15 @@
 package tom.com.monkeylog.controller
 
 import io.swagger.v3.oas.annotations.tags.Tag
+import org.springdoc.core.annotations.ParameterObject
+import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
+import tom.com.monkeylog.common.dto.Page
+import tom.com.monkeylog.common.mapper.toResponse
 import tom.com.monkeylog.dto.workout.*
 import tom.com.monkeylog.mapper.toResponse
 import tom.com.monkeylog.mapper.toResponseWithWorkout
-import tom.com.monkeylog.model.workout.ExerciseGroup
 import tom.com.monkeylog.service.ExerciseGroupService
 import tom.com.monkeylog.service.ExerciseRowService
 import java.util.*
@@ -23,7 +26,7 @@ class ExerciseGroupController(
         @PathVariable exerciseGroupId: UUID
     ) = exerciseGroupService.addRow(exerciseGroupId).toResponse()
 
-    @PatchMapping("/workouts/{workoutId}/exercise-groups/{exerciseGroupId}/exercise-rows/{exerciseRowId}")
+    @PutMapping("/workouts/{workoutId}/exercise-groups/{exerciseGroupId}/exercise-rows/{exerciseRowId}")
     fun updateExerciseRow(
         @PathVariable workoutId: UUID,
         @PathVariable exerciseGroupId: UUID,
@@ -57,7 +60,15 @@ class ExerciseGroupController(
         exerciseGroupService.delete(exerciseGroupId)
 
     @GetMapping("/exercises/{exerciseId}/exercise-groups")
-    fun getExerciseGroups(@PathVariable exerciseId: UUID): List<ExerciseGroupWithWorkoutResponse> =
-        exerciseGroupService.getByExerciseId(exerciseId).map(ExerciseGroup::toResponseWithWorkout)
+    fun getExerciseGroups(
+        @PathVariable exerciseId: UUID,
+        @ParameterObject pageable: Pageable
+    ): Page<ExerciseGroupWithWorkoutResponse> {
+        val uuids = exerciseGroupService.getExerciseGroupsByExerciseId(exerciseId, pageable)
+        val exerciseGroups =
+            exerciseGroupService.getExerciseGroups(uuids.content).associate { it.id!! to it.toResponseWithWorkout() }
+
+        return uuids.toResponse { exerciseGroups[it]!! }
+    }
 }
 

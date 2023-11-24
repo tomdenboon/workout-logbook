@@ -1,33 +1,14 @@
 import { TextField } from '@mui/material';
-import React, { useState } from 'react';
-import { ExerciseRowFieldResponse } from 'src/store/baseMonkeylogApi';
-import { useUpdateExerciseRowFieldMutation } from 'src/store/monkeylogApi';
+import React from 'react';
 
 interface ExerciseRowFieldProps {
-  workoutId: string;
-  exerciseGroupId: string;
-  exerciseRowId: string;
-  exerciseRowField: ExerciseRowFieldResponse;
+  val: number | undefined;
+  setVal: (val: number | undefined) => void;
+  onBlur: () => void;
 }
 
 function ExerciseRowFieldForm(props: ExerciseRowFieldProps) {
-  const { workoutId, exerciseGroupId, exerciseRowId, exerciseRowField } = props;
-  const [field, setField] = useState(exerciseRowField);
-  const [updateExerciseRowField] = useUpdateExerciseRowFieldMutation();
-
-  const updateField = async () => {
-    if (exerciseRowField.value === field.value) {
-      return;
-    }
-
-    updateExerciseRowField({
-      workoutId,
-      exerciseGroupId,
-      exerciseRowId,
-      exerciseRowFieldId: field.id,
-      exerciseRowFieldUpdateRequest: field,
-    });
-  };
+  const { val, setVal, onBlur } = props;
 
   const cleanFieldInput = (newInput: string) => {
     // also clear trim 0's in front of string
@@ -47,10 +28,10 @@ function ExerciseRowFieldForm(props: ExerciseRowFieldProps) {
       }}
       fullWidth
       hiddenLabel
-      value={field.value ?? ''}
-      onChange={(e) => setField({ ...field, value: cleanFieldInput(e.target.value) })}
+      value={val ?? ''}
+      onChange={(e) => setVal(cleanFieldInput(e.target.value))}
       onFocus={(e) => e.target.select()}
-      onBlur={updateField}
+      onBlur={onBlur}
     />
   );
 }

@@ -1,6 +1,5 @@
 package tom.com.monkeylog.mapper
 
-import tom.com.monkeylog.common.notNull
 import tom.com.monkeylog.dto.measurement.*
 import tom.com.monkeylog.model.measurement.Measurement
 import tom.com.monkeylog.model.measurement.MeasurementPoint
@@ -12,15 +11,15 @@ fun Measurement.toFullResponse() = MeasurementFullResponse(
 )
 
 fun Measurement.toResponse() = MeasurementResponse(
-    id = id.notNull(),
+    id = id!!,
     name = name,
     metric = metric
 )
 
 fun MeasurementPoint.toResponse() = MeasurementPointResponse(
-    id = id.notNull(),
+    id = id!!,
     value = value,
-    createdAt = createdAt.notNull()
+    createdAt = createdAt!!
 )
 
 fun MeasurementCreateRequest.toEntity() = Measurement(

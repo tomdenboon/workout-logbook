@@ -1,6 +1,13 @@
 import { emptyMonkeylogApi as api } from './emptyMonkeylogApi';
 const injectedRtkApi = api.injectEndpoints({
   endpoints: (build) => ({
+    updateExerciseRow: build.mutation<UpdateExerciseRowResponse, UpdateExerciseRowArg>({
+      query: (queryArg) => ({
+        url: `/workouts/${queryArg.workoutId}/exercise-groups/${queryArg.exerciseGroupId}/exercise-rows/${queryArg.exerciseRowId}`,
+        method: 'PUT',
+        body: queryArg.exerciseRowUpdateRequest,
+      }),
+    }),
     getSettings: build.query<GetSettingsResponse, GetSettingsArg>({
       query: () => ({ url: `/settings` }),
     }),
@@ -32,7 +39,6 @@ const injectedRtkApi = api.injectEndpoints({
           size: queryArg.size,
           sort: queryArg.sort,
           workoutType: queryArg.workoutType,
-          after: queryArg.after,
         },
       }),
     }),
@@ -115,23 +121,6 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.exerciseCreateRequest,
       }),
     }),
-    updateExerciseRow: build.mutation<UpdateExerciseRowResponse, UpdateExerciseRowArg>({
-      query: (queryArg) => ({
-        url: `/workouts/${queryArg.workoutId}/exercise-groups/${queryArg.exerciseGroupId}/exercise-rows/${queryArg.exerciseRowId}`,
-        method: 'PATCH',
-        body: queryArg.exerciseRowUpdateRequest,
-      }),
-    }),
-    updateExerciseRowField: build.mutation<
-      UpdateExerciseRowFieldResponse,
-      UpdateExerciseRowFieldArg
-    >({
-      query: (queryArg) => ({
-        url: `/workouts/${queryArg.workoutId}/exercise-groups/${queryArg.exerciseGroupId}/exercise-rows/${queryArg.exerciseRowId}/exercise-row-fields/${queryArg.exerciseRowFieldId}`,
-        method: 'PATCH',
-        body: queryArg.exerciseRowFieldUpdateRequest,
-      }),
-    }),
     deleteMeasurement: build.mutation<DeleteMeasurementResponse, DeleteMeasurementArg>({
       query: (queryArg) => ({ url: `/measurements/${queryArg.id}`, method: 'DELETE' }),
     }),
@@ -180,8 +169,24 @@ const injectedRtkApi = api.injectEndpoints({
     getActiveWorkout: build.query<GetActiveWorkoutResponse, GetActiveWorkoutArg>({
       query: () => ({ url: `/workouts/active` }),
     }),
-    getExerciseTypes: build.query<GetExerciseTypesResponse, GetExerciseTypesArg>({
-      query: () => ({ url: `/exercises/types` }),
+    getWorkoutStatistics: build.query<GetWorkoutStatisticsResponse, GetWorkoutStatisticsArg>({
+      query: () => ({ url: `/statistics` }),
+    }),
+    getStatistics: build.query<GetStatisticsResponse, GetStatisticsArg>({
+      query: (queryArg) => ({
+        url: `/exercises/${queryArg.id}/statistics`,
+        params: {
+          type: queryArg['type'],
+          aggregate: queryArg.aggregate,
+          distinct: queryArg.distinct,
+        },
+      }),
+    }),
+    getExerciseGroups: build.query<GetExerciseGroupsResponse, GetExerciseGroupsArg>({
+      query: (queryArg) => ({
+        url: `/exercises/${queryArg.exerciseId}/exercise-groups`,
+        params: { page: queryArg.page, size: queryArg.size, sort: queryArg.sort },
+      }),
     }),
     getExerciseCategories: build.query<GetExerciseCategoriesResponse, GetExerciseCategoriesArg>({
       query: () => ({ url: `/exercises/categories` }),
@@ -205,6 +210,13 @@ const injectedRtkApi = api.injectEndpoints({
   overrideExisting: false,
 });
 export { injectedRtkApi as baseMonkeylogApi };
+export type UpdateExerciseRowResponse = /** status 200 OK */ ExerciseRowResponse;
+export type UpdateExerciseRowArg = {
+  workoutId: string;
+  exerciseGroupId: string;
+  exerciseRowId: string;
+  exerciseRowUpdateRequest: ExerciseRowUpdateRequest;
+};
 export type GetSettingsResponse = /** status 200 OK */ SettingsResponse;
 export type GetSettingsArg = void;
 export type UpdateSettingsResponse = /** status 200 OK */ SettingsResponse;
@@ -224,7 +236,7 @@ export type DeleteProgramResponse = unknown;
 export type DeleteProgramArg = {
   id: string;
 };
-export type GetWorkoutsResponse = /** status 200 OK */ WorkoutFullResponse[];
+export type GetWorkoutsResponse = /** status 200 OK */ PageWorkoutFullResponse;
 export type GetWorkoutsArg = {
   /** Zero-based page index (0..N) */
   page?: number;
@@ -233,7 +245,6 @@ export type GetWorkoutsArg = {
   /** Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
   sort?: string[];
   workoutType: 'TEMPLATE' | 'ACTIVE' | 'COMPLETED';
-  after?: string;
 };
 export type CreateWorkoutResponse = /** status 200 OK */ WorkoutResponse;
 export type CreateWorkoutArg = {
@@ -289,21 +300,6 @@ export type CreateExerciseResponse = /** status 200 OK */ ExerciseResponse;
 export type CreateExerciseArg = {
   exerciseCreateRequest: ExerciseCreateRequest;
 };
-export type UpdateExerciseRowResponse = /** status 200 OK */ ExerciseRowResponse;
-export type UpdateExerciseRowArg = {
-  workoutId: string;
-  exerciseGroupId: string;
-  exerciseRowId: string;
-  exerciseRowUpdateRequest: ExerciseRowUpdateRequest;
-};
-export type UpdateExerciseRowFieldResponse = /** status 200 OK */ ExerciseRowFieldResponse;
-export type UpdateExerciseRowFieldArg = {
-  workoutId: string;
-  exerciseGroupId: string;
-  exerciseRowId: string;
-  exerciseRowFieldId: string;
-  exerciseRowFieldUpdateRequest: ExerciseRowFieldUpdateRequest;
-};
 export type DeleteMeasurementResponse = unknown;
 export type DeleteMeasurementArg = {
   id: string;
@@ -345,9 +341,28 @@ export type DeleteWorkoutArg = {
 };
 export type GetActiveWorkoutResponse = /** status 200 OK */ WorkoutFullResponse;
 export type GetActiveWorkoutArg = void;
-export type GetExerciseTypesResponse = /** status 200 OK */ ExerciseTypeResponse[];
-export type GetExerciseTypesArg = void;
-export type GetExerciseCategoriesResponse = /** status 200 OK */ ExerciseCategoryResponse[];
+export type GetWorkoutStatisticsResponse = unknown;
+export type GetWorkoutStatisticsArg = void;
+export type GetStatisticsResponse = /** status 200 OK */ StatisticsResponse[];
+export type GetStatisticsArg = {
+  id: string;
+  type: 'TIME' | 'PACE' | 'WEIGHT' | 'REPS' | 'DISTANCE' | 'VOLUME' | 'ONE_RM';
+  aggregate: 'SUM' | 'MAX';
+  distinct?: boolean;
+};
+export type GetExerciseGroupsResponse = /** status 200 OK */ PageExerciseGroupWithWorkoutResponse;
+export type GetExerciseGroupsArg = {
+  exerciseId: string;
+  /** Zero-based page index (0..N) */
+  page?: number;
+  /** The size of the page to be returned */
+  size?: number;
+  /** Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
+  sort?: string[];
+};
+export type GetExerciseCategoriesResponse = /** status 200 OK */ {
+  [key: string]: ExerciseCategoryResponse;
+};
 export type GetExerciseCategoriesArg = void;
 export type DeleteExerciseGroupResponse = unknown;
 export type DeleteExerciseGroupArg = {
@@ -363,6 +378,23 @@ export type DeleteExerciseRowArg = {
 export type DeleteProgramWeekResponse = unknown;
 export type DeleteProgramWeekArg = {
   id: string;
+};
+export type ExerciseRowResponse = {
+  id: string;
+  lifted: boolean;
+  weight?: number;
+  distance?: number;
+  time?: number;
+  reps?: number;
+  rpe?: number;
+};
+export type ExerciseRowUpdateRequest = {
+  lifted: boolean;
+  weight?: number;
+  distance?: number;
+  time?: number;
+  reps?: number;
+  rpe?: number;
 };
 export type SettingsResponse = {
   id: string;
@@ -385,30 +417,10 @@ export type ProgramUpdateRequest = {
   name: string;
   description: string;
 };
-export type ExerciseTypeResponse = {
-  id: 'REPS' | 'TIME' | 'DISTANCE' | 'WEIGHT';
-  name: string;
-  metricFormat: 'WEIGHT' | 'DISTANCE' | 'TIME' | 'NUMBER' | 'PERCENTAGE';
-};
-export type ExerciseCategoryResponse = {
-  id: 'REPS' | 'WEIGHTED' | 'DURATION' | 'DISTANCE';
-  name: string;
-  exerciseTypes: ExerciseTypeResponse[];
-};
 export type ExerciseResponse = {
   id: string;
   name: string;
-  exerciseCategory: ExerciseCategoryResponse;
-};
-export type ExerciseRowFieldResponse = {
-  id: string;
-  value?: number;
-  exerciseType: 'REPS' | 'TIME' | 'DISTANCE' | 'WEIGHT';
-};
-export type ExerciseRowResponse = {
-  id: string;
-  exerciseRowFields: ExerciseRowFieldResponse[];
-  isLifted: boolean;
+  exerciseCategory: 'REPS' | 'WEIGHTED' | 'DURATION' | 'DISTANCE';
 };
 export type ExerciseGroupResponse = {
   id: string;
@@ -423,6 +435,15 @@ export type WorkoutFullResponse = {
   startDate?: string;
   endDate?: string;
   exerciseGroups: ExerciseGroupResponse[];
+};
+export type PageWorkoutFullResponse = {
+  isFirst: boolean;
+  isLast: boolean;
+  totalPages: number;
+  totalElements: number;
+  number: number;
+  size: number;
+  content: WorkoutFullResponse[];
 };
 export type WorkoutResponse = {
   id: string;
@@ -473,12 +494,6 @@ export type ExerciseCreateRequest = {
   name: string;
   exerciseCategory: 'REPS' | 'WEIGHTED' | 'DURATION' | 'DISTANCE';
 };
-export type ExerciseRowUpdateRequest = {
-  isLifted: boolean;
-};
-export type ExerciseRowFieldUpdateRequest = {
-  value?: number;
-};
 export type MeasurementUpdateRequest = {
   name: string;
   metric: 'WEIGHT' | 'DISTANCE' | 'TIME' | 'NUMBER' | 'PERCENTAGE';
@@ -488,4 +503,34 @@ export type MeasurementPointUpdateRequest = {
 };
 export type ExerciseUpdateRequest = {
   name: string;
+};
+export type StatisticsResponse = {
+  date: string;
+  value: number;
+  exerciseRow?: ExerciseRowResponse;
+};
+export type ExerciseGroupWithWorkoutResponse = {
+  id: string;
+  exercise: ExerciseResponse;
+  exerciseRows: ExerciseRowResponse[];
+  workout: WorkoutResponse;
+};
+export type PageExerciseGroupWithWorkoutResponse = {
+  isFirst: boolean;
+  isLast: boolean;
+  totalPages: number;
+  totalElements: number;
+  number: number;
+  size: number;
+  content: ExerciseGroupWithWorkoutResponse[];
+};
+export type ValidFields = {
+  reps: boolean;
+  weight: boolean;
+  time: boolean;
+  distance: boolean;
+};
+export type ExerciseCategoryResponse = {
+  statistics: ('TIME' | 'PACE' | 'WEIGHT' | 'REPS' | 'DISTANCE' | 'VOLUME' | 'ONE_RM')[];
+  validFields: ValidFields;
 };

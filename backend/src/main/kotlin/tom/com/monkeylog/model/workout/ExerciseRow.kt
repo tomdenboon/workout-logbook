@@ -21,21 +21,6 @@ class ExerciseRow(
     var weight: Double? = null,
     var time: Int? = null,
     var distance: Double? = null,
+    var rpe: Int? = null,
     override var userId: UUID? = null,
-) : UserOwned {
-    fun weightNotNull(): Double {
-        return weight ?: 0.0
-    }
-
-    fun repsNotNull(): Int {
-        return reps ?: 0
-    }
-
-    fun timeNotNull(): Int {
-        return time ?: 0
-    }
-
-    fun distanceNotNull(): Double {
-        return distance ?: 0.0
-    }
-}
+) : UserOwned

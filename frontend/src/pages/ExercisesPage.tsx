@@ -13,7 +13,7 @@ import {
 import AppContainer from 'src/components/AppContainer';
 import ExerciseCard from 'src/features/workout/components/ExerciseCard';
 import useExercises from 'src/features/workout/hooks/useExercises';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ModalOutlet, useModalOutletContext } from 'src/components/ModalOutlet';
 import FullScreenModal from 'src/components/FullScreenModal';
 import useSelectIds from 'src/hooks/useSelectIds';
@@ -57,6 +57,7 @@ function Exercises() {
   const { selectedIds, toggleId, hasSelection } = useSelectIds();
   const { modalControls } = useModalOutletContext();
   const { add } = useAddExercises();
+  const navigate = useNavigate();
   const editExercise = exercises?.find((val) => val.id === exerciseId);
 
   const Component = modalControls != undefined ? FullScreenModal : AppContainer;
@@ -95,7 +96,9 @@ function Exercises() {
           <React.Fragment key={exercise.id}>
             <ExerciseCard
               exercise={exercise}
-              onClick={() => toggleId(exercise.id)}
+              onClick={() =>
+                modalControls ? toggleId(exercise.id) : navigate(`${exercise.id}/about`)
+              }
               isSelected={selectedIds.includes(exercise.id)}
             />
             <Divider />
@@ -117,7 +120,9 @@ function Exercises() {
                   <React.Fragment key={exercise.id}>
                     <ExerciseCard
                       exercise={exercise}
-                      onClick={() => toggleId(exercise.id)}
+                      onClick={() =>
+                        modalControls ? toggleId(exercise.id) : navigate(`${exercise.id}/about`)
+                      }
                       isSelected={selectedIds.includes(exercise.id)}
                     />
                     {index !== groupedExercises[key].length - 1 && <Divider />}

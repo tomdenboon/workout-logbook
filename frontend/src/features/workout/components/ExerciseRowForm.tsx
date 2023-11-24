@@ -2,15 +2,14 @@ import { Check } from '@mui/icons-material';
 import { Button, Stack } from '@mui/material';
 import React from 'react';
 import ExerciseRowFieldForm from 'src/features/workout/components/ExerciseRowFieldForm';
+import useForm from 'src/hooks/useForm';
 import {
-  ExerciseCategoryResponse,
   ExerciseRowResponse,
   WorkoutResponse,
   useUpdateExerciseRowMutation,
 } from 'src/store/monkeylogApi';
 
 interface ExerciseRowFormProps {
-  exerciseCategory: ExerciseCategoryResponse;
   exerciseRow: ExerciseRowResponse;
   exerciseRowIndex: number;
   workoutId: string;
@@ -19,15 +18,9 @@ interface ExerciseRowFormProps {
 }
 
 function ExerciseRowForm(props: ExerciseRowFormProps) {
-  const {
-    workoutId,
-    exerciseGroupId,
-    exerciseRow,
-    workoutType,
-    exerciseCategory,
-    exerciseRowIndex,
-  } = props;
+  const { workoutId, exerciseGroupId, exerciseRow, workoutType, exerciseRowIndex } = props;
   const [updateRow] = useUpdateExerciseRowMutation();
+  const { data: exerciseRowForm, update } = useForm(exerciseRow);
 
   return (
     <Stack sx={{ mb: 1 }} direction="row" spacing={1}>
@@ -41,36 +34,31 @@ function ExerciseRowForm(props: ExerciseRowFormProps) {
       >
         {exerciseRowIndex + 1}
       </Button>
-
-      {exerciseCategory.exerciseTypes.map((exerciseType) => {
-        const exerciseRowField = exerciseRow.exerciseRowFields.find(
-          (erf) => erf.exerciseType === exerciseType.id
-        );
-
-        if (!exerciseRowField) return;
-
-        return (
-          <ExerciseRowFieldForm
-            key={exerciseType.id}
-            workoutId={workoutId}
-            exerciseGroupId={exerciseGroupId}
-            exerciseRowId={exerciseRow.id}
-            exerciseRowField={exerciseRowField}
-          />
-        );
-      })}
-      <Button
-        sx={{ maxHeight: 24, maxWidth: 32, minWidth: 32 }}
-        variant={exerciseRow.isLifted ? 'contained' : 'outlined'}
-        color={exerciseRow.isLifted ? 'success' : 'primary'}
-        onClick={() =>
+      <ExerciseRowFieldForm
+        val={exerciseRowForm.reps}
+        setVal={(v) => update('reps', v)}
+        onBlur={() =>
           updateRow({
             workoutId,
             exerciseGroupId,
             exerciseRowId: exerciseRow.id,
-            exerciseRowUpdateRequest: { isLifted: !exerciseRow.isLifted },
+            exerciseRowUpdateRequest: exerciseRowForm,
           })
         }
+      />
+      <Button
+        sx={{ maxHeight: 24, maxWidth: 32, minWidth: 32 }}
+        variant={exerciseRow.lifted ? 'contained' : 'outlined'}
+        color={exerciseRow.lifted ? 'success' : 'primary'}
+        onClick={() => {
+          update('lifted', !exerciseRow.lifted);
+          updateRow({
+            workoutId,
+            exerciseGroupId,
+            exerciseRowId: exerciseRow.id,
+            exerciseRowUpdateRequest: exerciseRowForm,
+          });
+        }}
         disabled={!(workoutType === 'ACTIVE')}
         type="button"
       >

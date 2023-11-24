@@ -8,6 +8,7 @@ import {
 import React from 'react';
 import ActionDropdown from 'src/components/ActionDropdown';
 import { TransitionGroup } from 'react-transition-group';
+import { Link } from 'react-router-dom';
 
 interface ExerciseGroupProps {
   exerciseGroup: ExerciseGroupResponse;
@@ -24,7 +25,12 @@ function ExerciseGroupForm(props: ExerciseGroupProps) {
   return (
     <Stack sx={{ pt: 4 }}>
       <Stack direction="row" sx={{ mb: 1 }} justifyContent="space-between">
-        <Typography fontWeight={800} color="primary">
+        <Typography
+          component={Link}
+          to={'exercises/' + exerciseGroup.exercise.id + '/about'}
+          fontWeight={800}
+          color="primary"
+        >
           {exerciseGroup.exercise.name}
         </Typography>
         <ActionDropdown
@@ -45,17 +51,6 @@ function ExerciseGroupForm(props: ExerciseGroupProps) {
         >
           Set
         </Typography>
-        {exerciseGroup.exercise.exerciseCategory.exerciseTypes.map((exerciseType) => (
-          <Typography
-            key={exerciseType.id}
-            sx={{ width: '100%' }}
-            variant="body2"
-            fontWeight={800}
-            align="center"
-          >
-            {exerciseType.name}
-          </Typography>
-        ))}
         <Typography sx={{ minWidth: 32, maxWidth: 32 }} align="center" />
       </Stack>
 
@@ -68,7 +63,6 @@ function ExerciseGroupForm(props: ExerciseGroupProps) {
                 exerciseGroupId={exerciseGroup.id}
                 exerciseRow={exerciseRow}
                 exerciseRowIndex={index}
-                exerciseCategory={exerciseGroup.exercise.exerciseCategory}
                 workoutType={workoutType}
               />
             </Collapse>

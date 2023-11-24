@@ -8,5 +8,6 @@ data class ExerciseRowResponse(
     val weight: Double?,
     val distance: Double?,
     val time: Int?,
-    val reps: Int?
+    val reps: Int?,
+    val rpe: Int?
 )

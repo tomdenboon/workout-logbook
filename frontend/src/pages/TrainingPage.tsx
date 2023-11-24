@@ -10,8 +10,10 @@ import AppContainer from 'src/components/AppContainer';
 
 function TrainingPage() {
   const navigate = useNavigate();
-  const { data: workouts } = useGetWorkoutsQuery({ workoutType: 'TEMPLATE' });
+  const { data: workoutPage } = useGetWorkoutsQuery({ workoutType: 'TEMPLATE', size: 999 });
   const { workoutId } = useParams();
+  const workouts = workoutPage?.content;
+
   const startWorkout = workouts?.find((val) => val.id === workoutId);
 
   return (
