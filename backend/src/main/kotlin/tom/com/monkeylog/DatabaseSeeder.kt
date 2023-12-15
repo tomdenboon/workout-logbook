@@ -75,7 +75,7 @@ class DatabaseSeeder(
     }
 
     private fun seedWorkoutTable(user: UUID, exercises: List<Exercise>) {
-        val multipleWorkouts = List(400) { createWorkout(user, exercises) }
+        val multipleWorkouts = List(100) { createWorkout(user, exercises) }
 
         workoutRepository.saveAll(multipleWorkouts)
     }

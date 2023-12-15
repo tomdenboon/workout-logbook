@@ -29,12 +29,13 @@ export default function FullScreenModal(props: {
   children: React.ReactNode;
   header: {
     title: string;
+    afterTitle?: React.ReactNode;
     rightButton?: React.ReactNode;
   };
-  slideLeft?: boolean;
+  slideUp?: boolean;
   sx?: SxProps<Theme>;
 }) {
-  const { open, onClose, onTransitionExited, children, header, slideLeft, sx } = props;
+  const { open, onClose, onTransitionExited, children, header, slideUp, sx } = props;
 
   return (
     <Dialog
@@ -42,13 +43,13 @@ export default function FullScreenModal(props: {
       open={open}
       onClose={onClose}
       onTransitionExited={onTransitionExited}
-      TransitionComponent={slideLeft ? LeftTransitionComponent : UpTransitionComponent}
+      TransitionComponent={slideUp ? UpTransitionComponent : LeftTransitionComponent}
     >
       <AppContainer
         header={{
           leftButton: (
             <IconButton color="inherit" onClick={onClose}>
-              {slideLeft ? <ArrowBack /> : <ArrowDownward />}
+              {slideUp ? <ArrowDownward /> : <ArrowBack />}
             </IconButton>
           ),
           ...header,

@@ -7,5 +7,8 @@ import java.util.*
 
 interface MeasurementRepository : JpaRepository<Measurement, UUID> {
     @EntityGraph(attributePaths = ["measurementPoints"])
+    override fun findById(id: UUID): Optional<Measurement>
+
+    @EntityGraph(attributePaths = ["measurementPoints"])
     override fun findAll(): List<Measurement>
 }

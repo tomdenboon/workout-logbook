@@ -14,6 +14,61 @@ class StatisticsRepository(
     @PersistenceContext
     val em: EntityManager
 ) {
+    fun totalVolumeUser(userId: UUID): Double {
+        return em.createNativeQuery(
+            """
+                SELECT SUM(er.weight * er.reps)
+                FROM exercise_group eg
+                     JOIN workout w on eg.workout_id = w.id
+                     JOIN exercise_row er on eg.id = er.exercise_group_id
+                WHERE w.user_id = '$userId'
+                  AND w.workout_type = 'COMPLETED'
+                  AND er.lifted IS TRUE;
+            """.trimIndent()
+        ).singleResult as Double
+    }
+
+    fun totalTimeUser(userId: UUID): Double {
+        return em.createNativeQuery(
+            """
+                SELECT EXTRACT(EPOCH FROM SUM(w.end_date - w.start_date))
+                FROM workout w
+                WHERE w.user_id = '$userId'
+                  AND w.workout_type = 'COMPLETED';
+            """.trimIndent()
+        ).singleResult as Double
+    }
+
+    fun totalWorkoutCountUser(userId: UUID): Long {
+        return em.createNativeQuery(
+            """
+                SELECT COUNT(w.id)
+                FROM workout w
+                WHERE w.user_id = '$userId'
+                  AND w.workout_type = 'COMPLETED';
+            """.trimIndent()
+        ).singleResult as Long
+    }
+
+    fun weeklyWorkoutCountUser(userId: UUID): List<StatisticsResponse> {
+        return em.createNativeQuery(
+            """
+                SELECT date_trunc('week', w.start_date), COUNT(w.id)
+                FROM workout w
+                WHERE w.user_id = '$userId'
+                  AND w.workout_type = 'COMPLETED'
+                GROUP BY date_trunc('week', w.start_date)
+                ORDER BY date_trunc('week', w.start_date);
+            """.trimIndent()
+        ).resultList.map {
+            val row = it as Array<*>
+            StatisticsResponse(
+                row[0] as Instant,
+                (row[1] as Long).toDouble(),
+            )
+        }
+    }
+
     fun getSumStatistics(exerciseId: UUID, userId: UUID, type: StatisticsType): List<StatisticsResponse> {
         val agg = getAggregation(type)
 
@@ -61,7 +116,7 @@ class StatisticsRepository(
                   AND er.lifted IS TRUE
                   AND er.user_id = '$userId'
                 ORDER BY date_trunc('day', w.start_date), $agg desc;
-            """.trimIndent()
+            """
         ).resultList.map {
             val row = it as Array<*>
             StatisticsResponse(

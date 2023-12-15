@@ -29,6 +29,7 @@ function WorkoutPage() {
 
   return workout ? (
     <FullScreenModal
+      slideUp
       header={{
         title: TITLE_MAP[workout.workoutType],
         rightButton: workout.workoutType === 'ACTIVE' && (

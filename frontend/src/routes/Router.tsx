@@ -61,19 +61,16 @@ function Router() {
                   <Route path="add" element={<AddMeasurementModal />} />
                   <Route path=":measurementId/point" element={<AddMeasurementPointModal />} />
                 </Route>
-                {renderExerciseModalRoutes()}
-              </Route>
-              <Route path="history" element={<HistoryPage />}>
+                <Route path="exercises" element={<ExercisesPage />}>
+                  <Route path=":exerciseId" element={<ExerciseForm />} />
+                  <Route path=":exerciseId/about" element={<ExercisePage />} />
+                </Route>
+                <Route path="history" element={<HistoryPage />} />
                 {renderExerciseModalRoutes()}
               </Route>
               <Route path="training" element={<TrainingPage />}>
                 <Route path="workouts/add" element={<AddWorkoutModal />} />
                 <Route path="workouts/:workoutId/start" element={<StartWorkoutModal />} />
-                {renderExerciseModalRoutes()}
-              </Route>
-              <Route path="exercises" element={<ExercisesPage />}>
-                <Route path=":exerciseId" element={<ExerciseForm />} />
-                <Route path=":exerciseId/about" element={<ExercisePage />} />
                 {renderExerciseModalRoutes()}
               </Route>
             </Route>

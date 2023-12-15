@@ -1,4 +1,4 @@
-import { FitnessCenter, History, LocalActivity, Person } from '@mui/icons-material';
+import { FitnessCenter, Person } from '@mui/icons-material';
 import {
   BottomNavigationAction,
   Paper,
@@ -12,10 +12,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useGetActiveWorkoutQuery } from 'src/store/monkeylogApi';
 
 const NAVBAR_LIST = [
-  { to: 'profile', text: 'Home', Icon: Person },
-  { to: 'history', text: 'History', Icon: History },
+  { to: 'profile', text: 'Profile', Icon: Person },
   { to: 'training', text: 'Workout', Icon: FitnessCenter },
-  { to: 'exercises', text: 'Exercises', Icon: LocalActivity },
 ];
 
 function AppSideBar() {

@@ -10,7 +10,6 @@ import {
   alpha,
   styled,
 } from '@mui/material';
-import AppContainer from 'src/components/AppContainer';
 import ExerciseCard from 'src/features/workout/components/ExerciseCard';
 import useExercises from 'src/features/workout/hooks/useExercises';
 import { Link, useNavigate, useParams } from 'react-router-dom';
@@ -60,8 +59,6 @@ function Exercises() {
   const navigate = useNavigate();
   const editExercise = exercises?.find((val) => val.id === exerciseId);
 
-  const Component = modalControls != undefined ? FullScreenModal : AppContainer;
-
   const searchComponent = (
     <Search>
       <SearchIconWrapper>
@@ -77,7 +74,7 @@ function Exercises() {
   );
 
   return (
-    <Component
+    <FullScreenModal
       header={{
         rightButton: (
           <IconButton component={Link} to="add" color="inherit">
@@ -89,7 +86,6 @@ function Exercises() {
       }}
       {...modalControls}
       sx={{ paddingTop: 12, paddingX: 0 }}
-      slideLeft
     >
       {search &&
         filteredExercises?.map((exercise) => (
@@ -150,7 +146,7 @@ function Exercises() {
           </Fab>
         </Stack>
       )}
-    </Component>
+    </FullScreenModal>
   );
 }
 

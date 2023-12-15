@@ -13,11 +13,12 @@ import java.util.*
 
 @RestController
 @Tag(name = "Measurement")
-class MeasurementController(
-    private val measurementService: MeasurementService,
-) {
+class MeasurementController(private val measurementService: MeasurementService) {
     @GetMapping("/measurements")
     fun getMeasurements() = measurementService.all().map(Measurement::toFullResponse)
+
+    @GetMapping("/measurements/{id}")
+    fun getMeasurement(@PathVariable id: UUID) = measurementService.get(id).toFullResponse()
 
     @PostMapping("/measurements")
     fun createMeasurement(@RequestBody measurementCreateRequest: @Valid MeasurementCreateRequest) =
@@ -27,10 +28,7 @@ class MeasurementController(
     fun updateMeasurement(
         @RequestBody measurementUpdateRequest: @Valid MeasurementUpdateRequest,
         @PathVariable id: UUID
-    ) = measurementService.update(
-        measurementUpdateRequest,
-        id
-    ).toResponse()
+    ) = measurementService.update(measurementUpdateRequest, id).toResponse()
 
     @DeleteMapping("/measurements/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -40,19 +38,13 @@ class MeasurementController(
     fun createMeasurementPoint(
         @RequestBody @Valid measurementPointCreateRequest: MeasurementPointCreateRequest,
         @PathVariable id: UUID
-    ) = measurementService.createPoint(
-        id,
-        measurementPointCreateRequest
-    ).toResponse()
+    ) = measurementService.createPoint(id, measurementPointCreateRequest).toResponse()
 
     @PatchMapping("/measurement-points/{id}")
     fun updateMeasurementPoint(
         @RequestBody @Valid measurementPointUpdateRequest: MeasurementPointUpdateRequest,
         @PathVariable id: UUID
-    ) = measurementService.updatePoint(
-        id,
-        measurementPointUpdateRequest
-    ).toResponse()
+    ) = measurementService.updatePoint(id, measurementPointUpdateRequest).toResponse()
 
 
     @DeleteMapping("/measurement-points/{id}")

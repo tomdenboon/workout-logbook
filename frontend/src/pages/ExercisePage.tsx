@@ -146,7 +146,7 @@ function Exercise() {
   const { modalControls } = useModalOutletContext();
 
   return !exercise ? null : (
-    <FullScreenModal slideLeft header={{ title: exercise.name }} {...modalControls}>
+    <FullScreenModal header={{ title: exercise.name }} {...modalControls}>
       <Stack spacing={4}>
         <Section title="Statistics">
           <Grid container spacing={2}>

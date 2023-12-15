@@ -6,7 +6,7 @@ function SettingsPage() {
   const { modalControls } = useModalOutletContext();
 
   return (
-    <FullScreenModal header={{ title: 'Settings' }} slideLeft {...modalControls}>
+    <FullScreenModal header={{ title: 'Settings' }} {...modalControls}>
       <Section title="Basic settings">
         <div className="grid grid-cols-1 gap-px">
           <div className="bg-surface p-2"> settings </div>

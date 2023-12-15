@@ -121,6 +121,9 @@ const injectedRtkApi = api.injectEndpoints({
         body: queryArg.exerciseCreateRequest,
       }),
     }),
+    getMeasurement: build.query<GetMeasurementResponse, GetMeasurementArg>({
+      query: (queryArg) => ({ url: `/measurements/${queryArg.id}` }),
+    }),
     deleteMeasurement: build.mutation<DeleteMeasurementResponse, DeleteMeasurementArg>({
       query: (queryArg) => ({ url: `/measurements/${queryArg.id}`, method: 'DELETE' }),
     }),
@@ -170,11 +173,14 @@ const injectedRtkApi = api.injectEndpoints({
       query: () => ({ url: `/workouts/active` }),
     }),
     getWorkoutStatistics: build.query<GetWorkoutStatisticsResponse, GetWorkoutStatisticsArg>({
-      query: () => ({ url: `/statistics` }),
+      query: () => ({ url: `/statistics/summary` }),
+    }),
+    getWorkoutFrequency: build.query<GetWorkoutFrequencyResponse, GetWorkoutFrequencyArg>({
+      query: () => ({ url: `/statistics/frequency` }),
     }),
     getStatistics: build.query<GetStatisticsResponse, GetStatisticsArg>({
       query: (queryArg) => ({
-        url: `/exercises/${queryArg.id}/statistics`,
+        url: `/statistics/exercise/${queryArg.id}`,
         params: {
           type: queryArg['type'],
           aggregate: queryArg.aggregate,
@@ -300,6 +306,10 @@ export type CreateExerciseResponse = /** status 200 OK */ ExerciseResponse;
 export type CreateExerciseArg = {
   exerciseCreateRequest: ExerciseCreateRequest;
 };
+export type GetMeasurementResponse = /** status 200 OK */ MeasurementFullResponse;
+export type GetMeasurementArg = {
+  id: string;
+};
 export type DeleteMeasurementResponse = unknown;
 export type DeleteMeasurementArg = {
   id: string;
@@ -341,8 +351,10 @@ export type DeleteWorkoutArg = {
 };
 export type GetActiveWorkoutResponse = /** status 200 OK */ WorkoutFullResponse;
 export type GetActiveWorkoutArg = void;
-export type GetWorkoutStatisticsResponse = unknown;
+export type GetWorkoutStatisticsResponse = /** status 200 OK */ SummaryResponse;
 export type GetWorkoutStatisticsArg = void;
+export type GetWorkoutFrequencyResponse = /** status 200 OK */ StatisticsResponse[];
+export type GetWorkoutFrequencyArg = void;
 export type GetStatisticsResponse = /** status 200 OK */ StatisticsResponse[];
 export type GetStatisticsArg = {
   id: string;
@@ -503,6 +515,11 @@ export type MeasurementPointUpdateRequest = {
 };
 export type ExerciseUpdateRequest = {
   name: string;
+};
+export type SummaryResponse = {
+  totalWorkouts: number;
+  totalTime: number;
+  totalVolume: number;
 };
 export type StatisticsResponse = {
   date: string;

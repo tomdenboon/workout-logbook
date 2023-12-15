@@ -149,4 +149,6 @@ export const {
   useGetExerciseGroupsQuery,
   useGetExerciseQuery,
   useGetExerciseCategoriesQuery,
+  useGetWorkoutStatisticsQuery,
+  useGetWorkoutFrequencyQuery,
 } = monkeyLogApi;

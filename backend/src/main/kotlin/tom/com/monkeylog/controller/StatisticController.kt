@@ -5,19 +5,31 @@ import org.springframework.web.bind.annotation.*
 import tom.com.monkeylog.dto.statistics.Aggregate
 import tom.com.monkeylog.dto.statistics.StatisticsResponse
 import tom.com.monkeylog.dto.statistics.StatisticsType
+import tom.com.monkeylog.dto.statistics.SummaryResponse
 import tom.com.monkeylog.repository.StatisticsRepository
 import tom.com.monkeylog.security.AuthenticatedUser
 import java.util.*
 
 
 @RestController
+@RequestMapping("/statistics")
 @Tag(name = "Statistics")
-class ExerciseStatisticController(private val statisticsRepository: StatisticsRepository) {
-    @GetMapping("/statistics")
-    fun getWorkoutStatistics() {
+class StatisticController(private val statisticsRepository: StatisticsRepository) {
+    @GetMapping("/summary")
+    fun getWorkoutStatistics(): SummaryResponse {
+        return SummaryResponse(
+            totalWorkouts = statisticsRepository.totalWorkoutCountUser(AuthenticatedUser.id),
+            totalTime = statisticsRepository.totalTimeUser(AuthenticatedUser.id),
+            totalVolume = statisticsRepository.totalVolumeUser(AuthenticatedUser.id)
+        )
     }
 
-    @GetMapping("/exercises/{id}/statistics")
+    @GetMapping("/frequency")
+    fun getWorkoutFrequency(): List<StatisticsResponse> {
+        return statisticsRepository.weeklyWorkoutCountUser(AuthenticatedUser.id);
+    }
+
+    @GetMapping("/exercise/{id}")
     fun getStatistics(
         @PathVariable id: UUID,
         @RequestParam type: StatisticsType,

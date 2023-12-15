@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
+import tom.com.monkeylog.common.dto.IdProjection
 import tom.com.monkeylog.dto.workout.WorkoutCreateRequest
 import tom.com.monkeylog.mapper.toEntity
 import tom.com.monkeylog.model.workout.Workout
@@ -20,8 +21,8 @@ class WorkoutService(
     private val workoutRepository: WorkoutRepository,
     private val programService: ProgramService,
 ) {
-    fun getPagedWorkoutIds(workoutType: WorkoutType, pageable: Pageable): Page<UUID> {
-        return workoutRepository.findAllIdsByWorkoutTypeAndUserId(
+    fun getPagedWorkoutIds(workoutType: WorkoutType, pageable: Pageable): Page<IdProjection> {
+        return workoutRepository.findAllByWorkoutTypeAndUserId(
             workoutType,
             AuthenticatedUser.id,
             pageable
