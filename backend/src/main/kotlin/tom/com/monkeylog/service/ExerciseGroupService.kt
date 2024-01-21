@@ -29,12 +29,13 @@ class ExerciseGroupService(
 
 
     fun addRow(id: UUID): ExerciseGroup {
-        val exerciseGroup: ExerciseGroup = get(id)
-        val exerciseRow: ExerciseRow = exerciseGroup.exerciseRows.last().clone(exerciseGroup)
-        exerciseRow.lifted = exerciseGroup.workout.workoutType === WorkoutType.COMPLETED
-        exerciseGroup.exerciseRows.add(exerciseRow)
+        return get(id).run {
+            val exerciseRow: ExerciseRow = exerciseRows.last().clone(this)
+            exerciseRow.lifted = workout.workoutType === WorkoutType.COMPLETED
+            exerciseRows.add(exerciseRow)
 
-        return exerciseGroupRepository.save(exerciseGroup)
+            exerciseGroupRepository.save(this)
+        }
     }
 
     fun save(exerciseGroupCreateRequest: ExerciseGroupCreateRequest, workoutId: UUID) {
@@ -42,31 +43,29 @@ class ExerciseGroupService(
 
         exerciseService.allExercisesById(exerciseGroupCreateRequest.exerciseIds)
             .map { exercise ->
-                val exerciseGroup = ExerciseGroup(
+                ExerciseGroup(
                     userId = AuthenticatedUser.id,
                     exercise = exercise,
                     workout = workout
-                )
-
-                val exerciseRow = ExerciseRow(
-                    exerciseGroup = exerciseGroup,
-                    userId = AuthenticatedUser.id,
-                    lifted = workout.workoutType === WorkoutType.COMPLETED,
-                )
-
-                exerciseGroup.exerciseRows.add(exerciseRow)
-
-                exerciseGroup
+                ).apply {
+                    exerciseRows.add(
+                        ExerciseRow(
+                            exerciseGroup = this,
+                            userId = AuthenticatedUser.id,
+                            lifted = workout.workoutType === WorkoutType.COMPLETED,
+                        )
+                    )
+                }
             }.forEach(workout.exerciseGroups::add)
 
         workoutRepository.save(workout)
     }
 
     fun delete(id: UUID) {
-        val exerciseGroup: ExerciseGroup = get(id)
-        val workout: Workout = exerciseGroup.workout
-        workout.exerciseGroups.remove(exerciseGroup)
-        workoutRepository.save(workout)
+        get(id).run {
+            workout.exerciseGroups.remove(this);
+            workoutRepository.save(workout)
+        }
     }
 
     fun getExerciseGroupsByExerciseId(exerciseId: UUID, pageable: Pageable): Page<IdProjection> {

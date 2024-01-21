@@ -29,23 +29,21 @@ class ExerciseService(
     }
 
     fun saveExercise(exerciseCreateRequest: ExerciseCreateRequest): Exercise {
-        return exerciseRepository.save(
-            Exercise(
-                userId = AuthenticatedUser.id,
-                name = exerciseCreateRequest.name,
-                exerciseCategory = exerciseCreateRequest.exerciseCategory
-            )
-        )
+        return Exercise(
+            userId = AuthenticatedUser.id,
+            name = exerciseCreateRequest.name,
+            exerciseCategory = exerciseCreateRequest.exerciseCategory
+        ).let(exerciseRepository::save)
     }
 
     fun updateExercise(exerciseUpdateRequest: ExerciseUpdateRequest, id: UUID): Exercise {
-        val exercise: Exercise = getExercise(id)
-        exercise.name = exerciseUpdateRequest.name
-        return exerciseRepository.save(exercise)
+        return getExercise(id)
+            .apply { name = exerciseUpdateRequest.name }
+            .let(exerciseRepository::save)
     }
 
     fun deleteExercise(id: UUID) {
-        exerciseRepository.delete(getExercise(id))
+        getExercise(id).let(exerciseRepository::delete)
     }
 
     companion object {

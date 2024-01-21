@@ -30,35 +30,41 @@ class MeasurementService(
 
     fun getPoint(id: UUID): MeasurementPoint = measurementPointRepository.findById(id)
         .filter(AuthenticatedUser::isResourceOwner)
-        .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Measurement point not found.") }
+        .orElseThrow {
+            ResponseStatusException(
+                HttpStatus.NOT_FOUND,
+                "Measurement point not found."
+            )
+        }
 
     fun create(measurementCreateRequest: MeasurementCreateRequest): Measurement {
-        val measurement: Measurement = measurementCreateRequest.toEntity()
-        measurement.userId = AuthenticatedUser.id
-        return measurementRepository.save(measurement)
+        return measurementCreateRequest.toEntity().apply {
+            userId = AuthenticatedUser.id
+        }.let(measurementRepository::save)
     }
 
     fun update(measurementPatchDto: MeasurementUpdateRequest, id: UUID): Measurement =
-        measurementRepository.save(get(id).update(measurementPatchDto))
+        get(id).update(measurementPatchDto).let(measurementRepository::save)
 
     fun createPoint(
         measurementId: UUID,
         measurementPointCreateRequest: MeasurementPointCreateRequest
-    ): MeasurementPoint = measurementPointRepository.save(
-        MeasurementPoint(
-            value = measurementPointCreateRequest.value,
-            createdAt = Instant.now(),
-            measurement = get(measurementId)
-        )
-    )
+    ): MeasurementPoint = MeasurementPoint(
+        value = measurementPointCreateRequest.value,
+        createdAt = Instant.now(),
+        measurement = get(measurementId)
+    ).let(measurementPointRepository::save)
 
-    fun updatePoint(id: UUID, measurementPointUpdateRequest: MeasurementPointUpdateRequest): MeasurementPoint {
-        val measurementPoint = getPoint(id)
-        measurementPoint.value = measurementPointUpdateRequest.value
-        return measurementPointRepository.save(measurementPoint)
+    fun updatePoint(
+        id: UUID,
+        measurementPointUpdateRequest: MeasurementPointUpdateRequest
+    ): MeasurementPoint {
+        return getPoint(id)
+            .apply { value = measurementPointUpdateRequest.value }
+            .let(measurementPointRepository::save)
     }
 
-    fun delete(id: UUID) = measurementRepository.delete(get(id))
+    fun delete(id: UUID) = get(id).let(measurementRepository::delete)
 
-    fun deletePoint(id: UUID) = measurementPointRepository.delete(getPoint(id))
+    fun deletePoint(id: UUID) = getPoint(id).let(measurementPointRepository::delete)
 }

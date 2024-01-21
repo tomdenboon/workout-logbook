@@ -25,19 +25,21 @@ class WorkoutController(
     private val workoutService: WorkoutService,
 ) {
     @GetMapping("/workouts/{id}")
-    fun getWorkout(@PathVariable id: UUID): WorkoutFullResponse = workoutService.getWorkout(id).toFullResponse()
+    fun getWorkout(@PathVariable id: UUID): WorkoutFullResponse =
+        workoutService.getWorkout(id).toFullResponse()
 
     @GetMapping("/workouts/active")
-    fun getActiveWorkout(): WorkoutFullResponse? = workoutService.activeWorkout()?.toFullResponse()
+    fun getActiveWorkout(): WorkoutFullResponse? =
+        workoutService.getActiveWorkouts().firstOrNull()?.toFullResponse()
 
     @GetMapping("/workouts")
     fun getWorkouts(
         @ParameterObject pageable: Pageable,
         @RequestParam workoutType: WorkoutType
     ): Page<WorkoutFullResponse> {
-        val uuids = workoutService.getPagedWorkoutIds(workoutType, pageable);
-        val workouts =
-            workoutService.getWorkouts(uuids.content.map(IdProjection::id)).associate { it.id to it.toFullResponse() }
+        val uuids = workoutService.getPagedWorkoutIds(workoutType, pageable)
+        val workouts = workoutService.getWorkouts(uuids.content.map(IdProjection::id))
+            .associate { it.id to it.toFullResponse() }
 
         return uuids.toResponse { workouts[it.id]!! }
     }
@@ -54,7 +56,8 @@ class WorkoutController(
     fun startEmptyWorkout(): WorkoutResponse = workoutService.startWorkout().toResponse()
 
     @PostMapping("/workouts/{id}/start")
-    fun startWorkout(@PathVariable id: UUID): WorkoutResponse = workoutService.startWorkout(id).toResponse()
+    fun startWorkout(@PathVariable id: UUID): WorkoutResponse =
+        workoutService.startWorkout(id).toResponse()
 
     @PostMapping("/workouts/complete")
     fun completeWorkout(): WorkoutResponse = workoutService.complete().toResponse()

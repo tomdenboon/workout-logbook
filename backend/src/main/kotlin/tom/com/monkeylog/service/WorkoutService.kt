@@ -8,12 +8,14 @@ import org.springframework.web.server.ResponseStatusException
 import tom.com.monkeylog.common.dto.IdProjection
 import tom.com.monkeylog.dto.workout.WorkoutCreateRequest
 import tom.com.monkeylog.mapper.toEntity
+import tom.com.monkeylog.model.workout.ExerciseRow
 import tom.com.monkeylog.model.workout.Workout
 import tom.com.monkeylog.model.workout.WorkoutType
 import tom.com.monkeylog.repository.WorkoutRepository
 import tom.com.monkeylog.security.AuthenticatedUser
 import java.time.Instant
 import java.util.*
+import java.util.function.Predicate.not
 
 
 @Service
@@ -39,57 +41,51 @@ class WorkoutService(
             .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, WORKOUT_NOT_FOUND) }
     }
 
-    fun activeWorkout(): Workout? {
-        return workoutRepository.findAllByWorkoutTypeAndUserId(WorkoutType.ACTIVE, AuthenticatedUser.id).firstOrNull()
+    fun getActiveWorkouts(): List<Workout> {
+        return workoutRepository.findAllByWorkoutTypeAndUserId(
+            WorkoutType.ACTIVE,
+            AuthenticatedUser.id
+        );
     }
 
     fun startWorkout(): Workout {
-        return startWorkout(Workout(name = "New empty workout"))
+        return Workout(name = "New empty workout").run(this::startWorkout)
     }
 
     fun startWorkout(id: UUID): Workout {
-        return startWorkout(getWorkout(id).clone())
+        return getWorkout(id).clone().run(this::startWorkout)
     }
 
     private fun startWorkout(workout: Workout): Workout {
-        workout.startDate = Instant.now()
-        workout.workoutType = WorkoutType.ACTIVE
-        workout.userId = AuthenticatedUser.id
+        workoutRepository.deleteAll(getActiveWorkouts())
 
-        workoutRepository.deleteAll(
-            workoutRepository.findAllByWorkoutTypeAndUserId(
-                WorkoutType.ACTIVE,
-                AuthenticatedUser.id
-            )
-        )
-
-        return workoutRepository.save(workout)
+        return workout.apply {
+            startDate = Instant.now()
+            workoutType = WorkoutType.ACTIVE
+            userId = AuthenticatedUser.id
+        }.let(workoutRepository::save)
     }
 
     fun complete(): Workout {
-        val workout: Workout =
-            workoutRepository.findAllByWorkoutTypeAndUserId(WorkoutType.ACTIVE, AuthenticatedUser.id).firstOrNull()
-                ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, WORKOUT_NOT_FOUND)
+        val activeWorkout: Workout = getActiveWorkouts().firstOrNull()
+            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, WORKOUT_NOT_FOUND)
 
-        workout.exerciseGroups.forEach { exerciseGroup ->
-            exerciseGroup.exerciseRows.removeIf { exerciseRow -> !exerciseRow.lifted }
-        }
-        workout.exerciseGroups.removeIf { exerciseGroup -> exerciseGroup.exerciseRows.isEmpty() }
-        workout.endDate = Instant.now()
-        workout.workoutType = WorkoutType.COMPLETED
-        return workoutRepository.save(workout)
+        return activeWorkout.apply {
+            endDate = Instant.now()
+            workoutType = WorkoutType.COMPLETED
+            exerciseGroups.forEach { it.exerciseRows.removeIf(not(ExerciseRow::lifted)) }
+            exerciseGroups.removeIf { it.exerciseRows.isEmpty() }
+        }.let(workoutRepository::save)
     }
 
-    fun cloneToTemplate(id: UUID) = workoutRepository.save(getWorkout(id).clone())
+    fun cloneToTemplate(id: UUID) = getWorkout(id).clone().let(workoutRepository::save)
 
     fun save(workoutRequest: WorkoutCreateRequest): Workout {
-        val workout: Workout = workoutRequest.toEntity().apply {
+        return workoutRequest.toEntity().apply {
             workoutType = WorkoutType.TEMPLATE
             userId = AuthenticatedUser.id
-            programWeek = workoutRequest.programWeekId?.let { programService.getProgramWeek(it) }
-        }
-
-        return workoutRepository.save(workout)
+            programWeek = workoutRequest.programWeekId?.let(programService::getProgramWeek)
+        }.let(workoutRepository::save)
     }
 
     fun delete(id: UUID) {
@@ -99,5 +95,4 @@ class WorkoutService(
     companion object {
         const val WORKOUT_NOT_FOUND = "Workout not found."
     }
-
 }

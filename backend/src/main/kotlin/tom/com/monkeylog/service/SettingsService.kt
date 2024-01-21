@@ -17,5 +17,5 @@ class SettingsService(
         .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "User settings not found") }
 
     fun updateSettings(settingsUpdateRequest: SettingsUpdateRequest): Settings =
-        settingsRepository.save(getSettings().update(settingsUpdateRequest))
+        getSettings().update(settingsUpdateRequest).let(settingsRepository::save)
 }

@@ -27,7 +27,7 @@ fun ExerciseGroup.clone(workout: Workout): ExerciseGroup {
         userId = AuthenticatedUser.id
     ).apply {
         exerciseRows =
-            this@clone.exerciseRows.map { exerciseRow -> exerciseRow.clone(this) }.toMutableList()
+            this@clone.exerciseRows.map { it.clone(this) }.toMutableList()
     }
 }
 

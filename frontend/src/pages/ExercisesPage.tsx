@@ -117,7 +117,7 @@ function Exercises() {
                     <ExerciseCard
                       exercise={exercise}
                       onClick={() =>
-                        modalControls ? toggleId(exercise.id) : navigate(`${exercise.id}/about`)
+                        workoutId ? toggleId(exercise.id) : navigate(`${exercise.id}/about`)
                       }
                       isSelected={selectedIds.includes(exercise.id)}
                     />

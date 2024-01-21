@@ -22,26 +22,23 @@ class ExerciseRowService(
     }
 
     fun update(exerciseRowUpdateRequest: ExerciseRowUpdateRequest, id: UUID): ExerciseRow {
-        val exerciseRow: ExerciseRow = get(id).apply {
+        return get(id).apply {
             lifted = exerciseRowUpdateRequest.lifted
             weight = exerciseRowUpdateRequest.weight
             distance = exerciseRowUpdateRequest.distance
             time = exerciseRowUpdateRequest.time
             reps = exerciseRowUpdateRequest.reps
             rpe = exerciseRowUpdateRequest.rpe
-        }
-
-        return exerciseRowRepository.save(exerciseRow)
+        }.let(exerciseRowRepository::save)
     }
 
     fun delete(id: UUID) {
-        val exerciseRow = get(id)
-        val exerciseGroup = exerciseRow.exerciseGroup
-        exerciseGroup.exerciseRows.remove(exerciseRow)
-        if (exerciseGroup.exerciseRows.size <= 1) {
-            exerciseGroupRepository.delete(exerciseGroup)
-        } else {
-            exerciseRowRepository.delete(exerciseRow)
+        get(id).run {
+            exerciseGroup.exerciseRows.remove(this)
+
+            if (exerciseGroup.exerciseRows.size == 0) {
+                exerciseGroupRepository.delete(exerciseGroup)
+            } else exerciseGroupRepository.save(exerciseGroup)
         }
     }
 }
