@@ -16,10 +16,10 @@ docker compose up -d --build
 
 ## QA
 
-**Why another fitness logger**
+**- Why another fitness logger**
 
 The original reason was that none of the loggers I found supported programming. Which now there is a plethora of them supporting this feature. However I hated that they all had subscriptions blocking the useful insights. This lit a passion in me to just build my own application.
 
-**Why is it not a native mobile application**
+**- Why is it not a native mobile application**
 
 I like web application to much.
