@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS"
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+  <changeSet author="tomdenboon (generated)" id="1708294330377-1">
+    <createTable tableName="exercise">
+      <column name="id" type="UUID">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_exercise"/>
+      </column>
+      <column name="user_id" type="UUID"/>
+      <column name="name" type="VARCHAR(255)"/>
+      <column name="exercise_category" type="VARCHAR(255)"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="tomdenboon (generated)" id="1708294330377-2">
+    <createTable tableName="exercise_group">
+      <column name="id" type="UUID">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_exercisegroup"/>
+      </column>
+      <column name="exercise_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="workout_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="user_id" type="UUID"/>
+      <column name="sort_order" type="INT"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="tomdenboon (generated)" id="1708294330377-3">
+    <createTable tableName="exercise_row">
+      <column name="id" type="UUID">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_exerciserow"/>
+      </column>
+      <column name="lifted" type="BOOLEAN">
+        <constraints nullable="false"/>
+      </column>
+      <column name="exercise_group_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="reps" type="INT"/>
+      <column name="weight" type="DOUBLE"/>
+      <column name="time" type="INT"/>
+      <column name="distance" type="DOUBLE"/>
+      <column name="rpe" type="INT"/>
+      <column name="user_id" type="UUID"/>
+      <column name="sort_order" type="INT"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="tomdenboon (generated)" id="1708294330377-4">
+    <createTable tableName="measurement">
+      <column name="id" type="UUID">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_measurement"/>
+      </column>
+      <column name="name" type="VARCHAR(255)"/>
+      <column name="user_id" type="UUID"/>
+      <column name="metric" type="VARCHAR(255)"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="tomdenboon (generated)" id="1708294330377-5">
+    <createTable tableName="measurement_point">
+      <column name="id" type="UUID">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_measurementpoint"/>
+      </column>
+      <column name="value" type="DOUBLE">
+        <constraints nullable="false"/>
+      </column>
+      <column name="measurement_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="created_at" type="DATETIME"/>
+      <column name="user_id" type="UUID"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="tomdenboon (generated)" id="1708294330377-6">
+    <createTable tableName="program">
+      <column name="id" type="UUID">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_program"/>
+      </column>
+      <column name="user_id" type="UUID"/>
+      <column name="name" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="description" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="workout_type" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+  </changeSet>
+  <changeSet author="tomdenboon (generated)" id="1708294330377-7">
+    <createTable tableName="program_week">
+      <column name="id" type="UUID">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_programweek"/>
+      </column>
+      <column name="name" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="program_id" type="UUID">
+        <constraints nullable="false"/>
+      </column>
+      <column name="user_id" type="UUID"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="tomdenboon (generated)" id="1708294330377-8">
+    <createTable tableName="settings">
+      <column name="id" type="UUID">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_settings"/>
+      </column>
+      <column name="measurement_system" type="SMALLINT"/>
+      <column name="user_id" type="UUID"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="tomdenboon (generated)" id="1708294330377-9">
+    <createTable tableName="users">
+      <column name="id" type="UUID">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_users"/>
+      </column>
+      <column name="name" type="VARCHAR(255)"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="tomdenboon (generated)" id="1708294330377-10">
+    <createTable tableName="workout">
+      <column name="id" type="UUID">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_workout"/>
+      </column>
+      <column name="cloned_from_id" type="UUID"/>
+      <column name="name" type="VARCHAR(255)"/>
+      <column name="note" type="VARCHAR(255)"/>
+      <column name="user_id" type="UUID"/>
+      <column name="workout_type" type="VARCHAR(255)"/>
+      <column name="start_date" type="DATETIME"/>
+      <column name="end_date" type="DATETIME"/>
+      <column name="program_week_id" type="UUID"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="tomdenboon (generated)" id="1708294330377-14">
+    <addForeignKeyConstraint baseColumnNames="exercise_id" baseTableName="exercise_group"
+      constraintName="FK_EXERCISEGROUP_ON_EXERCISE" referencedColumnNames="id"
+      referencedTableName="exercise"/>
+
+    <createIndex indexName="idx_exercise_group_exercise_id" tableName="exercise_group">
+      <column name="exercise_id"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="tomdenboon (generated)" id="1708294330377-15">
+    <addForeignKeyConstraint baseColumnNames="workout_id" baseTableName="exercise_group"
+      constraintName="FK_EXERCISEGROUP_ON_WORKOUT" referencedColumnNames="id"
+      referencedTableName="workout"/>
+
+    <createIndex indexName="idx_exercise_group_workout_id" tableName="exercise_group">
+      <column name="workout_id"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="tomdenboon (generated)" id="1708294330377-16">
+    <addForeignKeyConstraint baseColumnNames="exercise_group_id" baseTableName="exercise_row"
+      constraintName="FK_EXERCISEROW_ON_EXERCISE_GROUP" referencedColumnNames="id"
+      referencedTableName="exercise_group"/>
+
+    <createIndex indexName="idx_exercise_row_exercise_group_id" tableName="exercise_row">
+      <column name="exercise_group_id"/>
+    </createIndex>
+  </changeSet>
+  <changeSet author="tomdenboon (generated)" id="1708294330377-17">
+    <addForeignKeyConstraint baseColumnNames="measurement_id" baseTableName="measurement_point"
+      constraintName="FK_MEASUREMENTPOINT_ON_MEASUREMENT" onDelete="CASCADE"
+      referencedColumnNames="id" referencedTableName="measurement"/>
+  </changeSet>
+  <changeSet author="tomdenboon (generated)" id="1708294330377-18">
+    <addForeignKeyConstraint baseColumnNames="program_id" baseTableName="program_week"
+      constraintName="FK_PROGRAMWEEK_ON_PROGRAM" referencedColumnNames="id"
+      referencedTableName="program"/>
+  </changeSet>
+  <changeSet author="tomdenboon (generated)" id="1708294330377-19">
+    <addForeignKeyConstraint baseColumnNames="program_week_id" baseTableName="workout"
+      constraintName="FK_WORKOUT_ON_PROGRAM_WEEK" referencedColumnNames="id"
+      referencedTableName="program_week"/>
+  </changeSet>
+
+</databaseChangeLog>

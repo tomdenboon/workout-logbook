@@ -20,7 +20,7 @@ interface ExerciseRowFormProps {
 function ExerciseRowForm(props: ExerciseRowFormProps) {
   const { workoutId, exerciseGroupId, exerciseRow, workoutType, exerciseRowIndex } = props;
   const [updateRow] = useUpdateExerciseRowMutation();
-  const { data: exerciseRowForm, update } = useForm(exerciseRow);
+  const { data: exerciseRowForm, update } = useForm(exerciseRow, { resetOnInitialChange: true });
 
   return (
     <Stack sx={{ mb: 1 }} direction="row" spacing={1}>
@@ -51,12 +51,14 @@ function ExerciseRowForm(props: ExerciseRowFormProps) {
         variant={exerciseRow.lifted ? 'contained' : 'outlined'}
         color={exerciseRow.lifted ? 'success' : 'primary'}
         onClick={() => {
-          update('lifted', !exerciseRow.lifted);
           updateRow({
             workoutId,
             exerciseGroupId,
             exerciseRowId: exerciseRow.id,
-            exerciseRowUpdateRequest: exerciseRowForm,
+            exerciseRowUpdateRequest: {
+              ...exerciseRowForm,
+              lifted: !exerciseRowForm.lifted,
+            },
           });
         }}
         disabled={!(workoutType === 'ACTIVE')}

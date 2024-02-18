@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS"
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+  <changeSet author="tomdenboon (generated)" id="1708294635964-1">
+    <addNotNullConstraint columnDataType="VARCHAR(255)" columnName="name" tableName="workout"
+      validate="true"/>
+  </changeSet>
+  <changeSet author="tomdenboon (generated)" id="1708294635964-2">
+    <addNotNullConstraint columnDataType="VARCHAR(255)" columnName="workout_type"
+      tableName="workout" validate="true"/>
+  </changeSet>
+
+</databaseChangeLog>

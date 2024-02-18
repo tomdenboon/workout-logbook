@@ -14,7 +14,6 @@ import tom.com.monkeylog.model.workout.Workout
 import tom.com.monkeylog.model.workout.WorkoutType
 import tom.com.monkeylog.repository.ExerciseRepository
 import tom.com.monkeylog.repository.MeasurementRepository
-import tom.com.monkeylog.repository.UserRepository
 import tom.com.monkeylog.repository.WorkoutRepository
 import java.time.Instant
 import java.time.temporal.ChronoUnit
@@ -23,7 +22,6 @@ import kotlin.random.Random
 
 @Component
 class DatabaseSeeder(
-    private val userRepository: UserRepository,
     private val exerciseRepository: ExerciseRepository,
     private val workoutRepository: WorkoutRepository,
     private val measurementRepository: MeasurementRepository
@@ -31,10 +29,13 @@ class DatabaseSeeder(
     @EventListener
     fun seed(event: ContextRefreshedEvent?) {
         val id = UUID.fromString("00000000-0000-0000-0000-000000000000")
+        if (exerciseRepository.count() > 0) {
+            return
+        }
+
         seedExercisesTable(id)
         seedMeasurementsTable(id)
-
-//        List(100) { seedExercisesTable(UUID.randomUUID()) }
+        List(100) { seedExercisesTable(UUID.randomUUID()) }
     }
 
     private fun seedExercisesTable(userId: UUID) {
@@ -81,9 +82,13 @@ class DatabaseSeeder(
     }
 
     private fun createWorkout(user: UUID, exercises: List<Exercise>): Workout {
-        val startDate = generateRandomDateBetween(Instant.now().minus(700, ChronoUnit.DAYS), Instant.now())
+        val startDate =
+            generateRandomDateBetween(Instant.now().minus(700, ChronoUnit.DAYS), Instant.now())
         val endDate =
-            generateRandomDateBetween(startDate.plus(30, ChronoUnit.MINUTES), startDate.plus(2, ChronoUnit.HOURS))
+            generateRandomDateBetween(
+                startDate.plus(30, ChronoUnit.MINUTES),
+                startDate.plus(2, ChronoUnit.HOURS)
+            )
 
         return Workout(
             userId = user,
@@ -140,7 +145,9 @@ class DatabaseSeeder(
                         measurement = this,
                         value = Random.nextDouble(0.0, 100.0),
                         userId = userId,
-                        createdAt = generateRandomDateBetween(Instant.now().minus(365, ChronoUnit.DAYS), Instant.now())
+                        createdAt = generateRandomDateBetween(
+                            Instant.now().minus(365, ChronoUnit.DAYS), Instant.now()
+                        )
                     )
                 }
         }

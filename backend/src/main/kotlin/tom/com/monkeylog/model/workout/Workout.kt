@@ -13,10 +13,12 @@ class Workout(
     @UuidGenerator
     var id: UUID? = null,
     var clonedFromId: UUID? = null,
+    @Column(nullable = false)
     var name: String,
     var note: String? = null,
     override var userId: UUID? = null,
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     var workoutType: WorkoutType = WorkoutType.TEMPLATE,
     var startDate: Instant? = null,
     var endDate: Instant? = null,
