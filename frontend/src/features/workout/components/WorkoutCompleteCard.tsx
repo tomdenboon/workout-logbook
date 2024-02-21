@@ -9,21 +9,18 @@ interface WorkoutCompleteCardProps {
 
 function WorkoutCompleteCard(props: WorkoutCompleteCardProps) {
   const { workout } = props;
-  const { prettyTimerFormat } = useTimer(workout.startDate, workout.endDate);
+  const prettyTimerFormat = useTimer('pretty', workout.startDate, workout.endDate);
 
   return (
     <AppCard
       header={workout.name}
-      subheader={`${new Date(
-        workout?.startDate ?? '',
-      ).toLocaleDateString()} ${prettyTimerFormat}`}
+      subheader={`${new Date(workout?.startDate ?? '').toLocaleDateString()} ${prettyTimerFormat}`}
       actions={<WorkoutActions workout={workout} />}
     >
       {workout.exerciseGroups.length > 0 &&
         workout.exerciseGroups.map((exerciseGroup) => (
           <div key={exerciseGroup.id}>
-            {exerciseGroup.exerciseRows?.length ?? 0} x{' '}
-            {exerciseGroup.exercise.name}
+            {exerciseGroup.exerciseRows?.length ?? 0} x {exerciseGroup.exercise.name}
           </div>
         ))}
     </AppCard>

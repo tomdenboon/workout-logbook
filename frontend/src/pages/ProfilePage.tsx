@@ -1,12 +1,12 @@
 import { Settings } from '@mui/icons-material';
 import { Button, Grid, IconButton, Paper, Stack, Typography, useTheme } from '@mui/material';
-import AppContainer from 'src/components/AppContainer';
 import { useNavigate } from 'react-router-dom';
 import { ModalOutlet } from 'src/components/ModalOutlet';
 import AppCard from 'src/components/AppCard';
 import { BarChart } from '@mui/x-charts';
 import dayjs from 'dayjs';
 import { useGetWorkoutFrequencyQuery, useGetWorkoutStatisticsQuery } from 'src/store/monkeylogApi';
+import { useHeader } from 'src/layouts/AppLayout';
 
 function ProfileSummaryTile() {
   const { data: summary } = useGetWorkoutStatisticsQuery();
@@ -39,7 +39,6 @@ function FrequencyTile() {
   const { data: frequency } = useGetWorkoutFrequencyQuery();
 
   console.log(frequency);
-
   const theme = useTheme();
 
   const everyMonthInYear = Array.from({ length: 6 }, (_, i) => i + 1);
@@ -61,6 +60,14 @@ function FrequencyTile() {
 
 function ProfilePage() {
   const navigate = useNavigate();
+  useHeader({
+    title: 'Tom den Boon',
+    rightButton: (
+      <IconButton onClick={() => navigate('settings')} color="inherit">
+        <Settings color="inherit" />
+      </IconButton>
+    ),
+  });
 
   const renderGridButton = (text: string, onClick: () => void) => (
     <Grid item xs={6} sm={3}>
@@ -71,16 +78,7 @@ function ProfilePage() {
   );
 
   return (
-    <AppContainer
-      header={{
-        title: 'Tom den Boon',
-        rightButton: (
-          <IconButton onClick={() => navigate('settings')} color="inherit">
-            <Settings color="inherit" />
-          </IconButton>
-        ),
-      }}
-    >
+    <>
       <Grid container spacing={2}>
         <Grid item container spacing={1}>
           {renderGridButton('History', () => navigate('history'))}
@@ -96,7 +94,7 @@ function ProfilePage() {
         </Grid>
       </Grid>
       <ModalOutlet />
-    </AppContainer>
+    </>
   );
 }
 

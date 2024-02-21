@@ -42,7 +42,7 @@ function ModalForm<Form extends Record<string, string | number>>(props: {
                 <Select
                   label={label}
                   disabled={disabled}
-                  labelId={String(key) + label}
+                  labelId={String(key)}
                   value={formState[key]}
                   onChange={(e) => update(key, e.target.value as Form[keyof Form])}
                 >
@@ -60,9 +60,17 @@ function ModalForm<Form extends Record<string, string | number>>(props: {
                 size="small"
                 margin="dense"
                 disabled={disabled}
+                inputMode={typeof formState[key] === 'number' ? 'numeric' : 'text'}
                 type={typeof formState[key] === 'number' ? 'number' : 'text'}
                 value={formState[key]}
-                onChange={(e) => update(key, e.target.value as Form[keyof Form])}
+                onChange={(e) =>
+                  update(
+                    key,
+                    (typeof formState[key] === 'number'
+                      ? Number(e.target.value)
+                      : e.target.value) as Form[keyof Form]
+                  )
+                }
               />
             )
           )}

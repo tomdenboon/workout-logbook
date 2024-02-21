@@ -3,6 +3,7 @@ package tom.com.monkeylog.repository
 import jakarta.persistence.EntityManager
 import jakarta.persistence.PersistenceContext
 import org.springframework.stereotype.Repository
+import tom.com.monkeylog.dto.statistics.Interval
 import tom.com.monkeylog.dto.statistics.StatisticsResponse
 import tom.com.monkeylog.dto.statistics.StatisticsType
 import tom.com.monkeylog.dto.workout.ExerciseRowResponse
@@ -50,15 +51,16 @@ class StatisticsRepository(
         ).singleResult as Long
     }
 
-    fun weeklyWorkoutCountUser(userId: UUID): List<StatisticsResponse> {
+    fun workoutCountUser(userId: UUID, interval: Interval): List<StatisticsResponse> {
+        val inter = interval.name.lowercase()
         return em.createNativeQuery(
             """
-                SELECT date_trunc('week', w.start_date), COUNT(w.id)
+                SELECT date_trunc($inter, w.start_date), COUNT(w.id)
                 FROM workout w
                 WHERE w.user_id = '$userId'
                   AND w.workout_type = 'COMPLETED'
-                GROUP BY date_trunc('week', w.start_date)
-                ORDER BY date_trunc('week', w.start_date);
+                GROUP BY date_trunc($inter, w.start_date)
+                ORDER BY date_trunc($inter, w.start_date);
             """.trimIndent()
         ).resultList.map {
             val row = it as Array<*>
@@ -69,7 +71,11 @@ class StatisticsRepository(
         }
     }
 
-    fun getSumStatistics(exerciseId: UUID, userId: UUID, type: StatisticsType): List<StatisticsResponse> {
+    fun getSumStatistics(
+        exerciseId: UUID,
+        userId: UUID,
+        type: StatisticsType
+    ): List<StatisticsResponse> {
         val agg = getAggregation(type)
 
         return em.createNativeQuery(
@@ -94,7 +100,11 @@ class StatisticsRepository(
         }
     }
 
-    fun getMaxStatistics(exerciseId: UUID, userId: UUID, type: StatisticsType): List<StatisticsResponse> {
+    fun getMaxStatistics(
+        exerciseId: UUID,
+        userId: UUID,
+        type: StatisticsType
+    ): List<StatisticsResponse> {
         val agg = getAggregation(type)
 
         return em.createNativeQuery(
@@ -116,7 +126,7 @@ class StatisticsRepository(
                   AND er.lifted IS TRUE
                   AND er.user_id = '$userId'
                 ORDER BY date_trunc('day', w.start_date), $agg desc;
-            """
+            """.trimIndent()
         ).resultList.map {
             val row = it as Array<*>
             StatisticsResponse(

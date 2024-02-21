@@ -2,10 +2,7 @@ package tom.com.monkeylog.controller
 
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.web.bind.annotation.*
-import tom.com.monkeylog.dto.statistics.Aggregate
-import tom.com.monkeylog.dto.statistics.StatisticsResponse
-import tom.com.monkeylog.dto.statistics.StatisticsType
-import tom.com.monkeylog.dto.statistics.SummaryResponse
+import tom.com.monkeylog.dto.statistics.*
 import tom.com.monkeylog.repository.StatisticsRepository
 import tom.com.monkeylog.security.AuthenticatedUser
 import java.util.*
@@ -25,8 +22,8 @@ class StatisticController(private val statisticsRepository: StatisticsRepository
     }
 
     @GetMapping("/frequency")
-    fun getWorkoutFrequency(): List<StatisticsResponse> {
-        return statisticsRepository.weeklyWorkoutCountUser(AuthenticatedUser.id);
+    fun getWorkoutFrequency(@RequestParam interval: Interval): List<StatisticsResponse> {
+        return statisticsRepository.workoutCountUser(AuthenticatedUser.id, interval);
     }
 
     @GetMapping("/exercise/{id}")
@@ -42,23 +39,15 @@ class StatisticController(private val statisticsRepository: StatisticsRepository
         }
 
         if (distinct) {
-            return helper(statistics)
+            var number = Double.MIN_VALUE
+
+            return statistics.filter {
+                val isGreater = it.value >= number
+                if (isGreater) number = it.value
+                isGreater
+            }
         }
 
         return statistics
-    }
-
-    private fun helper(statistics: List<StatisticsResponse>): List<StatisticsResponse> {
-        var number = Double.MIN_VALUE
-
-        return statistics
-            .filter {
-                if (it.value >= number) {
-                    number = it.value
-                    true
-                } else {
-                    false
-                }
-            }
     }
 }

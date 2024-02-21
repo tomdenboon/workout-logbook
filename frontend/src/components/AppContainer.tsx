@@ -1,14 +1,4 @@
-import {
-  AppBar,
-  Box,
-  Container,
-  CssBaseline,
-  Stack,
-  SxProps,
-  Theme,
-  Toolbar,
-  Typography,
-} from '@mui/material';
+import { AppBar, Box, Container, Stack, SxProps, Theme, Toolbar, Typography } from '@mui/material';
 
 interface AppContainerProps {
   header: {
@@ -19,15 +9,22 @@ interface AppContainerProps {
   };
   children: React.ReactNode;
   sx?: SxProps<Theme>;
+  footer?: React.ReactNode;
 }
 
 function AppContainer(props: AppContainerProps) {
-  const { children, header, sx } = props;
+  const { children, header, sx, footer } = props;
 
   return (
-    <>
-      <CssBaseline />
-      <AppBar>
+    <Box
+      sx={{
+        height: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        flexWrap: 'nowrap',
+      }}
+    >
+      <AppBar position="static" sx={{ zIndex: 1 }}>
         <Toolbar variant="dense" sx={{ minHeight: 56 }}>
           <Stack sx={{ py: 1, width: '100%' }}>
             <Stack direction="row" alignItems="center">
@@ -41,10 +38,13 @@ function AppContainer(props: AppContainerProps) {
           </Stack>
         </Toolbar>
       </AppBar>
-      <Container maxWidth="lg" sx={{ paddingTop: 9, paddingBottom: 16, paddingX: 2, ...sx }}>
-        {children}
-      </Container>
-    </>
+      <Box sx={{ overflow: 'auto', flexGrow: 1 }}>
+        <Container maxWidth="lg" sx={{ paddingTop: 2, paddingBottom: 2, paddingX: 2, ...sx }}>
+          {children}
+        </Container>
+      </Box>
+      {footer}
+    </Box>
   );
 }
 

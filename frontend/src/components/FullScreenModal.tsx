@@ -32,10 +32,11 @@ export default function FullScreenModal(props: {
     afterTitle?: React.ReactNode;
     rightButton?: React.ReactNode;
   };
+  footer?: React.ReactNode;
   slideUp?: boolean;
   sx?: SxProps<Theme>;
 }) {
-  const { open, onClose, onTransitionExited, children, header, slideUp, sx } = props;
+  const { open, onClose, onTransitionExited, children, footer, header, slideUp, sx } = props;
 
   return (
     <Dialog
@@ -54,6 +55,7 @@ export default function FullScreenModal(props: {
           ),
           ...header,
         }}
+        footer={footer}
         sx={sx}
       >
         {children}

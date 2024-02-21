@@ -6,9 +6,10 @@ import WorkoutCard from 'src/features/workout/components/WorkoutCard';
 import { useGetWorkoutsQuery } from 'src/store/monkeylogApi';
 import { ModalOutlet } from 'src/components/ModalOutlet';
 import { useNavigate, useParams } from 'react-router-dom';
-import AppContainer from 'src/components/AppContainer';
+import { useHeader } from 'src/layouts/AppLayout';
 
 function TrainingPage() {
+  useHeader({ title: 'Workouts' });
   const navigate = useNavigate();
   const { data: workoutPage } = useGetWorkoutsQuery({ workoutType: 'TEMPLATE', size: 999 });
   const { workoutId } = useParams();
@@ -17,7 +18,7 @@ function TrainingPage() {
   const startWorkout = workouts?.find((val) => val.id === workoutId);
 
   return (
-    <AppContainer header={{ title: 'Workouts' }}>
+    <>
       <Stack spacing={2}>
         <Button onClick={() => navigate('workouts/new/start')} variant="contained">
           Start empty workout
@@ -80,7 +81,7 @@ function TrainingPage() {
         </Stack>
       </Stack>
       <ModalOutlet workout={startWorkout} />
-    </AppContainer>
+    </>
   );
 }
 

@@ -65,7 +65,9 @@ function Router() {
                   <Route path=":exerciseId" element={<ExerciseForm />} />
                   <Route path=":exerciseId/about" element={<ExercisePage />} />
                 </Route>
-                <Route path="history" element={<HistoryPage />} />
+                <Route path="history" element={<HistoryPage />}>
+                  {renderExerciseModalRoutes()}
+                </Route>
                 {renderExerciseModalRoutes()}
               </Route>
               <Route path="training" element={<TrainingPage />}>

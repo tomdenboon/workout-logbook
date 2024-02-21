@@ -52,7 +52,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 function Exercises() {
   const { workoutId, exerciseId } = useParams();
   const [search, setSearch] = useState('');
-  const { exercises, groupedExercises, filteredExercises } = useExercises(search);
+  const { exercises, groupedExercises } = useExercises(search);
   const { selectedIds, toggleId, hasSelection } = useSelectIds();
   const { modalControls } = useModalOutletContext();
   const { add } = useAddExercises();
@@ -85,23 +85,9 @@ function Exercises() {
         title: 'Exercises',
       }}
       {...modalControls}
-      sx={{ paddingTop: 12, paddingX: 0 }}
+      sx={{ paddingX: 0, paddingTop: 0 }}
     >
-      {search &&
-        filteredExercises?.map((exercise) => (
-          <React.Fragment key={exercise.id}>
-            <ExerciseCard
-              exercise={exercise}
-              onClick={() =>
-                modalControls ? toggleId(exercise.id) : navigate(`${exercise.id}/about`)
-              }
-              isSelected={selectedIds.includes(exercise.id)}
-            />
-            <Divider />
-          </React.Fragment>
-        ))}
-      {!search &&
-        groupedExercises &&
+      {groupedExercises &&
         Object.keys(groupedExercises)
           .sort((a, b) => a.localeCompare(b))
           .map((key) => (

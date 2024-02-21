@@ -13,6 +13,12 @@ function ExerciseForm() {
 
   const [addExercise] = useCreateExerciseMutation();
   const [updateExercise] = useUpdateExerciseMutation();
+  const exerciseCategoryOptions = [
+    { value: 'WEIGHTED', label: 'Weighted' },
+    { value: 'REPS', label: 'Reps' },
+    { value: 'DURATION', label: 'Duration' },
+    { value: 'DISTANCE', label: 'Distance' },
+  ];
 
   const initialState = {
     name: exercise?.name ?? '',
@@ -32,7 +38,7 @@ function ExerciseForm() {
           key: 'exerciseCategory',
           label: 'Category',
           disabled: !!exercise,
-          options: [],
+          options: exerciseCategoryOptions,
         },
       ]}
       onSubmit={(exerciseForm) => {

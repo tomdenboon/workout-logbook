@@ -2,9 +2,9 @@ import { Check } from '@mui/icons-material';
 import { Button, Stack } from '@mui/material';
 import React from 'react';
 import ExerciseRowFieldForm from 'src/features/workout/components/ExerciseRowFieldForm';
-import useForm from 'src/hooks/useForm';
 import {
   ExerciseRowResponse,
+  ValidFields,
   WorkoutResponse,
   useUpdateExerciseRowMutation,
 } from 'src/store/monkeylogApi';
@@ -15,12 +15,25 @@ interface ExerciseRowFormProps {
   workoutId: string;
   exerciseGroupId: string;
   workoutType: WorkoutResponse['workoutType'];
+  validFields: ValidFields;
 }
 
 function ExerciseRowForm(props: ExerciseRowFormProps) {
-  const { workoutId, exerciseGroupId, exerciseRow, workoutType, exerciseRowIndex } = props;
+  const { workoutId, exerciseGroupId, exerciseRow, workoutType, exerciseRowIndex, validFields } =
+    props;
   const [updateRow] = useUpdateExerciseRowMutation();
-  const { data: exerciseRowForm, update } = useForm(exerciseRow, { resetOnInitialChange: true });
+
+  const onBlur = (key: keyof ExerciseRowResponse, value: number | undefined | boolean) => {
+    updateRow({
+      workoutId,
+      exerciseGroupId,
+      exerciseRowId: exerciseRow.id,
+      exerciseRowUpdateRequest: {
+        ...exerciseRow,
+        [key]: value,
+      },
+    });
+  };
 
   return (
     <Stack sx={{ mb: 1 }} direction="row" spacing={1}>
@@ -34,33 +47,36 @@ function ExerciseRowForm(props: ExerciseRowFormProps) {
       >
         {exerciseRowIndex + 1}
       </Button>
-      <ExerciseRowFieldForm
-        val={exerciseRowForm.reps}
-        setVal={(v) => update('reps', v)}
-        onBlur={() =>
-          updateRow({
-            workoutId,
-            exerciseGroupId,
-            exerciseRowId: exerciseRow.id,
-            exerciseRowUpdateRequest: exerciseRowForm,
-          })
-        }
-      />
+      {validFields.reps && (
+        <ExerciseRowFieldForm
+          val={exerciseRow.reps}
+          onBlur={(val: number | undefined) => onBlur('reps', val)}
+        />
+      )}
+      {validFields.time && (
+        <ExerciseRowFieldForm
+          val={exerciseRow.time}
+          type="time"
+          onBlur={(val: number | undefined) => onBlur('time', val)}
+        />
+      )}
+      {validFields.weight && (
+        <ExerciseRowFieldForm
+          val={exerciseRow.weight}
+          onBlur={(val: number | undefined) => onBlur('weight', val)}
+        />
+      )}
+      {validFields.distance && (
+        <ExerciseRowFieldForm
+          val={exerciseRow.distance}
+          onBlur={(val: number | undefined) => onBlur('distance', val)}
+        />
+      )}
       <Button
         sx={{ maxHeight: 24, maxWidth: 32, minWidth: 32 }}
         variant={exerciseRow.lifted ? 'contained' : 'outlined'}
         color={exerciseRow.lifted ? 'success' : 'primary'}
-        onClick={() => {
-          updateRow({
-            workoutId,
-            exerciseGroupId,
-            exerciseRowId: exerciseRow.id,
-            exerciseRowUpdateRequest: {
-              ...exerciseRowForm,
-              lifted: !exerciseRowForm.lifted,
-            },
-          });
-        }}
+        onClick={() => onBlur('lifted', !exerciseRow.lifted)}
         disabled={!(workoutType === 'ACTIVE')}
         type="button"
       >

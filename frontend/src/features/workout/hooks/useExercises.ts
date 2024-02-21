@@ -5,29 +5,25 @@ import { useGetExercisesQuery } from 'src/store/monkeylogApi';
 function useExercises(search = '') {
   const { data: exercises } = useGetExercisesQuery();
 
-  const filteredExercises = useMemo(
-    () =>
-      search
-        ? exercises?.filter((x) => x.name.toLowerCase().includes(search.toLowerCase()))
-        : exercises,
-    [search, exercises]
-  );
+  const getFirstLetter = (str: string) => str.toLowerCase().at(0) ?? '-';
 
   const groupedExercises = useMemo(
     () =>
-      exercises?.reduce<Record<string, ExerciseResponse[]>>(
-        (grouped, exercise) => ({
-          ...grouped,
-          [exercise.name.toLowerCase().at(0) ?? '-']: [
-            ...(grouped[exercise.name.toLowerCase().at(0) ?? '-'] ?? []),
-            exercise,
-          ],
-        }),
-        {}
-      ),
-    [exercises]
+      exercises
+        ?.filter((exercise) => exercise.name.toLowerCase().includes(search.toLowerCase()))
+        ?.reduce<Record<string, ExerciseResponse[]>>(
+          (grouped, exercise) => ({
+            ...grouped,
+            [getFirstLetter(exercise.name)]: [
+              ...(grouped[getFirstLetter(exercise.name)] ?? []),
+              exercise,
+            ],
+          }),
+          {}
+        ),
+    [exercises, search]
   );
 
-  return { exercises, filteredExercises, groupedExercises };
+  return { exercises, groupedExercises };
 }
 export default useExercises;
