@@ -98,6 +98,10 @@ function ExerciseRowFieldForm(props: ExerciseRowFieldProps) {
       fullWidth
       hiddenLabel
       inputMode="none"
+      inputProps={{
+        inputMode: 'none',
+      }}
+      inputRef={customKeyboardRef}
       value={input}
       onChange={(e) => setInput(cleanFieldInput(e.target.value))}
       onFocus={(e) => {
