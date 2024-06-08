@@ -11,8 +11,8 @@ export default defineConfig({
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
       manifest: {
         name: 'Workout Logbook',
-        short_name: 'Workout logbook',
-        theme_color: '#ffffff',
+        short_name: 'Logbook',
+        theme_color: '#1976D2',
         icons: [
           {
             src: 'pwa-64x64.png',
