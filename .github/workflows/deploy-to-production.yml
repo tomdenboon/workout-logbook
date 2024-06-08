@@ -14,5 +14,5 @@ jobs:
           ssh_public_key: ${{ secrets.DOCKER_SSH_PUBLIC_KEY }}
           deploy_path: ~/production-deployment
           stack_file_name: docker-compose.yml
-          args:
+          args: -d
           pre_deployment_command_args: echo "${{ vars.ENV_PRODUCTION }}" > .env
