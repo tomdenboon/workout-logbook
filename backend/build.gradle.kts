@@ -35,6 +35,7 @@ dependencies {
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
+    testImplementation("com.h2database:h2:2.1.214")
 }
 
 tasks.withType<KotlinCompile> {

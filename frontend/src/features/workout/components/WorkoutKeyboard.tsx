@@ -1,19 +1,16 @@
 import { Paper, Container, Grid, Button } from '@mui/material';
-import { createContext, useState } from 'react';
+import { createContext, useCallback, useState } from 'react';
 import getExerciseFields from 'src/features/workout/utils/getExerciseFields';
 import { GetExerciseCategoriesResponse, WorkoutFullResponse } from 'src/store/baseMonkeylogApi';
 
 const KEYBOARD_INPUTS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', ',', '0', 'back'];
 
-export const WorkoutKeyboardContext = createContext({
-  connectKeyboard: (
-    exerciseRowId: string,
-    exerciseRowType: string,
-    setInput?: (input: string) => void
-  ) => {
+export const WorkoutKeyboardContext = createContext<
+  Omit<ReturnType<typeof useWorkoutKeyboard>, 'next' | 'isOpen' | 'setInput'>
+>({
+  connectKeyboard: (exerciseRowId: string, exerciseRowType: string) => {
     exerciseRowId;
     exerciseRowType;
-    setInput;
   },
   disconnectKeyboard: () => {},
   exerciseRowId: '',
@@ -27,6 +24,7 @@ export function useWorkoutKeyboard(
   const [exerciseRowId, setExerciseRowId] = useState('');
   const [exerciseRowType, setExerciseRowType] = useState('');
   const [setInput, setSetInput] = useState<(input: string) => void>();
+  const [onNext, setOnNext] = useState<() => void>();
 
   const reset = () => {
     setExerciseRowId('');
@@ -61,23 +59,31 @@ export function useWorkoutKeyboard(
     } else if (j + 1 < workout.exerciseGroups[i].exerciseRows.length) {
       setExerciseRowId(workout.exerciseGroups[i].exerciseRows[j + 1].id);
       setExerciseRowType(getExerciseFields(workout.exerciseGroups[i], categories)[0]);
+      onNext?.();
     } else if (i + 1 < workout.exerciseGroups.length) {
       setExerciseRowId(workout.exerciseGroups[i + 1].exerciseRows[0].id);
       setExerciseRowType(getExerciseFields(workout.exerciseGroups[i + 1], categories)[0]);
+      onNext?.();
     } else {
       reset();
+      onNext?.();
     }
   };
 
-  const connectKeyboard = (
-    exerciseRowId: string,
-    exerciseRowType: string,
-    d?: (input: string) => void
-  ) => {
-    setExerciseRowId(exerciseRowId);
-    setExerciseRowType(exerciseRowType);
-    setSetInput(() => d);
-  };
+  const connectKeyboard = useCallback(
+    (
+      exerciseRowId: string,
+      exerciseRowType: string,
+      setInput?: (input: string) => void,
+      setNext?: () => void
+    ) => {
+      setExerciseRowId(exerciseRowId);
+      setExerciseRowType(exerciseRowType);
+      setSetInput(() => setInput);
+      setOnNext(() => setNext);
+    },
+    []
+  );
 
   return {
     next,

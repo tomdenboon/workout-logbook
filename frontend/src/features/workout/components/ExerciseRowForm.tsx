@@ -1,6 +1,6 @@
 import { Check } from '@mui/icons-material';
 import { Button, Stack } from '@mui/material';
-import React from 'react';
+import React, { useCallback } from 'react';
 import ExerciseRowFieldForm from 'src/features/workout/components/ExerciseRowFieldForm';
 import {
   ExerciseRowResponse,
@@ -21,19 +21,22 @@ function ExerciseRowForm(props: ExerciseRowFormProps) {
   const { workoutId, exerciseGroupId, exerciseRow, workoutType, exerciseRowIndex, rows } = props;
   const [updateRow] = useUpdateExerciseRowMutation();
 
-  const onBlur = (key: keyof ExerciseRowResponse, value: number | undefined | boolean) => {
-    if (exerciseRow[key] === value) return;
+  const onBlur = useCallback(
+    (key: keyof ExerciseRowResponse, value: number | undefined | boolean) => {
+      if (exerciseRow[key] === value) return;
 
-    updateRow({
-      workoutId,
-      exerciseGroupId,
-      exerciseRowId: exerciseRow.id,
-      exerciseRowUpdateRequest: {
-        ...exerciseRow,
-        [key]: value,
-      },
-    });
-  };
+      updateRow({
+        workoutId,
+        exerciseGroupId,
+        exerciseRowId: exerciseRow.id,
+        exerciseRowUpdateRequest: {
+          ...exerciseRow,
+          [key]: value,
+        },
+      });
+    },
+    [exerciseGroupId, exerciseRow, updateRow, workoutId]
+  );
 
   return (
     <Stack sx={{ mb: 1 }} direction="row" spacing={1}>
@@ -48,7 +51,13 @@ function ExerciseRowForm(props: ExerciseRowFormProps) {
         {exerciseRowIndex + 1}
       </Button>
       {rows.map((row) => (
-        <ExerciseRowFieldForm key={row} type={row} exerciseRow={exerciseRow} onBlur={onBlur} />
+        <ExerciseRowFieldForm
+          key={row}
+          type={row}
+          exerciseRow={exerciseRow}
+          onBlur={onBlur}
+          workoutType={workoutType}
+        />
       ))}
       <Button
         sx={{ maxHeight: 24, maxWidth: 32, minWidth: 32 }}
