@@ -10,7 +10,7 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
       manifest: {
-        name: 'Workout Logbook',
+        name: 'Logbook',
         short_name: 'Logbook',
         theme_color: '#1976D2',
         icons: [

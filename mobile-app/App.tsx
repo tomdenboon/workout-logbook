@@ -4,7 +4,7 @@ import WebView from 'react-native-webview';
 export default function App() {
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <WebView source={{ uri: 'https://monkelog.com' }} />
+      <WebView source={{ uri: 'http://www.workoutlogbook.com' }} />
     </SafeAreaView>
   );
 }
