@@ -9,7 +9,7 @@ jobs:
       - uses: actions/checkout@v4
       - run: |
           echo "${{ vars.ENV_PRODUCTION }}" >> .env
-          echo docker-compose.yml
+          cat docker-compose.yml
 
       - uses: wshihadeh/docker-deployment-action@v2
         with:
