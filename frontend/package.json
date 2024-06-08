@@ -8,7 +8,8 @@
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "generate:api": "npx @rtk-query/codegen-openapi openapi-config.json"
+    "generate-api": "npx @rtk-query/codegen-openapi openapi-config.json",
+    "generate-pwa-assets": "pwa-assets-generator --preset minimal public/workout-logbook.svg"
   },
   "dependencies": {
     "@emotion/react": "^11.10.5",
@@ -37,11 +38,13 @@
     "@types/react-window": "^1.8.7",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
+    "@vite-pwa/assets-generator": "^0.2.4",
     "@vitejs/plugin-react-swc": "^3.3.2",
     "eslint": "^8.45.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
     "typescript": "^5.0.2",
-    "vite": "^4.4.5"
+    "vite": "^4.4.5",
+    "vite-plugin-pwa": "^0.20.0"
   }
 }
