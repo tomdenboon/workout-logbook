@@ -86,34 +86,53 @@ function ExerciseRowFieldForm(props: ExerciseRowFieldProps) {
   }
 
   return (
-    <TextField
-      inputRef={customKeyboardRef}
-      sx={{
-        '& .MuiInputBase-root': {
-          '& input': {
-            textAlign: 'center',
+    <>
+      <input
+        ref={customKeyboardRef}
+        value={input}
+        onChange={(e) => setInput(cleanFieldInput(e.target.value))}
+        onFocus={(e) => {
+          e.target.select();
+          connectKeyboard(exerciseRow.id, type, insertTextAtCursor);
+        }}
+        onBlur={() => {
+          if (type === 'time') {
+            onBlur(type, digitalTimerToMilliseconds(input));
+          } else {
+            onBlur(type, input ? Number(input) : undefined);
+          }
+          disconnectKeyboard();
+        }}
+        inputMode="none"
+      />
+      <TextField
+        sx={{
+          '& .MuiInputBase-root': {
+            '& input': {
+              textAlign: 'center',
+            },
+            height: 24,
           },
-          height: 24,
-        },
-      }}
-      fullWidth
-      hiddenLabel
-      inputMode="none"
-      value={input}
-      onChange={(e) => setInput(cleanFieldInput(e.target.value))}
-      onFocus={(e) => {
-        e.target.select();
-        connectKeyboard(exerciseRow.id, type, insertTextAtCursor);
-      }}
-      onBlur={() => {
-        if (type === 'time') {
-          onBlur(type, digitalTimerToMilliseconds(input));
-        } else {
-          onBlur(type, input ? Number(input) : undefined);
-        }
-        disconnectKeyboard();
-      }}
-    />
+        }}
+        fullWidth
+        hiddenLabel
+        inputMode="none"
+        value={input}
+        onChange={(e) => setInput(cleanFieldInput(e.target.value))}
+        onFocus={(e) => {
+          e.target.select();
+          connectKeyboard(exerciseRow.id, type, insertTextAtCursor);
+        }}
+        onBlur={() => {
+          if (type === 'time') {
+            onBlur(type, digitalTimerToMilliseconds(input));
+          } else {
+            onBlur(type, input ? Number(input) : undefined);
+          }
+          disconnectKeyboard();
+        }}
+      />
+    </>
   );
 }
 
