@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: echo "ENV_PRODUCTION=production" >> .env
+      - run: echo "${{ secrets.ENV_PRODUCTION }}" >> .env
       - uses: wshihadeh/docker-deployment-action@v2
         with:
           remote_docker_host: root@65.109.140.46
