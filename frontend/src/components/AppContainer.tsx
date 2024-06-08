@@ -18,7 +18,7 @@ function AppContainer(props: AppContainerProps) {
   return (
     <Box
       sx={{
-        height: '100vh',
+        height: '100dvh',
         display: 'flex',
         flexDirection: 'column',
         flexWrap: 'nowrap',
