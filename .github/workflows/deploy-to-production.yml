@@ -1,0 +1,18 @@
+on:
+  push:
+    branches: [ "main" ]
+    
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Production
+        uses: wshihadeh/docker-deployment-action@v2
+        with:
+          remote_docker_host: root@65.109.140.46
+          ssh_private_key: ${{ secrets.DOCKER_SSH_PRIVATE_KEY }}
+          ssh_public_key: ${{ secrets.DOCKER_SSH_PUBLIC_KEY }}
+          deploy_path: ~/production-deployment
+          stack_file_name: docker-compose.yml
+          args: -d --build
+          pre_deployment_command_args: echo "${{ vars.ENV_PRODUCTION }}" > .env
