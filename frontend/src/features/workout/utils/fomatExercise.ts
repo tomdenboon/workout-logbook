@@ -1,6 +1,6 @@
 import { ExerciseRowResponse, ValidFields } from 'src/store/baseMonkeylogApi';
 
-export default function formatExercise(validFields: ValidFields, exerciseRow: ExerciseRowResponse) {
+function formatExercise(validFields: ValidFields, exerciseRow: ExerciseRowResponse) {
   const { weight, reps, time, distance } = validFields;
   let str = '';
 
@@ -33,3 +33,5 @@ export default function formatExercise(validFields: ValidFields, exerciseRow: Ex
 
   return str;
 }
+
+export default formatExercise;

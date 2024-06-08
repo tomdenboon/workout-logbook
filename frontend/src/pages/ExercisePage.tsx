@@ -14,7 +14,7 @@ import dayjs from 'dayjs';
 import { useModalOutletContext } from 'src/components/ModalOutlet';
 import Section from 'src/components/Section';
 import FullScreenModal from 'src/components/FullScreenModal';
-import formatExercise from 'src/features/workout/fomatExercise';
+import formatExercise from 'src/features/workout/utils/fomatExercise';
 
 function ExerciseStatisticCard(props: GetStatisticsArg & { label: string }) {
   const { data: exercise } = useGetExerciseQuery({ id: props.id });

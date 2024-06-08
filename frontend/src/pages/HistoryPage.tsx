@@ -5,17 +5,20 @@ import dayjs, { Dayjs } from 'dayjs';
 import WorkoutCompleteCard from 'src/features/workout/components/WorkoutCompleteCard';
 import useModal from 'src/hooks/useModal';
 import { useState } from 'react';
-import { WorkoutFullResponse, useGetWorkoutsQuery } from 'src/store/monkeylogApi';
+import {
+  WorkoutFullResponse,
+  useGetWorkoutFrequencyQuery,
+  useGetWorkoutsQuery,
+} from 'src/store/monkeylogApi';
 import { ModalOutlet, useModalOutletContext } from 'src/components/ModalOutlet';
 import FullScreenModal from 'src/components/FullScreenModal';
 
 const FORMAT = 'YYYY-MM-DD';
 
 function ServerDay(props: PickersDayProps<Dayjs> & { highlightedDays?: string[] }) {
-  const { highlightedDays, day, outsideCurrentMonth, ...other } = props;
+  const { highlightedDays, day, ...other } = props;
 
-  const isSelected =
-    !outsideCurrentMonth && !!highlightedDays?.find((val) => val === day.format(FORMAT));
+  const isSelected = !!highlightedDays?.find((val) => val === day.format(FORMAT));
 
   return (
     <PickersDay
@@ -23,7 +26,6 @@ function ServerDay(props: PickersDayProps<Dayjs> & { highlightedDays?: string[] 
       selected={isSelected}
       disabled={!isSelected}
       disableHighlightToday
-      outsideCurrentMonth={outsideCurrentMonth}
       day={day}
     />
   );
@@ -33,6 +35,9 @@ function HistoryPage() {
   const calendarModal = useModal();
   const [date, setDate] = useState<Dayjs | null>();
   const { modalControls } = useModalOutletContext();
+  const { data: frequency } = useGetWorkoutFrequencyQuery({ interval: 'DAY' });
+  const months = frequency?.map((val) => dayjs(val.date)) ?? [];
+
   const { data: workouts } = useGetWorkoutsQuery({
     workoutType: 'COMPLETED',
     size: 9,
@@ -68,12 +73,12 @@ function HistoryPage() {
           <DateCalendar
             loading={false}
             value={date}
-            maxDate={dayjs(workouts.content[workouts.content.length - 1].endDate)}
-            minDate={dayjs(workouts.content[0].endDate)}
+            maxDate={months[months.length - 1]}
+            minDate={months[0]}
             slots={{ day: ServerDay }}
             slotProps={{
               day: {
-                highlightedDays: workouts.content.map((val) => dayjs(val.endDate).format(FORMAT)),
+                highlightedDays: months.map((m) => m.format(FORMAT)),
               } as any,
             }}
             onChange={(d) => {

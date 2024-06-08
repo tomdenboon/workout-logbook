@@ -36,24 +36,24 @@ function ProfileSummaryTile() {
 }
 
 function FrequencyTile() {
-  const { data: frequency } = useGetWorkoutFrequencyQuery();
+  const { data: frequency } = useGetWorkoutFrequencyQuery({ interval: 'WEEK' });
 
-  console.log(frequency);
   const theme = useTheme();
 
-  const everyMonthInYear = Array.from({ length: 6 }, (_, i) => i + 1);
-  const everyMonthInYearFormatted = everyMonthInYear.map((month) =>
-    dayjs().month(month).format('MMM')
-  );
+  const last8Weeks = frequency?.slice(-8) ?? [];
+  const seriesData = last8Weeks.map((f) => f.value);
+  const xAxisData = last8Weeks.map((f) => dayjs(f.date).format('MM/DD'));
 
   return (
-    <AppCard header="Workouts Per Month" subheader="Activity">
-      <BarChart
-        xAxis={[{ scaleType: 'band', data: everyMonthInYearFormatted }]}
-        series={[{ data: everyMonthInYear, color: theme.palette.primary.main }]}
-        margin={{ left: 30, top: 10, right: 10, bottom: 24 }}
-        height={120}
-      />
+    <AppCard header="Workouts Per Week" subheader="Activity">
+      {last8Weeks.length > 0 && (
+        <BarChart
+          xAxis={[{ scaleType: 'band', data: xAxisData }]}
+          series={[{ data: seriesData, color: theme.palette.primary.main }]}
+          margin={{ left: 30, top: 10, right: 10, bottom: 24 }}
+          height={120}
+        />
+      )}
     </AppCard>
   );
 }

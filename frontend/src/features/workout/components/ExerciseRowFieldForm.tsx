@@ -1,17 +1,29 @@
 import { TextField } from '@mui/material';
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import { WorkoutKeyboardContext } from 'src/features/workout/components/WorkoutKeyboard';
 import { digitalTimerToMilliseconds, formatTime } from 'src/hooks/useTimer';
+import { ExerciseRowResponse } from 'src/store/baseMonkeylogApi';
 
 interface ExerciseRowFieldProps {
-  val: number | undefined;
-  onBlur: (arg0: number | undefined) => void;
-  type?: 'time' | 'number';
+  onBlur: (key: keyof ExerciseRowResponse, value: number | undefined | boolean) => void;
+  exerciseRow: ExerciseRowResponse;
+  type: keyof Pick<ExerciseRowResponse, 'reps' | 'weight' | 'time' | 'distance'>;
 }
 
 function ExerciseRowFieldForm(props: ExerciseRowFieldProps) {
-  const { val, onBlur, type = 'number' } = props;
+  const { exerciseRow, onBlur, type } = props;
 
-  const [input, setInput] = React.useState<string>('');
+  const [input, setInput] = useState<string>('');
+  const val = exerciseRow[type];
+  const { exerciseRowId, exerciseRowType, connectKeyboard, disconnectKeyboard } =
+    useContext(WorkoutKeyboardContext);
+  const customKeyboardRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (type == exerciseRowType && exerciseRowId == exerciseRow.id) {
+      customKeyboardRef.current?.focus();
+    }
+  }, [exerciseRowId, exerciseRow.id, exerciseRowType, type]);
 
   useEffect(() => {
     let input = val ? String(val) : '';
@@ -42,8 +54,40 @@ function ExerciseRowFieldForm(props: ExerciseRowFieldProps) {
     return removeNonNumber(newInput);
   };
 
+  function insertTextAtCursor(text: string) {
+    const element = customKeyboardRef.current;
+
+    if (!element) {
+      return;
+    }
+
+    const startPos = element.selectionStart;
+    const endPos = element.selectionEnd;
+
+    if (startPos === null || endPos === null) {
+      return;
+    }
+
+    if (text == '' && startPos === endPos) {
+      element.value = cleanFieldInput(
+        element.value.substring(0, startPos - 1) +
+          element.value.substring(endPos, element.value.length)
+      );
+    } else {
+      element.value = cleanFieldInput(
+        element.value.substring(0, startPos) +
+          text +
+          element.value.substring(endPos, element.value.length)
+      );
+    }
+
+    element.selectionStart = element.selectionEnd = element.value.length;
+    setInput(element.value);
+  }
+
   return (
     <TextField
+      inputRef={customKeyboardRef}
       sx={{
         '& .MuiInputBase-root': {
           '& input': {
@@ -57,13 +101,17 @@ function ExerciseRowFieldForm(props: ExerciseRowFieldProps) {
       inputMode="none"
       value={input}
       onChange={(e) => setInput(cleanFieldInput(e.target.value))}
-      onFocus={(e) => e.target.select()}
+      onFocus={(e) => {
+        e.target.select();
+        connectKeyboard(exerciseRow.id, type, insertTextAtCursor);
+      }}
       onBlur={() => {
         if (type === 'time') {
-          onBlur(digitalTimerToMilliseconds(input));
+          onBlur(type, digitalTimerToMilliseconds(input));
         } else {
-          onBlur(input ? Number(input) : undefined);
+          onBlur(type, input ? Number(input) : undefined);
         }
+        disconnectKeyboard();
       }}
     />
   );

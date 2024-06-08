@@ -1,11 +1,11 @@
 import { Typography } from '@mui/material';
-import useTimer from 'src/hooks/useTimer';
+import { formatTime, useWorkoutTimer } from 'src/hooks/useTimer';
 
 function SimpleTimer(props: { startDate?: string; endDate?: string }) {
   const { startDate, endDate } = props;
-  const digitalTimerFormat = useTimer('digital', startDate, endDate);
+  const milliseconds = useWorkoutTimer(startDate, endDate);
 
-  return <Typography>Time: {digitalTimerFormat}</Typography>;
+  return <Typography>Time: {formatTime(milliseconds, 'digital')}</Typography>;
 }
 
 export default SimpleTimer;

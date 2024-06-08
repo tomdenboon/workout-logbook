@@ -4,7 +4,6 @@ import React from 'react';
 import ExerciseRowFieldForm from 'src/features/workout/components/ExerciseRowFieldForm';
 import {
   ExerciseRowResponse,
-  ValidFields,
   WorkoutResponse,
   useUpdateExerciseRowMutation,
 } from 'src/store/monkeylogApi';
@@ -15,15 +14,16 @@ interface ExerciseRowFormProps {
   workoutId: string;
   exerciseGroupId: string;
   workoutType: WorkoutResponse['workoutType'];
-  validFields: ValidFields;
+  rows: (keyof Pick<ExerciseRowResponse, 'distance' | 'weight' | 'reps' | 'time'>)[];
 }
 
 function ExerciseRowForm(props: ExerciseRowFormProps) {
-  const { workoutId, exerciseGroupId, exerciseRow, workoutType, exerciseRowIndex, validFields } =
-    props;
+  const { workoutId, exerciseGroupId, exerciseRow, workoutType, exerciseRowIndex, rows } = props;
   const [updateRow] = useUpdateExerciseRowMutation();
 
   const onBlur = (key: keyof ExerciseRowResponse, value: number | undefined | boolean) => {
+    if (exerciseRow[key] === value) return;
+
     updateRow({
       workoutId,
       exerciseGroupId,
@@ -47,31 +47,9 @@ function ExerciseRowForm(props: ExerciseRowFormProps) {
       >
         {exerciseRowIndex + 1}
       </Button>
-      {validFields.reps && (
-        <ExerciseRowFieldForm
-          val={exerciseRow.reps}
-          onBlur={(val: number | undefined) => onBlur('reps', val)}
-        />
-      )}
-      {validFields.time && (
-        <ExerciseRowFieldForm
-          val={exerciseRow.time}
-          type="time"
-          onBlur={(val: number | undefined) => onBlur('time', val)}
-        />
-      )}
-      {validFields.weight && (
-        <ExerciseRowFieldForm
-          val={exerciseRow.weight}
-          onBlur={(val: number | undefined) => onBlur('weight', val)}
-        />
-      )}
-      {validFields.distance && (
-        <ExerciseRowFieldForm
-          val={exerciseRow.distance}
-          onBlur={(val: number | undefined) => onBlur('distance', val)}
-        />
-      )}
+      {rows.map((row) => (
+        <ExerciseRowFieldForm key={row} type={row} exerciseRow={exerciseRow} onBlur={onBlur} />
+      ))}
       <Button
         sx={{ maxHeight: 24, maxWidth: 32, minWidth: 32 }}
         variant={exerciseRow.lifted ? 'contained' : 'outlined'}

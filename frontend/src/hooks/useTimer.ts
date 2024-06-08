@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export function digitalTimerToMilliseconds(digitalTimer: string) {
   const nums = digitalTimer.split(':').map(Number);
@@ -28,28 +28,33 @@ export function formatTime(milliseconds: number, format: 'digital' | 'pretty') {
     return `${secs} secs`;
   }
 
-  const prependZero = (num: number) => (num >= 10 ? num : `0${num}`);
+  const prependZero = (num: number) => num.toString().padStart(2, '0');
 
   return `${hrs > 0 ? hrs + ':' : ''}${prependZero(mins)}:${prependZero(secs)}`;
 }
 
-function useTimer(format: 'digital' | 'pretty', start?: string, end?: string) {
-  const [endDate, setEndDate] = useState(end ? new Date(end) : new Date());
-  const startDate = useMemo(() => (start ? new Date(start) : new Date()), [start]);
-  const milliseconds = endDate.getTime() - startDate.getTime();
+export function useWorkoutTimer(start?: string, end?: string) {
+  return useTimer(
+    start ? new Date(start).getTime() : Date.now(),
+    end ? new Date(end).getTime() : undefined
+  );
+}
+
+export function useTimer(start: number, end?: number, interval = 10) {
+  const [endDate, setEndDate] = useState(end ? end : Date.now());
 
   useEffect(() => {
     let intervalId: number;
     if (!end) {
       intervalId = setInterval(() => {
-        setEndDate(new Date());
-      }, 100);
+        setEndDate(Date.now());
+      }, interval);
+    } else {
+      setEndDate(end ? end : Date.now());
     }
 
     return () => clearInterval(intervalId);
-  }, [end]);
+  }, [end, interval]);
 
-  return formatTime(milliseconds, format);
+  return endDate - start;
 }
-
-export default useTimer;

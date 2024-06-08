@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS"
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+  <changeSet author="tomdenboon (generated)" id="1717785987439-1">
+    <createTable tableName="workout_folder">
+      <column name="id" type="UUID">
+        <constraints nullable="false" primaryKey="true" primaryKeyName="pk_workoutfolder"/>
+      </column>
+      <column name="name" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="user_id" type="UUID"/>
+    </createTable>
+  </changeSet>
+  <changeSet author="tomdenboon (generated)" id="1717785987439-2">
+    <addColumn tableName="workout">
+      <column name="workout_folder_id" type="UUID"/>
+    </addColumn>
+  </changeSet>
+  <changeSet author="tomdenboon (generated)" id="1717785987439-3">
+    <addForeignKeyConstraint baseColumnNames="workout_folder_id" baseTableName="workout"
+      constraintName="FK_WORKOUT_ON_WORKOUT_FOLDER" referencedColumnNames="id"
+      referencedTableName="workout_folder"/>
+  </changeSet>
+
+</databaseChangeLog>

@@ -27,5 +27,8 @@ class Workout(
     var exerciseGroups: MutableList<ExerciseGroup> = ArrayList(),
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "program_week_id")
-    var programWeek: ProgramWeek? = null
+    var programWeek: ProgramWeek? = null,
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "workout_folder_id")
+    var workoutFolder: WorkoutFolder? = null
 ) : UserOwned

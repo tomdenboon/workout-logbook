@@ -10,11 +10,12 @@ import React from 'react';
 import ActionDropdown from 'src/components/ActionDropdown';
 import { TransitionGroup } from 'react-transition-group';
 import { Link } from 'react-router-dom';
+import getExerciseFields from 'src/features/workout/utils/getExerciseFields';
 
 interface ExerciseGroupProps {
   exerciseGroup: ExerciseGroupResponse;
-  exerciseGroupIndex: number;
   exerciseCategories: GetExerciseCategoriesResponse;
+  exerciseGroupIndex: number;
   workoutId: string;
   workoutType: 'COMPLETED' | 'TEMPLATE' | 'ACTIVE';
 }
@@ -23,7 +24,7 @@ function ExerciseGroupForm(props: ExerciseGroupProps) {
   const { exerciseGroup, workoutId, workoutType, exerciseCategories } = props;
   const [addExerciseRow] = useCreateExerciseRowMutation();
   const [deleteExerciseGroup] = useDeleteExerciseGroupMutation();
-  const validFields = exerciseCategories[exerciseGroup.exercise.exerciseCategory].validFields;
+  const rows = getExerciseFields(exerciseGroup, exerciseCategories);
 
   return (
     <Stack sx={{ pt: 4 }}>
@@ -54,29 +55,17 @@ function ExerciseGroupForm(props: ExerciseGroupProps) {
         >
           Set
         </Typography>
-        {validFields.reps && (
-          <Typography sx={{ width: '100%' }} fontSize={14} fontWeight={800} align="center">
-            Reps
+        {rows.map((row) => (
+          <Typography
+            key={row}
+            sx={{ width: '100%' }}
+            fontSize={14}
+            fontWeight={800}
+            align="center"
+          >
+            {row.charAt(0).toUpperCase() + row.slice(1)}
           </Typography>
-        )}
-
-        {validFields.weight && (
-          <Typography sx={{ width: '100%' }} fontSize={14} fontWeight={800} align="center">
-            Weight
-          </Typography>
-        )}
-
-        {validFields.time && (
-          <Typography sx={{ width: '100%' }} fontSize={14} fontWeight={800} align="center">
-            Time
-          </Typography>
-        )}
-
-        {validFields.distance && (
-          <Typography sx={{ width: '100%' }} fontSize={14} fontWeight={800} align="center">
-            Distance
-          </Typography>
-        )}
+        ))}
 
         <Typography sx={{ minWidth: 32, maxWidth: 32 }} align="center" />
       </Stack>
@@ -91,7 +80,7 @@ function ExerciseGroupForm(props: ExerciseGroupProps) {
                 exerciseRow={exerciseRow}
                 exerciseRowIndex={index}
                 workoutType={workoutType}
-                validFields={validFields}
+                rows={rows}
               />
             </Collapse>
           ))}
@@ -101,6 +90,7 @@ function ExerciseGroupForm(props: ExerciseGroupProps) {
       <Button
         sx={{ height: 24 }}
         variant="outlined"
+        onMouseDown={(e) => e.preventDefault()}
         onClick={() => addExerciseRow({ workoutId, exerciseGroupId: exerciseGroup.id })}
       >
         Add exercise set

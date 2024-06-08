@@ -1,6 +1,6 @@
 import AppCard from 'src/components/AppCard';
 import WorkoutActions from 'src/features/workout/components/WorkoutActions';
-import useTimer from 'src/hooks/useTimer';
+import { formatTime, useWorkoutTimer } from 'src/hooks/useTimer';
 import { WorkoutFullResponse } from 'src/store/monkeylogApi';
 
 interface WorkoutCompleteCardProps {
@@ -9,7 +9,8 @@ interface WorkoutCompleteCardProps {
 
 function WorkoutCompleteCard(props: WorkoutCompleteCardProps) {
   const { workout } = props;
-  const prettyTimerFormat = useTimer('pretty', workout.startDate, workout.endDate);
+  const ms = useWorkoutTimer(workout.startDate, workout.endDate);
+  const prettyTimerFormat = formatTime(ms, 'pretty');
 
   return (
     <AppCard

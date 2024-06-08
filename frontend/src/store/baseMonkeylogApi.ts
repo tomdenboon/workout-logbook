@@ -176,7 +176,10 @@ const injectedRtkApi = api.injectEndpoints({
       query: () => ({ url: `/statistics/summary` }),
     }),
     getWorkoutFrequency: build.query<GetWorkoutFrequencyResponse, GetWorkoutFrequencyArg>({
-      query: () => ({ url: `/statistics/frequency` }),
+      query: (queryArg) => ({
+        url: `/statistics/frequency`,
+        params: { interval: queryArg.interval },
+      }),
     }),
     getStatistics: build.query<GetStatisticsResponse, GetStatisticsArg>({
       query: (queryArg) => ({
@@ -354,7 +357,9 @@ export type GetActiveWorkoutArg = void;
 export type GetWorkoutStatisticsResponse = /** status 200 OK */ SummaryResponse;
 export type GetWorkoutStatisticsArg = void;
 export type GetWorkoutFrequencyResponse = /** status 200 OK */ StatisticsResponse[];
-export type GetWorkoutFrequencyArg = void;
+export type GetWorkoutFrequencyArg = {
+  interval: 'DAY' | 'WEEK' | 'MONTH' | 'YEAR';
+};
 export type GetStatisticsResponse = /** status 200 OK */ StatisticsResponse[];
 export type GetStatisticsArg = {
   id: string;

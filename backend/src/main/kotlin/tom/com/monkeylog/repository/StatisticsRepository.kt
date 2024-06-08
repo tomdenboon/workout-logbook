@@ -7,7 +7,7 @@ import tom.com.monkeylog.dto.statistics.Interval
 import tom.com.monkeylog.dto.statistics.StatisticsResponse
 import tom.com.monkeylog.dto.statistics.StatisticsType
 import tom.com.monkeylog.dto.workout.ExerciseRowResponse
-import java.time.Instant
+import java.sql.Timestamp
 import java.util.*
 
 @Repository
@@ -55,17 +55,17 @@ class StatisticsRepository(
         val inter = interval.name.lowercase()
         return em.createNativeQuery(
             """
-                SELECT date_trunc($inter, w.start_date), COUNT(w.id)
+                SELECT date_trunc('$inter', w.start_date), COUNT(w.id)
                 FROM workout w
                 WHERE w.user_id = '$userId'
                   AND w.workout_type = 'COMPLETED'
-                GROUP BY date_trunc($inter, w.start_date)
-                ORDER BY date_trunc($inter, w.start_date);
+                GROUP BY date_trunc('$inter', w.start_date)
+                ORDER BY date_trunc('$inter', w.start_date);
             """.trimIndent()
         ).resultList.map {
             val row = it as Array<*>
             StatisticsResponse(
-                row[0] as Instant,
+                (row[0] as Timestamp).toInstant(),
                 (row[1] as Long).toDouble(),
             )
         }
@@ -94,7 +94,7 @@ class StatisticsRepository(
         ).resultList.map {
             val row = it as Array<*>
             StatisticsResponse(
-                row[0] as Instant,
+                (row[0] as Timestamp).toInstant(),
                 row[1] as Double,
             )
         }
@@ -130,7 +130,7 @@ class StatisticsRepository(
         ).resultList.map {
             val row = it as Array<*>
             StatisticsResponse(
-                row[0] as Instant,
+                (row[0] as Timestamp).toInstant(),
                 row[1] as Double,
                 ExerciseRowResponse(
                     row[2] as UUID,

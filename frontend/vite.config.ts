@@ -10,7 +10,6 @@ export default defineConfig({
     },
   },
   server: {
-    // hmr: { clientPort: 80 },
     host: '0.0.0.0',
   },
 });
