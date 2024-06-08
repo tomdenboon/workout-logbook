@@ -1,4 +1,4 @@
-run-name: Deploy to production
+run-name: Deploy
 on:
   push:
     branches: ['main']
