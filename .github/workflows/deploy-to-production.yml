@@ -13,7 +13,7 @@ jobs:
 
       - uses: wshihadeh/docker-deployment-action@v2
         with:
-          remote_docker_host: root@65.109.140.46
+          remote_docker_host: root@www.workoutlogbook.com
           ssh_private_key: ${{ secrets.DOCKER_SSH_PRIVATE_KEY }}
           ssh_public_key: ${{ secrets.DOCKER_SSH_PUBLIC_KEY }}
           deploy_path: ~/production-deployment
