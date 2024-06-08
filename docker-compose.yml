@@ -1,4 +1,3 @@
-version: "3.3"
 services:
   frontend:
     build:
@@ -58,7 +57,3 @@ volumes:
   certs:
   acme:
   db:
-
-networks:
-  default:
-    name: monkeylog-private
