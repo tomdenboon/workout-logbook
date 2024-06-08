@@ -7,6 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - run: echo "ENV_PRODUCTION=production" >> .env
       - uses: wshihadeh/docker-deployment-action@v2
         with:
           remote_docker_host: root@65.109.140.46
@@ -15,4 +16,3 @@ jobs:
           deploy_path: ~/production-deployment
           stack_file_name: docker-compose.yml
           args: up -d --build
-          pre_deployment_command_args: echo "${{ vars.ENV_PRODUCTION }}"
