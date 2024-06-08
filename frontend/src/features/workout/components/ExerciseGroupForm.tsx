@@ -5,7 +5,7 @@ import {
   GetExerciseCategoriesResponse,
   useCreateExerciseRowMutation,
   useDeleteExerciseGroupMutation,
-} from 'src/store/monkeylogApi';
+} from 'src/store/workoutLogbookApi';
 import React from 'react';
 import ActionDropdown from 'src/components/ActionDropdown';
 import { TransitionGroup } from 'react-transition-group';

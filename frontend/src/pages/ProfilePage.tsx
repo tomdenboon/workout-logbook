@@ -5,7 +5,10 @@ import { ModalOutlet } from 'src/components/ModalOutlet';
 import AppCard from 'src/components/AppCard';
 import { BarChart } from '@mui/x-charts';
 import dayjs from 'dayjs';
-import { useGetWorkoutFrequencyQuery, useGetWorkoutStatisticsQuery } from 'src/store/monkeylogApi';
+import {
+  useGetWorkoutFrequencyQuery,
+  useGetWorkoutStatisticsQuery,
+} from 'src/store/workoutLogbookApi';
 import { useHeader } from 'src/layouts/AppLayout';
 
 function ProfileSummaryTile() {

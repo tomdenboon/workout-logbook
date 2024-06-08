@@ -1,1 +1,1 @@
-rootProject.name = "monkeylog"
+rootProject.name = "workout-logbook"

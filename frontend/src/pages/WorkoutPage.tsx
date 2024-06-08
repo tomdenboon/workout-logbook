@@ -7,7 +7,7 @@ import {
   useCompleteWorkoutMutation,
   useGetExerciseCategoriesQuery,
   useLazyGetWorkoutQuery,
-} from 'src/store/monkeylogApi';
+} from 'src/store/workoutLogbookApi';
 import { ModalOutlet, useModalOutletContext } from 'src/components/ModalOutlet';
 import ExerciseGroupForm from 'src/features/workout/components/ExerciseGroupForm';
 import { TransitionGroup } from 'react-transition-group';

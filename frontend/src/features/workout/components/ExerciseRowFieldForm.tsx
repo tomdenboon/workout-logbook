@@ -2,7 +2,7 @@ import { TextField } from '@mui/material';
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { WorkoutKeyboardContext } from 'src/features/workout/components/WorkoutKeyboard';
 import { digitalTimerToMilliseconds, formatTime } from 'src/hooks/useTimer';
-import { ExerciseRowResponse } from 'src/store/baseMonkeylogApi';
+import { ExerciseRowResponse } from 'src/store/baseWorkoutLogbookApi';
 
 interface ExerciseRowFieldProps {
   onBlur: (key: keyof ExerciseRowResponse, value: number | undefined | boolean) => void;

@@ -9,7 +9,7 @@ import {
   WorkoutFullResponse,
   useGetWorkoutFrequencyQuery,
   useGetWorkoutsQuery,
-} from 'src/store/monkeylogApi';
+} from 'src/store/workoutLogbookApi';
 import { ModalOutlet, useModalOutletContext } from 'src/components/ModalOutlet';
 import FullScreenModal from 'src/components/FullScreenModal';
 

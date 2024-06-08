@@ -12,7 +12,7 @@ import {
   WorkoutFullResponse,
   useStartEmptyWorkoutMutation,
   useStartWorkoutMutation,
-} from 'src/store/monkeylogApi';
+} from 'src/store/workoutLogbookApi';
 
 function StartWorkoutModal() {
   const { workout, modalControls } = useModalOutletContext<{ workout?: WorkoutFullResponse }>();

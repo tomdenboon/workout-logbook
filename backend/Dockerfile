@@ -8,6 +8,6 @@ FROM openjdk:17
 
 RUN mkdir /app
 
-COPY --from=build /home/gradle/src/build/libs/monkeylog.jar /app/monkeylog.jar
+COPY --from=build /home/gradle/src/build/libs/workout-logbook.jar /app/workout-logbook.jar
 
-ENTRYPOINT ["java","-jar","/app/monkeylog.jar"]
+ENTRYPOINT ["java","-jar","/app/workout-logbook.jar"]

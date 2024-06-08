@@ -7,7 +7,7 @@ import {
   useGetExerciseGroupsQuery,
   useGetExerciseQuery,
   useGetStatisticsQuery,
-} from 'src/store/monkeylogApi';
+} from 'src/store/workoutLogbookApi';
 import AppCard from 'src/components/AppCard';
 import { LineChart } from '@mui/x-charts';
 import dayjs from 'dayjs';

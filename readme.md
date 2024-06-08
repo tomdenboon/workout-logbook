@@ -1,4 +1,4 @@
-## Monkeylog
+## Workout Logbook
 
 This will be an open-source repository meant for lifting them weights. This project is an online only webapplication in which you can log and track your gym sessions. This enables the user to have a very clear picture on how their fitness journey is going. They can get these insights by checking out the metrics the logger collects while you are working out.
 

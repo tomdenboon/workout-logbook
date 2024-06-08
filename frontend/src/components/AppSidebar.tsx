@@ -8,7 +8,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useGetActiveWorkoutQuery } from 'src/store/monkeylogApi';
+import { useGetActiveWorkoutQuery } from 'src/store/workoutLogbookApi';
 
 const NAVBAR_LIST = [
   { to: '/profile', text: 'Profile', Icon: Person },

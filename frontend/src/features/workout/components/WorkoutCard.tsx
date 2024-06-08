@@ -2,7 +2,7 @@ import { Button, Typography } from '@mui/material';
 import AppCard from 'src/components/AppCard';
 import WorkoutActions from 'src/features/workout/components/WorkoutActions';
 import { useMemo } from 'react';
-import { WorkoutFullResponse } from 'src/store/monkeylogApi';
+import { WorkoutFullResponse } from 'src/store/workoutLogbookApi';
 
 interface WorkoutCardProps {
   workout: WorkoutFullResponse;
@@ -16,21 +16,15 @@ function WorkoutCard(props: WorkoutCardProps) {
     () =>
       workout?.exerciseGroups
         .map(
-          (exerciseGroup) =>
-            `${exerciseGroup.exerciseRows.length} x ${exerciseGroup.exercise.name}`,
+          (exerciseGroup) => `${exerciseGroup.exerciseRows.length} x ${exerciseGroup.exercise.name}`
         )
         .join(', ') ?? null,
-    [workout?.exerciseGroups],
+    [workout?.exerciseGroups]
   );
 
   return (
-    <AppCard
-      header={workout.name}
-      actions={<WorkoutActions workout={workout} />}
-    >
-      {allExercisesText && (
-        <Typography color="text.secondary">{allExercisesText}</Typography>
-      )}
+    <AppCard header={workout.name} actions={<WorkoutActions workout={workout} />}>
+      {allExercisesText && <Typography color="text.secondary">{allExercisesText}</Typography>}
       <Button
         component="a"
         size="small"

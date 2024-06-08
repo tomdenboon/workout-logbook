@@ -6,7 +6,7 @@ import AddItemCard from 'src/components/AddItemCard';
 import FullScreenModal from 'src/components/FullScreenModal';
 import { ModalOutlet, useModalOutletContext } from 'src/components/ModalOutlet';
 import MeasurementCard from 'src/features/measurement/components/MeasurementCard';
-import { useGetMeasurementsQuery } from 'src/store/monkeylogApi';
+import { useGetMeasurementsQuery } from 'src/store/workoutLogbookApi';
 
 function MeasurementPage() {
   const { data } = useGetMeasurementsQuery();

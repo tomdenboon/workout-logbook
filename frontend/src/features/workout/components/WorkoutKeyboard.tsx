@@ -1,7 +1,10 @@
 import { Paper, Container, Grid, Button } from '@mui/material';
 import { createContext, useCallback, useState } from 'react';
 import getExerciseFields from 'src/features/workout/utils/getExerciseFields';
-import { GetExerciseCategoriesResponse, WorkoutFullResponse } from 'src/store/baseMonkeylogApi';
+import {
+  GetExerciseCategoriesResponse,
+  WorkoutFullResponse,
+} from 'src/store/baseWorkoutLogbookApi';
 
 const KEYBOARD_INPUTS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', ',', '0', 'back'];
 

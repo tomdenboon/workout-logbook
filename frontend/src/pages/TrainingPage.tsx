@@ -3,7 +3,7 @@ import { Add } from '@mui/icons-material';
 import AddItemCard from 'src/components/AddItemCard';
 import Section from 'src/components/Section';
 import WorkoutCard from 'src/features/workout/components/WorkoutCard';
-import { useGetWorkoutsQuery } from 'src/store/monkeylogApi';
+import { useGetWorkoutsQuery } from 'src/store/workoutLogbookApi';
 import { ModalOutlet } from 'src/components/ModalOutlet';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useHeader } from 'src/layouts/AppLayout';

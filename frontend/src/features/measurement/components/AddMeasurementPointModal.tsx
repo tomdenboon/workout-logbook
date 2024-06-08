@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom';
 import ModalForm from 'src/components/ModalForm';
 import { useModalOutletContext } from 'src/components/ModalOutlet';
-import { useCreateMeasurementPointMutation } from 'src/store/monkeylogApi';
+import { useCreateMeasurementPointMutation } from 'src/store/workoutLogbookApi';
 
 export default function AddMeasurementPointModal() {
   const { modalControls } = useModalOutletContext();

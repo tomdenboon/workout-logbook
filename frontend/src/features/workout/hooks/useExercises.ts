@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import { ExerciseResponse } from 'src/store/baseMonkeylogApi';
-import { useGetExercisesQuery } from 'src/store/monkeylogApi';
+import { ExerciseResponse } from 'src/store/baseWorkoutLogbookApi';
+import { useGetExercisesQuery } from 'src/store/workoutLogbookApi';
 
 function useExercises(search = '') {
   const { data: exercises } = useGetExercisesQuery();

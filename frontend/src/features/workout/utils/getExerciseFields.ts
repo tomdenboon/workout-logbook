@@ -3,7 +3,7 @@ import {
   GetExerciseCategoriesResponse,
   ValidFields,
   ExerciseRowResponse,
-} from 'src/store/baseMonkeylogApi';
+} from 'src/store/baseWorkoutLogbookApi';
 
 export default function getExerciseFields(
   exerciseGroup: ExerciseGroupResponse,

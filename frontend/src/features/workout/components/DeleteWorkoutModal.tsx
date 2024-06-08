@@ -1,7 +1,7 @@
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { useModalOutletContext } from 'src/components/ModalOutlet';
-import { useDeleteWorkoutMutation } from 'src/store/monkeylogApi';
+import { useDeleteWorkoutMutation } from 'src/store/workoutLogbookApi';
 
 function DeleteWorkoutModal() {
   const [deleteWorkout] = useDeleteWorkoutMutation();

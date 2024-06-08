@@ -1,15 +1,16 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { useDispatch, TypedUseSelectorHook, useSelector } from 'react-redux';
-import emptyMonkeylogApi from 'src/store/emptyMonkeylogApi';
+import emptyWorkoutLogbookApi from 'src/store/emptyWorkoutLogbookApi';
 import timerSlice from 'src/store/timerSlice';
 
 const store = configureStore({
   reducer: {
-    [emptyMonkeylogApi.reducerPath]: emptyMonkeylogApi.reducer,
+    [emptyWorkoutLogbookApi.reducerPath]: emptyWorkoutLogbookApi.reducer,
     timer: timerSlice,
   },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(emptyMonkeylogApi.middleware),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(emptyWorkoutLogbookApi.middleware),
 });
 
 setupListeners(store.dispatch);

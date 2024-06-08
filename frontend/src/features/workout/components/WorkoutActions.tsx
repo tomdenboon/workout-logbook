@@ -5,7 +5,7 @@ import {
   WorkoutResponse,
   useDeleteWorkoutMutation,
   useDuplicateWorkoutMutation,
-} from 'src/store/monkeylogApi';
+} from 'src/store/workoutLogbookApi';
 
 function WorkoutActions(props: { workout: WorkoutResponse }) {
   const { workout } = props;

@@ -1,7 +1,10 @@
 import ModalForm from 'src/components/ModalForm';
 import { useModalOutletContext } from 'src/components/ModalOutlet';
 import { TEST } from 'src/features/measurement/types';
-import { MeasurementCreateRequest, useCreateMeasurementMutation } from 'src/store/monkeylogApi';
+import {
+  MeasurementCreateRequest,
+  useCreateMeasurementMutation,
+} from 'src/store/workoutLogbookApi';
 
 export default function AddMeasurementModal() {
   const { modalControls } = useModalOutletContext();

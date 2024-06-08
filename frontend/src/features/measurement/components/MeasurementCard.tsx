@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import ActionDropdown from 'src/components/ActionDropdown';
 import AppCard from 'src/components/AppCard';
 import { METRIC_FORMAT_NICE } from 'src/features/measurement/types';
-import { MeasurementFullResponse, useDeleteMeasurementMutation } from 'src/store/monkeylogApi';
+import { MeasurementFullResponse, useDeleteMeasurementMutation } from 'src/store/workoutLogbookApi';
 
 interface MeasurementCardProps {
   measurement: MeasurementFullResponse;

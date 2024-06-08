@@ -1,7 +1,7 @@
 import { ListItem, ListItemButton, ListItemText } from '@mui/material';
 import ActionDropdown from 'src/components/ActionDropdown';
 import { useNavigate } from 'react-router-dom';
-import { ExerciseResponse, useDeleteExerciseMutation } from 'src/store/monkeylogApi';
+import { ExerciseResponse, useDeleteExerciseMutation } from 'src/store/workoutLogbookApi';
 import { Check } from '@mui/icons-material';
 
 interface ExerciseCardProps {

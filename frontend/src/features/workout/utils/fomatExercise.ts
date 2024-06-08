@@ -1,4 +1,4 @@
-import { ExerciseRowResponse, ValidFields } from 'src/store/baseMonkeylogApi';
+import { ExerciseRowResponse, ValidFields } from 'src/store/baseWorkoutLogbookApi';
 
 function formatExercise(validFields: ValidFields, exerciseRow: ExerciseRowResponse) {
   const { weight, reps, time, distance } = validFields;

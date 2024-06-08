@@ -1,6 +1,6 @@
 import ModalForm from 'src/components/ModalForm';
 import { useModalOutletContext } from 'src/components/ModalOutlet';
-import { useCreateWorkoutMutation } from 'src/store/monkeylogApi';
+import { useCreateWorkoutMutation } from 'src/store/workoutLogbookApi';
 
 function AddWorkoutModal() {
   const { modalControls } = useModalOutletContext();

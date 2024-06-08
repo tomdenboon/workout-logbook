@@ -6,7 +6,7 @@ import {
   ExerciseRowResponse,
   WorkoutResponse,
   useUpdateExerciseRowMutation,
-} from 'src/store/monkeylogApi';
+} from 'src/store/workoutLogbookApi';
 
 interface ExerciseRowFormProps {
   exerciseRow: ExerciseRowResponse;

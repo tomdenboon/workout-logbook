@@ -18,4 +18,4 @@ jobs:
           ssh_public_key: ${{ secrets.DOCKER_SSH_PUBLIC_KEY }}
           deploy_path: ~/production-deployment
           stack_file_name: docker-compose.yml
-          args: -p workoutlogbook up -d --build
+          args: -p workout_logbook up -d --build

@@ -1,7 +1,7 @@
 import AppCard from 'src/components/AppCard';
 import WorkoutActions from 'src/features/workout/components/WorkoutActions';
 import { formatTime, useWorkoutTimer } from 'src/hooks/useTimer';
-import { WorkoutFullResponse } from 'src/store/monkeylogApi';
+import { WorkoutFullResponse } from 'src/store/workoutLogbookApi';
 
 interface WorkoutCompleteCardProps {
   workout: WorkoutFullResponse;

@@ -4,7 +4,7 @@ import {
   ExerciseResponse,
   useCreateExerciseMutation,
   useUpdateExerciseMutation,
-} from 'src/store/monkeylogApi';
+} from 'src/store/workoutLogbookApi';
 
 function ExerciseForm() {
   const { modalControls, exercise } = useModalOutletContext<{
