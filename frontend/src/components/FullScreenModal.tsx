@@ -43,6 +43,7 @@ export default function FullScreenModal(props: {
       fullScreen
       open={open}
       onClose={onClose}
+      hideBackdrop
       onTransitionExited={onTransitionExited}
       TransitionComponent={slideUp ? UpTransitionComponent : LeftTransitionComponent}
     >
