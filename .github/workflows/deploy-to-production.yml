@@ -1,13 +1,13 @@
 run-name: Deploy to production
 on:
   push:
-    branches: [ "main" ]
+    branches: ['main']
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy to Production
-        uses: wshihadeh/docker-deployment-action@v2
+      - uses: actions/checkout@v4
+      - uses: wshihadeh/docker-deployment-action@v2
         with:
           remote_docker_host: root@65.109.140.46
           ssh_private_key: ${{ secrets.DOCKER_SSH_PRIVATE_KEY }}

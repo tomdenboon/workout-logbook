@@ -5,6 +5,7 @@ services:
     environment:
       - VIRTUAL_HOST=${HOST_APP}
       - LETSENCRYPT_HOST=${HOST_APP}
+    restart: always
 
   backend:
     build:
@@ -13,6 +14,7 @@ services:
       - DB_URL=${DB_URL}
       - DB_USERNAME=${DB_USERNAME}
       - DB_PASSWORD=${DB_PASSWORD}
+    restart: always
 
   db:
     image: postgres:12-alpine
@@ -23,6 +25,7 @@ services:
       - POSTGRES_PASSWORD=${DB_PASSWORD}
     volumes:
       - db:/var/lib/postgresql/data
+    restart: always
 
   proxy:
     image: nginxproxy/nginx-proxy
