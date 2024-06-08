@@ -1,3 +1,4 @@
+version: "3"
 services:
   frontend:
     build:
@@ -38,22 +39,3 @@ services:
       - html:/usr/share/nginx/html
       - certs:/etc/nginx/certs:ro
       - /var/run/docker.sock:/tmp/docker.sock:ro
-
-  # ssl:
-  #   image: nginxproxy/acme-companion
-  #   environment:
-  #     - DEFAULT_EMAIL=tomdenboon@hotmail.com
-  #   volumes_from:
-  #     - proxy
-  #   volumes:
-  #     - certs:/etc/nginx/certs:rw
-  #     - acme:/etc/acme.sh
-  #     - /var/run/docker.sock:/var/run/docker.sock:ro
-
-volumes:
-  conf:
-  vhost:
-  html:
-  certs:
-  acme:
-  db:
