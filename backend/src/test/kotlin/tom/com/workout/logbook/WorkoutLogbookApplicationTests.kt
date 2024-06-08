@@ -8,4 +8,9 @@ class WorkoutLogbookApplicationTests {
     @Test
     fun contextLoads() {
     }
+
+    @Test
+    fun test() {
+        assert(true)
+    }
 }
