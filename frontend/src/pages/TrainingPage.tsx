@@ -46,7 +46,7 @@ function TrainingPage() {
                   </Grid>
                 )}
                 {workouts.map((val) => (
-                  <Grid item xs={12} sm={6} md={4} key={val.id}>
+                  <Grid item xs={6} sm={4} md={3} key={val.id}>
                     <WorkoutCard
                       onClick={() => navigate(`workouts/${val.id}/start`)}
                       key={val.id}

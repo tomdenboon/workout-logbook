@@ -11,21 +11,33 @@ function ActionDropdown(props: ActionDropdownProps) {
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const createStopPropagationProps = (
+    onClick?: (event: React.MouseEvent<HTMLElement>) => void
+  ) => ({
+    onClick: (event: React.MouseEvent<HTMLElement>) => {
+      event.stopPropagation();
+      onClick?.(event);
+    },
+    onTouchStart: (event: React.TouchEvent<HTMLElement>) => {
+      event.stopPropagation();
+    },
+    onMouseDown: (event: React.MouseEvent<HTMLElement>) => {
+      event.stopPropagation();
+    },
+  });
 
   return (
     <>
       <Button
         color="primary"
         variant="outlined"
-        onMouseDown={(event) => event.stopPropagation()}
-        onClick={handleClick}
-        sx={{ height: 24, px: 1, py: 0, minWidth: 0 }}
+        {...createStopPropagationProps((e) => setAnchorEl(e.currentTarget))}
+        sx={{ height: 24, px: 1, py: 0, minWidth: 0, flexShrink: 0 }}
       >
         <MoreHoriz />
       </Button>
@@ -33,6 +45,7 @@ function ActionDropdown(props: ActionDropdownProps) {
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
+        {...createStopPropagationProps()}
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
@@ -42,10 +55,10 @@ function ActionDropdown(props: ActionDropdownProps) {
             <MenuItem
               dense
               key={option.label}
-              onClick={() => {
+              {...createStopPropagationProps(() => {
                 option.action();
                 handleClose();
-              }}
+              })}
             >
               <Stack spacing={1} direction="row" alignItems="center">
                 {icon}
