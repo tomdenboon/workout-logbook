@@ -33,6 +33,7 @@ services:
     ports:
       - 80:80
       - 443:443
+    restart: always
     volumes:
       - conf:/etc/nginx/conf.d
       - vhost:/etc/nginx/vhost.d
