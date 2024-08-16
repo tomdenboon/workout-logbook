@@ -37,8 +37,8 @@ function ModalForm<Form extends Record<string, string | number>>(props: {
         <Stack>
           {renderOptions.map(({ options, label, key, disabled }) =>
             options ? (
-              <FormControl key={String(key)} size="small" margin="normal">
-                <InputLabel id={String(key) + label}>{label}</InputLabel>
+              <FormControl key={label} size="small" margin="normal">
+                <InputLabel id={label}>{label}</InputLabel>
                 <Select
                   label={label}
                   disabled={disabled}
@@ -55,7 +55,7 @@ function ModalForm<Form extends Record<string, string | number>>(props: {
               </FormControl>
             ) : (
               <TextField
-                key={String(key)}
+                key={label}
                 label={label}
                 size="small"
                 margin="dense"
