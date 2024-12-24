@@ -1,5 +1,5 @@
 import { Text, Pressable, StyleSheet } from 'react-native';
-import { useCreateThemedStyleSheet } from '../hooks/theme';
+import { useThemedStyleSheet } from '../context/theme';
 
 interface ButtonProps {
   title: string;
@@ -27,7 +27,7 @@ const useButtonStyles = (
   variant: 'primary' | 'text',
   size: 'small' | 'medium' | 'large',
 ) =>
-  useCreateThemedStyleSheet(
+  useThemedStyleSheet(
     (theme) => ({
       button: {
         alignItems: 'center',

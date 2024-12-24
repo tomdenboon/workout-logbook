@@ -1,10 +1,10 @@
 import { Q } from '@nozbe/watermelondb';
 import React, { useCallback, useEffect } from 'react';
-import { Text, SafeAreaView, StyleSheet, View } from 'react-native';
 import { database } from '../model/database';
 import { Exercise } from '../model/Exercise';
 import { TableName } from '../model/tables';
 import { Stack } from 'expo-router';
+import { DatabaseProvider } from '@nozbe/watermelondb/react';
 
 const DEFAULT_EXERCISES = [
   { name: 'Bench Press', type: 'WEIGHTED', defaultId: '1' },
@@ -49,8 +49,10 @@ export default function App() {
   usePopulateDatabase();
 
   return (
-    <Stack>
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-    </Stack>
+    <DatabaseProvider database={database}>
+      <Stack>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      </Stack>
+    </DatabaseProvider>
   );
 }

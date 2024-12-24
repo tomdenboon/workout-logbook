@@ -28,7 +28,7 @@ const useTheme = () => React.useContext(ThemeContext);
 
 type NamedStyles<T> = { [P in keyof T]: ViewStyle | TextStyle | ImageStyle };
 
-export function useCreateThemedStyleSheet<
+export function useThemedStyleSheet<
   T extends NamedStyles<any> | NamedStyles<T>,
 >(styles: (theme: Theme) => T, deps: unknown[] = []): T {
   const theme = useTheme();
