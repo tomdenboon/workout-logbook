@@ -1,51 +1,92 @@
-import { useState } from 'react';
-import { View, Button, Modal, TouchableWithoutFeedback } from 'react-native';
+import { View } from 'react-native';
 import { useThemedStyleSheet } from '../context/theme';
+import WlbButton from './WlbButton';
+import WlbModal from './WlbModal';
+import { Picker } from '@react-native-picker/picker';
+import React, { useEffect, useState } from 'react';
+import WlbInput from './WlbInput';
+import WlbText from './WlbText';
+import WlbHeader from './WlbPage';
+import { Feather } from '@expo/vector-icons';
+
+interface InputProps {
+  type: 'text' | 'select';
+  key: string;
+  label: string;
+  options?: {
+    label: string;
+    value: string;
+  }[];
+}
 
 interface ModalProps {
+  title: string;
   visible: boolean;
   close: () => void;
-  children: React.ReactNode;
+  init: any;
+  inputs: InputProps[];
+  onSave: (value: any) => void;
 }
 
 export default function ModalForm(props: ModalProps) {
-  const { visible, close } = props;
+  const { visible, close, title } = props;
+  const [value, setValue] = useState(props.init);
 
-  const styles = useStyles();
+  useEffect(() => {
+    setValue(props.init);
+  }, [props.init]);
 
   return (
-    <Modal visible={visible} transparent={true}>
-      <TouchableWithoutFeedback onPress={close}>
-        <View style={styles.modalBackdrop}>
-          <TouchableWithoutFeedback>
-            <View style={styles.modalContainer}>
-              {props.children}
-              <Button title="Close" onPress={close} />
-            </View>
-          </TouchableWithoutFeedback>
-        </View>
-      </TouchableWithoutFeedback>
-    </Modal>
+    <WlbModal visible={visible} close={close}>
+      <WlbHeader
+        title={title}
+        headerLeft={
+          <WlbButton
+            icon="close"
+            variant="secondary"
+            size="small"
+            onPress={close}
+          />
+        }
+        headerRight={
+          <WlbButton
+            variant="text"
+            title="Save"
+            onPress={() => props.onSave(value)}
+          />
+        }
+      >
+        {props.inputs.map((input) => (
+          <View key={input.key}>
+            <WlbText>{input.label}</WlbText>
+            {input.type === 'text' ? (
+              <WlbInput
+                placeholder={input.label}
+                value={value?.[input.key]}
+                onChangeText={(text) =>
+                  setValue({ ...value, [input.key]: text })
+                }
+              />
+            ) : (
+              <Picker
+                selectedValue={value?.[input.key]}
+                onValueChange={(v) => setValue({ ...value, [input.key]: v })}
+              >
+                {input.options?.map((option, idx) => (
+                  <Picker.Item
+                    key={idx}
+                    style={{
+                      color: 'white',
+                    }}
+                    label={option.label}
+                    value={option.value}
+                  />
+                ))}
+              </Picker>
+            )}
+          </View>
+        ))}
+      </WlbHeader>
+    </WlbModal>
   );
 }
-
-const useStyles = () =>
-  useThemedStyleSheet((theme) => ({
-    container: {
-      flex: 1,
-      padding: 8,
-      gap: 8,
-    },
-    modalBackdrop: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    },
-    modalContainer: {
-      padding: 16,
-      width: '80%',
-      backgroundColor: 'white',
-      borderRadius: 8,
-    },
-  }));

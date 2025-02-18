@@ -22,8 +22,6 @@ export class ExerciseGroup extends Model {
   exercise!: Relation<Exercise>;
   @children(TableName.ExerciseRow)
   exerciseRows!: Query<ExerciseRow>;
-
-  async getExerciseName() {}
 }
 
 export const exerciseGroupSchema = tableSchema({

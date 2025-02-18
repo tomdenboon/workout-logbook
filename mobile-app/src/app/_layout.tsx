@@ -45,14 +45,17 @@ const usePopulateDatabase = () => {
   }, [populateDatabase]);
 };
 
-export default function App() {
+const App = () => {
   usePopulateDatabase();
 
   return (
     <DatabaseProvider database={database}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="workouts/[id]" options={{ headerShown: false }} />
       </Stack>
     </DatabaseProvider>
   );
-}
+};
+
+export default App;

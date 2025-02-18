@@ -1,19 +1,17 @@
-import { Tabs } from 'expo-router';
+import { Link, Tabs } from 'expo-router';
 import { View, Text, StyleSheet } from 'react-native';
+import React from 'react';
+import WlbView from '../../components/WlbView';
+import WlbHeader from '../../components/WlbPage';
+import WlbPage from '../../components/WlbPage';
 
 export default function ProfileTab() {
   return (
-    <View style={styles.container}>
-      <Tabs.Screen options={{ headerTitle: 'Home' }} />
-      <Text>Tab Home</Text>
-    </View>
+    <WlbView>
+      <WlbPage title="Home">
+        <Text>Tab Home</Text>
+        <Link href="/workouts/new">Open Modal</Link>
+      </WlbPage>
+    </WlbView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});

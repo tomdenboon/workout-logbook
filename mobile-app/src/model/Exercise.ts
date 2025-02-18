@@ -15,11 +15,13 @@ export const EXERCISE_CATEGORIES = {
   DISTANCE: 'Distance',
 } as const;
 
+export type ExerciseType = keyof typeof VALID_FIELDS;
+
 export const VALID_FIELDS = {
-  REPS: ['reps'],
-  WEIGHTED: ['reps', 'weight'],
-  DURATION: ['time'],
-  DISTANCE: ['time', 'distance'],
+  REPS: ['reps'] as const,
+  WEIGHTED: ['reps', 'weight'] as const,
+  DURATION: ['time'] as const,
+  DISTANCE: ['time', 'distance'] as const,
 } as const;
 
 type ExerciseCategory = keyof typeof EXERCISE_CATEGORIES;
@@ -31,7 +33,7 @@ export class Exercise extends Model {
   };
 
   @text('name') name!: string;
-  @field('type') type!: ExerciseCategory;
+  @field('type') type!: ExerciseType;
   @children(TableName.ExerciseGroup) exerciseGroups!: ExerciseGroup[];
   @nochange
   @field('default_id')
