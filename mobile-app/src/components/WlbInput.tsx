@@ -6,7 +6,7 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
-import { useThemedStyleSheet } from '../context/theme';
+import { useTheme, useThemedStyleSheet } from '../context/theme';
 import { useState } from 'react';
 
 export default function WlbInput({
@@ -22,31 +22,30 @@ export default function WlbInput({
   style?: StyleProp<TextStyle>;
   size?: 'small' | 'medium';
 }) {
+  const theme = useTheme();
   const [focused, setFocused] = useState(false);
-  const styles = useThemedStyleSheet(
-    (theme) => ({
-      input: {
-        backgroundColor: theme.subAlt,
-        color: theme.text,
-        borderRadius: 8,
-        padding: 8,
-        borderColor: focused ? theme.text : 'transparent',
-        fontSize: 16,
-        borderWidth: 2,
-        paddingVertical: 0,
-        height: {
-          small: 24,
-          medium: 36,
-        }[size],
-      },
-    }),
-    [focused, size],
-  );
 
   return (
     <TextInput
-      style={[styles.input, style]}
+      style={[
+        {
+          backgroundColor: theme.subAlt,
+          color: theme.text,
+          borderRadius: 8,
+          padding: 8,
+          borderColor: focused ? theme.text : 'transparent',
+          fontSize: 16,
+          borderWidth: 2,
+          paddingVertical: 0,
+          height: {
+            small: 24,
+            medium: 36,
+          }[size],
+        },
+        style,
+      ]}
       value={value}
+      placeholderTextColor={theme.sub}
       onChangeText={onChangeText}
       placeholder={placeholder}
       onFocus={() => setFocused(true)}

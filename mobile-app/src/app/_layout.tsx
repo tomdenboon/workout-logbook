@@ -18,8 +18,9 @@ const usePopulateDatabase = () => {
       .query(Q.where('default_id', Q.notEq(null)))
       .fetch();
 
-    database.write(() =>
-      database.batch(
+    database.write(async () => {
+      // await database.unsafeResetDatabase();
+      return database.batch(
         DEFAULT_EXERCISES.map((defaultExercise) => {
           const existingDefaultExercise = defaultExercises.find(
             (e) => e.defaultId === defaultExercise.defaultId,
@@ -36,8 +37,8 @@ const usePopulateDatabase = () => {
             exercise.defaultId = defaultExercise.defaultId;
           });
         }),
-      ),
-    );
+      );
+    });
   }, []);
 
   useEffect(() => {

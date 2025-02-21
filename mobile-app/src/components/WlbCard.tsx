@@ -1,21 +1,26 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { useThemedStyleSheet } from '../context/theme';
+import WlbText from './WlbText';
 
 export default function WlbCard({
   title,
   content,
+  onPress,
 }: {
   title: string;
   content: string;
+  onPress: () => void;
 }) {
   const styles = useStyles();
 
   return (
-    <View style={styles.card}>
-      <Text style={styles.title}>{title}</Text>
-      <Text style={styles.content}>{content}</Text>
-    </View>
+    <Pressable
+      style={({ pressed }) => [styles.card, { opacity: pressed ? 0.5 : 1 }]}
+      onPress={onPress}
+    >
+      <WlbText fontWeight="bold">{title}</WlbText>
+    </Pressable>
   );
 }
 
@@ -27,13 +32,5 @@ const useStyles = () =>
       borderColor: theme.subAlt,
       borderWidth: 2,
       backgroundColor: theme.background,
-    },
-    title: {
-      fontSize: 18,
-      color: theme.text,
-      fontWeight: 'bold',
-    },
-    content: {
-      fontSize: 14,
     },
   }));

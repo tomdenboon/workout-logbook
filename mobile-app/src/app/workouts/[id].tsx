@@ -13,39 +13,54 @@ import WlbHeader from '../../components/WlbPage';
 import { Feather } from '@expo/vector-icons'; // Import Feather icons
 import WlbView from '../../components/WlbView';
 import WlbPage from '../../components/WlbPage';
-import { Exercise, VALID_FIELDS } from '../../model/Exercise';
+import { Exercise, ExerciseType, VALID_FIELDS } from '../../model/Exercise';
 import WlbText from '../../components/WlbText';
+import useWorkout from '../../hooks/useWorkout';
 
 function ExerciseRowComponent({
   exerciseRow,
-  exercise,
+  exerciseType,
+  exerciseGroupIndex,
+  exerciseRowIndex,
+  updateExerciseRow,
 }: {
   exerciseRow: any;
-  exercise: Exercise;
+  exerciseType: ExerciseType;
+  exerciseGroupIndex: number;
+  exerciseRowIndex: number;
+  updateExerciseRow: ReturnType<typeof useWorkout>['updateExerciseRow'];
 }) {
-  const [localExerciseRow, setLocalExerciseRow] = useState(exerciseRow);
-
+  console.log(exerciseRow);
   return (
     <View style={{ flexDirection: 'row', gap: 8 }}>
-      {VALID_FIELDS[exercise.type].map((field) => (
+      <WlbButton
+        variant="secondary"
+        size="small"
+        onPress={() => {}}
+        title={`${exerciseRowIndex + 1}`}
+      />
+      {VALID_FIELDS[exerciseType].map((field) => (
         <WlbInput
           key={field}
           size="small"
           style={{ flex: 1, textAlign: 'center' }}
-          value={localExerciseRow[field]}
+          value={exerciseRow[field]?.toString()}
           onChangeText={(value) =>
-            setLocalExerciseRow({ ...localExerciseRow, [field]: value })
+            updateExerciseRow(exerciseGroupIndex, exerciseRowIndex, {
+              ...exerciseRow,
+              [field]: value,
+            })
           }
           placeholder={field}
         />
       ))}
       <WlbButton
         size="small"
-        variant={localExerciseRow.isLifted ? 'primary' : 'secondary'}
+        variant={exerciseRow.isLifted ? 'primary' : 'secondary'}
         onPress={() =>
-          setLocalExerciseRow({
-            ...localExerciseRow,
-            isLifted: !localExerciseRow.isLifted,
+          updateExerciseRow(exerciseGroupIndex, exerciseRowIndex, {
+            ...exerciseRow,
+            isLifted: !exerciseRow.isLifted,
           })
         }
         icon={'check'}
@@ -56,10 +71,14 @@ function ExerciseRowComponent({
 
 function ExerciseGroupComponent({
   exerciseGroup,
+  index,
   addExerciseRow,
+  updateExerciseRow,
 }: {
   exerciseGroup: any;
-  addExerciseRow: (exercise: Exercise) => void;
+  index: number;
+  addExerciseRow: ReturnType<typeof useWorkout>['addExerciseRow'];
+  updateExerciseRow: ReturnType<typeof useWorkout>['updateExerciseRow'];
 }) {
   return (
     <View style={{ gap: 12 }}>
@@ -78,18 +97,23 @@ function ExerciseGroupComponent({
         />
       </View>
 
-      {exerciseGroup.exerciseRows.map((exerciseRow: any) => (
-        <ExerciseRowComponent
-          key={exerciseRow.id}
-          exerciseRow={exerciseRow}
-          exercise={exerciseGroup.exercise}
-        />
-      ))}
+      {exerciseGroup.exerciseRows.map(
+        (exerciseRow: any, exerciseRowIndex: number) => (
+          <ExerciseRowComponent
+            key={exerciseRow.id}
+            exerciseType={exerciseGroup.exercise.type}
+            exerciseRow={exerciseRow}
+            exerciseGroupIndex={index}
+            exerciseRowIndex={exerciseRowIndex}
+            updateExerciseRow={updateExerciseRow}
+          />
+        ),
+      )}
       <WlbButton
         variant="secondary"
         size="small"
         title="+ Add set"
-        onPress={() => addExerciseRow(exerciseGroup.exercise)}
+        onPress={() => addExerciseRow(index)}
       />
     </View>
   );
@@ -97,81 +121,53 @@ function ExerciseGroupComponent({
 
 export default function Workout() {
   const { id } = useLocalSearchParams();
-
-  const [name, setName] = useState('');
-  const [date, setDate] = useState(new Date());
-  const [exerciseGroups, setExerciseGroups] = useState<any[]>([]);
   const [addExerciseModalVisible, setAddExerciseModalVisible] = useState(false);
-
-  const createExerciseRow = (exercise: Exercise) => ({
-    reps: 10,
-    weight: 100,
-    isLifted: false,
-  });
-
-  const addExerciseRow = (index: number) => {
-    setExerciseGroups([
-      ...exerciseGroups.slice(0, index),
-      {
-        ...exerciseGroups[index],
-        exerciseRows: [
-          ...exerciseGroups[index].exerciseRows,
-          createExerciseRow(exerciseGroups[index].exercise),
-        ],
-      },
-      ...exerciseGroups.slice(index + 1),
-    ]);
-  };
-
-  const addExercises = (exercises: Exercise[]) => {
-    setExerciseGroups([
-      ...exerciseGroups,
-      ...exercises.map((exercise) => ({
-        exercise,
-        exerciseRows: [createExerciseRow(exercise)],
-      })),
-    ]);
-    setAddExerciseModalVisible(false);
-  };
-
-  useEffect(() => {
-    if (id === 'new') {
-      setName('New workout');
-    } else {
-      setName('Workout');
-    }
-  }, [id]);
+  const {
+    workout,
+    setWorkout,
+    addExerciseRow,
+    addExercises,
+    updateExerciseRow,
+    flush,
+  } = useWorkout();
 
   return (
     <WlbView>
       <WlbPage
-        containerStyle={{ gap: 20, paddingBottom: 16 }}
+        containerStyle={{ gap: 20, paddingBottom: 32 }}
         title="New workout"
         headerRight={
           <WlbButton
-            onPress={() => router.back()}
+            onPress={() => {
+              flush();
+              router.back();
+            }}
             variant="primary"
             title="Save"
           />
         }
         headerLeft={
           <WlbButton
-            onPress={() => router.back()}
+            onPress={() => {
+              router.back();
+            }}
             variant="secondary"
             icon="close"
           />
         }
       >
         <WlbInput
-          value={name}
-          onChangeText={setName}
+          value={workout.name}
+          onChangeText={(value) => setWorkout({ ...workout, name: value })}
           placeholder="Workout name"
         />
-        {exerciseGroups.map((exerciseGroup, index) => (
+        {workout.exerciseGroups.map((exerciseGroup: any, index: number) => (
           <ExerciseGroupComponent
-            key={index}
-            addExerciseRow={() => addExerciseRow(index)}
+            key={exerciseGroup.id}
+            index={index}
             exerciseGroup={exerciseGroup}
+            addExerciseRow={addExerciseRow}
+            updateExerciseRow={updateExerciseRow}
           />
         ))}
         <WlbButton

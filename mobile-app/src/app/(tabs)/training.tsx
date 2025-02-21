@@ -50,9 +50,13 @@ export default function TrainingTab() {
               />
             </View>
           </View>
-          <WlbCard title="Workout" content={''} />
           {workouts?.map((workout) => (
-            <WlbCard key={workout.id} title={workout.name} content={''} />
+            <WlbCard
+              key={workout.id}
+              title={workout.name}
+              content={''}
+              onPress={() => router.push(`/workouts/${workout.id}`)}
+            />
           ))}
         </View>
       </WlbPage>

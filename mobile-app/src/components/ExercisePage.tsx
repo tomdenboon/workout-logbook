@@ -47,7 +47,6 @@ export default function ExercisePage({
     setSelectedExercise(exercise);
   };
 
-  console.log(selectedExercise);
   const onSave = (value: any) => {
     database
       .write(async () => {
@@ -94,21 +93,14 @@ export default function ExercisePage({
       }
       headerRight={
         addExercises && (
-          <>
-            <WlbButton
-              variant="text"
-              title="Add"
-              onPress={() => {
-                addExercises(selectedExercises);
-              }}
-            />
-            <WlbButton
-              variant="text"
-              onPress={() => {
-                addExercises(selectedExercises);
-              }}
-            />
-          </>
+          <WlbButton
+            variant="text"
+            title="Add"
+            onPress={() => {
+              addExercises(selectedExercises);
+              onClose?.();
+            }}
+          />
         )
       }
       containerStyle={{ padding: 0, paddingBottom: 16 }}

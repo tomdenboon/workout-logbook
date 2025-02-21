@@ -5,8 +5,6 @@ import { schemaMigrations } from '@nozbe/watermelondb/Schema/migrations';
 import { Exercise, exerciseSchema } from './Exercise';
 import { ExerciseGroup, exerciseGroupSchema } from './ExerciseGroup';
 import { ExerciseRow, exerciseRowSchema } from './ExerciseRow';
-import { on } from '@nozbe/watermelondb/QueryDescription';
-import { of } from '@nozbe/watermelondb/utils/rx';
 
 const schema = appSchema({
   version: 1,
