@@ -1,146 +1,245 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Exercise } from '../model/Exercise';
-import { database } from '../model/database';
 import { useLocalSearchParams } from 'expo-router';
-import { Workout } from '../model/Workout';
-import useSubscribe from './useSubscribe';
-import { Q } from '@nozbe/watermelondb';
-import { ExerciseGroup } from '../model/ExerciseGroup';
-import { ExerciseRow } from '../model/ExerciseRow';
-import { TableName } from '../model/tables';
+import { eq, inArray, OptionalKeyOnly } from 'drizzle-orm';
+import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
+import db from 'db';
+import * as schema from 'db/schema';
+import { Exercise, Workout, ExerciseGroup, ExerciseRow } from 'db/types';
+import { deleteWorkout } from 'db/mutation';
+
+type PartialKeys<T, TRequired extends keyof T> = Omit<T, TRequired> &
+  Partial<Pick<T, TRequired>>;
+
+export type WorkoutForm = PartialKeys<Workout, 'id'> & {
+  exerciseGroups: {
+    id?: number;
+    exercise: Exercise;
+    exerciseRows: PartialKeys<ExerciseRow, 'id' | 'exerciseGroupId'>[];
+  }[];
+};
 
 function useCurrentWorkout() {
   const { id } = useLocalSearchParams();
-  const [workout, setWorkout] = useState<Workout | undefined>(undefined);
 
-  useEffect(() => {
-    if (id && id != 'new') {
-      database
-        .get<Workout>('workouts')
-        .find(id as string)
-        .then((workout) => {
-          setWorkout(workout);
-        });
-    }
-  }, [id]);
-
-  return workout;
+  return useLiveQuery(
+    db.query.workouts.findFirst({
+      where: eq(schema.workouts.id, Number(id)),
+      with: {
+        exerciseGroups: {
+          with: {
+            exercise: true,
+            exerciseRows: true,
+          },
+        },
+      },
+    }),
+    [id],
+  ).data;
 }
 
 export default function useWorkout() {
   const currentWorkout = useCurrentWorkout();
 
-  const [workout, setWorkout] = useState<any>({
+  const type: 'active' | 'completed' | 'template' = useMemo(() => {
+    if (currentWorkout?.completedAt) {
+      return 'completed';
+    } else if (currentWorkout?.startedAt) {
+      return 'active';
+    } else {
+      return 'template';
+    }
+  }, [currentWorkout]);
+  const realtime = useMemo(() => type === 'active', [type]);
+
+  const [workout, setWorkout] = useState<WorkoutForm>({
     name: '',
-    date: new Date(),
-    exerciseGroups: [],
+    exerciseGroups: [] as any,
+    startedAt: null,
+    completedAt: null,
   });
 
   const initializeWorkout = useCallback(async () => {
     if (!currentWorkout) {
       setWorkout({
         name: '',
-        date: new Date(),
-        exerciseGroups: [],
+        exerciseGroups: [] as any,
+        startedAt: null,
+        completedAt: null,
       });
       return;
+    } else {
+      setWorkout(currentWorkout);
     }
-
-    const workout: any = { name: currentWorkout.name, exerciseGroups: [] };
-    const exerciseGroups = await currentWorkout?.exerciseGroups.fetch();
-    for (const exerciseGroup of exerciseGroups) {
-      const exercise = await exerciseGroup.exercise.fetch();
-      const exerciseRows = await exerciseGroup.exerciseRows.fetch();
-      workout.exerciseGroups.push({
-        exercise,
-        exerciseRows: exerciseRows.map((exerciseRow) => ({
-          reps: exerciseRow.reps,
-          weight: exerciseRow.weight,
-          time: exerciseRow.time,
-          distance: exerciseRow.distance,
-          isLifted: exerciseRow.isLifted,
-        })),
-      });
-    }
-
-    setWorkout(workout);
   }, [currentWorkout]);
 
   useEffect(() => {
     initializeWorkout();
   }, [initializeWorkout]);
 
-  const createExerciseRow = (exercise: Exercise) => ({
+  const createExerciseRow = () => ({
     reps: 10,
     weight: 100,
-    isLifted: false,
+    distance: null,
+    time: null,
+    rpe: null,
+    isLifted: 0,
   });
 
-  const updateExerciseRow = (
+  const updateExerciseRow = async (
     exerciseGroupIndex: number,
     exerciseRowIndex: number,
     exerciseRow: any,
   ) => {
+    const newExerciseRow = {
+      ...exerciseRow,
+      reps: Number(exerciseRow.reps),
+      weight: Number(exerciseRow.weight),
+    };
+
+    if (realtime) {
+      await db
+        .update(schema.exerciseRows)
+        .set(newExerciseRow)
+        .where(
+          eq(
+            schema.exerciseRows.id,
+            workout.exerciseGroups[exerciseGroupIndex].exerciseRows[
+              exerciseRowIndex
+            ].id as number,
+          ),
+        );
+    }
+
     workout.exerciseGroups[exerciseGroupIndex].exerciseRows[exerciseRowIndex] =
-      exerciseRow;
+      newExerciseRow;
     setWorkout({ ...workout });
   };
 
-  const addExerciseRow = (exerciseGroupIndex: number) => {
+  const addExerciseRow = async (exerciseGroupIndex: number) => {
+    const newExerciseRow: any = createExerciseRow();
+    if (realtime) {
+      const result = await db
+        .insert(schema.exerciseRows)
+        .values({
+          ...newExerciseRow,
+          exerciseGroupId: workout.exerciseGroups[exerciseGroupIndex]
+            .id as number,
+        })
+        .returning();
+
+      newExerciseRow.id = result[0].id;
+    }
+
     workout.exerciseGroups[exerciseGroupIndex].exerciseRows.push(
-      createExerciseRow(workout.exerciseGroups[exerciseGroupIndex].exercise),
+      newExerciseRow,
     );
     setWorkout({ ...workout });
   };
 
-  const addExercises = (exercises: Exercise[]) => {
+  const deleteExerciseRow = async (
+    exerciseGroupIndex: number,
+    exerciseRowIndex: number,
+  ) => {
+    if (realtime) {
+      await db
+        .delete(schema.exerciseRows)
+        .where(
+          eq(
+            schema.exerciseRows.id,
+            workout.exerciseGroups[exerciseGroupIndex].exerciseRows[
+              exerciseRowIndex
+            ].id as number,
+          ),
+        );
+    }
+
+    workout.exerciseGroups[exerciseGroupIndex].exerciseRows.splice(
+      exerciseRowIndex,
+      1,
+    );
+    setWorkout({ ...workout });
+  };
+
+  const deleteExerciseGroup = async (exerciseGroupIndex: number) => {
+    if (realtime) {
+      await db
+        .delete(schema.exerciseGroups)
+        .where(
+          eq(
+            schema.exerciseGroups.id,
+            workout.exerciseGroups[exerciseGroupIndex].id as number,
+          ),
+        );
+    }
+
+    workout.exerciseGroups.splice(exerciseGroupIndex, 1);
+    setWorkout({ ...workout });
+  };
+
+  const addExerciseGroups = async (exercises: Exercise[]) => {
+    if (realtime) {
+      const result = await db
+        .insert(schema.exerciseGroups)
+        .values(
+          exercises.map((exercise) => ({
+            exerciseId: exercise.id,
+            workoutId: workout.id as number,
+          })),
+        )
+        .returning();
+
+      await db.insert(schema.exerciseRows).values(
+        result.map((exerciseGroup) => ({
+          exerciseGroupId: exerciseGroup.id,
+          ...createExerciseRow(),
+        })),
+      );
+    }
+
     workout.exerciseGroups.push(
       ...exercises.map((exercise) => ({
         exercise,
-        exerciseRows: [createExerciseRow(exercise)],
+        exerciseRows: [createExerciseRow()],
       })),
     );
 
     setWorkout({ ...workout });
   };
 
-  const flush = () => {
-    database.write(async () => {
-      const savedWorkout = await database
-        .get<Workout>(TableName.Workout)
-        .create((createWorkout) => {
-          createWorkout.name = workout.name;
+  const flush = async () => {
+    if (workout.id) {
+      await deleteWorkout(workout.id);
+    }
+
+    const result = await db.insert(schema.workouts).values(workout).returning();
+
+    for (const exerciseGroup of workout.exerciseGroups) {
+      const exerciseGroupResult = await db
+        .insert(schema.exerciseGroups)
+        .values({
+          ...exerciseGroup,
+          exerciseId: exerciseGroup.exercise.id,
+          workoutId: result[0].id,
+        })
+        .returning();
+
+      for (const exerciseRow of exerciseGroup.exerciseRows) {
+        await db.insert(schema.exerciseRows).values({
+          ...exerciseRow,
+          exerciseGroupId: exerciseGroupResult[0].id,
         });
-
-      for (const exerciseGroup of workout.exerciseGroups) {
-        const savedExerciseGroup = await database
-          .get<ExerciseGroup>(TableName.ExerciseGroup)
-          .create((createExerciseGroup) => {
-            createExerciseGroup.workout.set(savedWorkout);
-            createExerciseGroup.exercise.set(exerciseGroup.exercise);
-          });
-
-        for (const exerciseRow of exerciseGroup.exerciseRows) {
-          await database
-            .get<ExerciseRow>(TableName.ExerciseRow)
-            .create((createExerciseRow) => {
-              createExerciseRow.exerciseGroup.set(savedExerciseGroup);
-              createExerciseRow.time = exerciseRow.time;
-              createExerciseRow.distance = exerciseRow.distance;
-              createExerciseRow.reps = exerciseRow.reps;
-              createExerciseRow.weight = exerciseRow.weight;
-              createExerciseRow.isLifted = exerciseRow.isLifted;
-            });
-        }
       }
-    });
+    }
   };
 
   return {
     workout,
+    type,
     setWorkout,
     addExerciseRow,
-    addExercises,
+    deleteExerciseRow,
+    deleteExerciseGroup,
+    addExerciseGroups,
     updateExerciseRow,
     flush,
   };

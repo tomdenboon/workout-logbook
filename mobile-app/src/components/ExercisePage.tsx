@@ -1,15 +1,22 @@
 import React, { useState } from 'react';
 import { Text, View, Pressable } from 'react-native';
-import { Exercise, EXERCISE_CATEGORIES } from '../model/Exercise';
-import { Q } from '@nozbe/watermelondb';
-import useSubscribe from '../hooks/useSubscribe';
 import { useThemedStyleSheet } from '../context/theme';
-import { useDatabase } from '@nozbe/watermelondb/react';
 import toOptions from '../toOptions';
 import WlbText from './WlbText';
 import ModalForm from './ModalForm';
 import WlbHeader from './WlbPage';
 import WlbButton from './WlbButton';
+import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
+import { eq } from 'drizzle-orm';
+import db from 'db';
+import { Exercise } from 'db/types';
+import * as schema from 'db/schema';
+const EXERCISE_CATEGORIES = {
+  reps: 'Reps',
+  weighted: 'Weighted',
+  duration: 'Duration',
+  distance: 'Distance',
+} as const;
 
 export default function ExercisePage({
   onClose,
@@ -18,11 +25,10 @@ export default function ExercisePage({
   onClose?: () => void;
   addExercises?: (exercises: Exercise[]) => void;
 }) {
-  const database = useDatabase();
   const styles = useStyles();
   const [selectedExercises, setSelectedExercises] = useState<Exercise[]>([]);
-  const exercises = useSubscribe(
-    database.get<Exercise>('exercises').query(Q.sortBy('name')).observe(),
+  const { data: exercises } = useLiveQuery(
+    db.select().from(schema.exercises).orderBy(schema.exercises.name),
   );
   const [visible, setVisible] = useState(false);
   const [selectedExercise, setSelectedExercise] = useState<Exercise>();
@@ -47,23 +53,22 @@ export default function ExercisePage({
     setSelectedExercise(exercise);
   };
 
-  const onSave = (value: any) => {
-    database
-      .write(async () => {
-        if (selectedExercise) {
-          selectedExercise.update((exercise) => {
-            exercise.name = value.name;
-            exercise.type = value.type;
-          });
-        } else {
-          const exerciseCollection = database.get<Exercise>('exercises');
-          exerciseCollection.create((exercise) => {
-            exercise.name = value.name;
-            exercise.type = value.type;
-          });
-        }
-      })
-      .then(closeModal);
+  const onSave = async (value: any) => {
+    if (selectedExercise) {
+      await db
+        .update(schema.exercises)
+        .set({
+          name: value.name,
+          type: value.type,
+        })
+        .where(eq(schema.exercises.id, selectedExercise.id));
+    } else {
+      await db.insert(schema.exercises).values({
+        name: value.name,
+        type: value.type,
+      });
+    }
+    closeModal();
   };
 
   const groupedExercises = exercises?.reduce((acc, exercise) => {
@@ -111,7 +116,7 @@ export default function ExercisePage({
         close={closeModal}
         init={{
           name: selectedExercise?.name ?? '',
-          type: selectedExercise?.type ?? 'REPS',
+          type: selectedExercise?.type ?? 'reps',
         }}
         inputs={[
           { type: 'text', key: 'name', label: 'Name' },

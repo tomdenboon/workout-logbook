@@ -5,11 +5,15 @@ import WlbText from './WlbText';
 
 export default function WlbCard({
   title,
-  content,
+  subTitle,
+  titleRight,
+  children,
   onPress,
 }: {
   title: string;
-  content: string;
+  subTitle?: string;
+  titleRight?: React.ReactNode;
+  children: React.ReactNode;
   onPress: () => void;
 }) {
   const styles = useStyles();
@@ -19,7 +23,11 @@ export default function WlbCard({
       style={({ pressed }) => [styles.card, { opacity: pressed ? 0.5 : 1 }]}
       onPress={onPress}
     >
-      <WlbText fontWeight="bold">{title}</WlbText>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <WlbText fontWeight="bold">{title}</WlbText>
+        {titleRight && titleRight}
+      </View>
+      {children}
     </Pressable>
   );
 }
@@ -27,7 +35,7 @@ export default function WlbCard({
 const useStyles = () =>
   useThemedStyleSheet((theme) => ({
     card: {
-      padding: 20,
+      padding: 16,
       borderRadius: 10,
       borderColor: theme.subAlt,
       borderWidth: 2,

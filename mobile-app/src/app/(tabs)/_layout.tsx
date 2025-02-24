@@ -1,21 +1,56 @@
-import { Tabs } from 'expo-router';
+import { router, Tabs } from 'expo-router';
 import { useTheme } from '../../context/theme';
-import WlbHeader from '../../components/WlbPage';
+import { WlbHeader } from 'components/WlbPage';
+import React from 'react';
+import { View } from 'react-native';
+import WlbButton from 'components/WlbButton';
+import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
+import { and, isNotNull, isNull } from 'drizzle-orm';
+import db from 'db';
+import { workouts } from 'db/schema';
 
 export default function TabLayout() {
   const theme = useTheme();
+  const { data: workout } = useLiveQuery(
+    db.query.workouts.findFirst({
+      where: and(isNotNull(workouts.startedAt), isNull(workouts.completedAt)),
+    }),
+  );
 
   return (
-    <Tabs
-      screenOptions={{
-        header: () => <WlbHeader title="Workout Logbook" />,
-        headerShown: false,
-        tabBarStyle: {
-          backgroundColor: theme.background,
-        },
-        tabBarActiveTintColor: theme.text,
-        tabBarInactiveTintColor: theme.sub,
-      }}
-    />
+    <React.Fragment>
+      <Tabs
+        screenOptions={{
+          headerShown: false,
+          tabBarStyle: {
+            backgroundColor: theme.background,
+          },
+          tabBarActiveTintColor: theme.text,
+          tabBarInactiveTintColor: theme.sub,
+        }}
+      />
+      {workout && (
+        <View
+          style={{
+            position: 'absolute',
+            backgroundColor: theme.background,
+            bottom: 82,
+            width: '100%',
+            borderTopWidth: 2,
+            borderBottomWidth: 2,
+            borderColor: theme.subAlt,
+            padding: 16,
+          }}
+        >
+          <WlbButton
+            variant="secondary"
+            title="Resume workout"
+            onPress={() => {
+              router.push(`/workouts/${workout.id}`);
+            }}
+          />
+        </View>
+      )}
+    </React.Fragment>
   );
 }
