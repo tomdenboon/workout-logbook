@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 import { Text, View, Pressable } from 'react-native';
-import { useThemedStyleSheet } from '../context/theme';
-import toOptions from '../toOptions';
-import WlbText from './WlbText';
-import ModalForm from './ModalForm';
-import WlbHeader from './WlbPage';
-import WlbButton from './WlbButton';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import { eq } from 'drizzle-orm';
 import db from 'db';
 import { Exercise } from 'db/types';
 import * as schema from 'db/schema';
+import ModalForm from 'components/ModalForm';
+import WlbButton from 'components/WlbButton';
+import WlbPage, { WlbHeader } from 'components/WlbPage';
+import WlbText from 'components/WlbText';
+import { useThemedStyleSheet } from 'context/theme';
+import toOptions from 'toOptions';
+
 const EXERCISE_CATEGORIES = {
   reps: 'Reps',
   weighted: 'Weighted',
@@ -81,7 +82,7 @@ export default function ExercisePage({
   }, {} as Record<string, Exercise[]>);
 
   return (
-    <WlbHeader
+    <WlbPage
       title="Exercises"
       headerLeft={
         <View style={{ flexDirection: 'row', gap: 8 }}>
@@ -166,7 +167,7 @@ export default function ExercisePage({
           ))}
         </View>
       ))}
-    </WlbHeader>
+    </WlbPage>
   );
 }
 
@@ -180,7 +181,7 @@ const useStyles = () =>
       paddingHorizontal: 16,
       paddingBottom: 8,
       justifyContent: 'flex-end',
-      backgroundColor: theme.background,
+      backgroundColor: theme.bg,
       borderColor: theme.subAlt,
       borderBottomWidth: 2,
     },

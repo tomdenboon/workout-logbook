@@ -11,6 +11,7 @@ import groupBy from 'groupBy';
 import WlbDropdown from 'components/WlbDropdown';
 import { deleteWorkout } from 'db/mutation';
 import { router } from 'expo-router';
+import WlbButton from 'components/WlbButton';
 
 export default function History() {
   const workouts = useLiveQuery(
@@ -35,45 +36,55 @@ export default function History() {
   return (
     <WlbView>
       <WlbHeader title="History" />
-      <SectionList
-        style={{
-          padding: 16,
-        }}
-        sections={groupedWorkouts}
-        ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
-        SectionSeparatorComponent={() => <View style={{ height: 16 }} />}
-        renderItem={({ item }) => (
-          <WlbCard
-            title={item.name}
-            onPress={() => {}}
-            titleRight={
-              <WlbDropdown
-                triggerProps={{
-                  variant: 'primary',
-                  size: 'small',
-                  icon: 'keyboard-control',
-                }}
-                options={[
-                  {
-                    label: 'Edit',
-                    onPress: () => router.push(`/workouts/${item.id}`),
-                  },
-                  {
-                    label: 'Delete',
-                    onPress: () => deleteWorkout(item.id),
-                  },
-                ]}
-              />
-            }
-          >
-            <WlbText>{item.exerciseGroups.length} exercises</WlbText>
-          </WlbCard>
-        )}
-        stickySectionHeadersEnabled={false}
-        renderSectionHeader={({ section }) => (
-          <WlbText color="sub">{section.title}</WlbText>
-        )}
-      />
+      {groupedWorkouts.length > 0 ? (
+        <SectionList
+          style={{
+            padding: 16,
+          }}
+          sections={groupedWorkouts}
+          ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
+          SectionSeparatorComponent={() => <View style={{ height: 16 }} />}
+          renderItem={({ item }) => (
+            <WlbCard
+              title={item.name}
+              onPress={() => {}}
+              titleRight={
+                <WlbDropdown
+                  triggerProps={{
+                    variant: 'primary',
+                    size: 'small',
+                    icon: 'keyboard-control',
+                  }}
+                  options={[
+                    {
+                      label: 'Edit',
+                      onPress: () => router.push(`/workouts/${item.id}`),
+                    },
+                    {
+                      label: 'Delete',
+                      onPress: () => deleteWorkout(item.id),
+                    },
+                  ]}
+                />
+              }
+            >
+              <WlbText>{item.exerciseGroups.length} exercises</WlbText>
+            </WlbCard>
+          )}
+          stickySectionHeadersEnabled={false}
+          renderSectionHeader={({ section }) => (
+            <WlbText color="sub">{section.title}</WlbText>
+          )}
+        />
+      ) : (
+        <View style={{ padding: 16, alignItems: 'center', gap: 16 }}>
+          <WlbText>You haven't completed any workouts yet.</WlbText>
+          <WlbButton
+            title="Add Workout"
+            onPress={() => router.push('/workouts')}
+          />
+        </View>
+      )}
     </WlbView>
   );
 }

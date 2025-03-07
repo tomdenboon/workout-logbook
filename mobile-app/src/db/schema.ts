@@ -1,5 +1,11 @@
 import { relations } from 'drizzle-orm';
-import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import {
+  integer,
+  numeric,
+  real,
+  sqliteTable,
+  text,
+} from 'drizzle-orm/sqlite-core';
 
 export const exercises = sqliteTable('exercises', {
   id: integer().primaryKey({ autoIncrement: true }),
@@ -16,10 +22,17 @@ export const workouts = sqliteTable('workouts', {
   name: text().notNull(),
   startedAt: integer('started_at'),
   completedAt: integer('completed_at'),
+  templateFolderId: integer('template_folder_id').references(
+    () => templateFolders.id,
+  ),
 });
 
-export const workoutsRelations = relations(workouts, ({ many }) => ({
+export const workoutsRelations = relations(workouts, ({ one, many }) => ({
   exerciseGroups: many(exerciseGroups),
+  templateFolder: one(templateFolders, {
+    fields: [workouts.templateFolderId],
+    references: [templateFolders.id],
+  }),
 }));
 
 export const exerciseGroups = sqliteTable('exercise_groups', {
@@ -53,11 +66,11 @@ export const exerciseRows = sqliteTable('exercise_rows', {
     .notNull()
     .references(() => exerciseGroups.id, { onDelete: 'cascade' }),
   isLifted: integer('is_lifted').notNull(),
-  reps: integer(),
-  weight: integer(),
-  time: integer(),
-  distance: integer(),
-  rpe: integer(),
+  reps: real(),
+  weight: real(),
+  time: real(),
+  distance: real(),
+  rpe: real(),
 });
 
 export const exerciseRowsRelations = relations(exerciseRows, ({ one }) => ({
@@ -66,3 +79,43 @@ export const exerciseRowsRelations = relations(exerciseRows, ({ one }) => ({
     references: [exerciseGroups.id],
   }),
 }));
+
+export const templateFolders = sqliteTable('template_folders', {
+  id: integer().primaryKey({ autoIncrement: true }),
+  name: text().notNull(),
+});
+
+export const templateFoldersRelations = relations(
+  templateFolders,
+  ({ many }) => ({
+    workouts: many(workouts),
+  }),
+);
+
+export const measurements = sqliteTable('measurements', {
+  id: integer().primaryKey({ autoIncrement: true }),
+  name: text().notNull(),
+});
+
+export const measurementsRelations = relations(measurements, ({ many }) => ({
+  measurementPoints: many(measurementPoints),
+}));
+
+export const measurementPoints = sqliteTable('measurement_points', {
+  id: integer().primaryKey({ autoIncrement: true }),
+  measurementId: integer('measurement_id')
+    .notNull()
+    .references(() => measurements.id, { onDelete: 'cascade' }),
+  date: integer('date').notNull(),
+  value: real().notNull(),
+});
+
+export const measurementPointsRelations = relations(
+  measurementPoints,
+  ({ one }) => ({
+    measurement: one(measurements, {
+      fields: [measurementPoints.measurementId],
+      references: [measurements.id],
+    }),
+  }),
+);

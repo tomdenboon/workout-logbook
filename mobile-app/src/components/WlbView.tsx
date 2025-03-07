@@ -10,7 +10,7 @@ export default function WlbView({ children }: { children: React.ReactNode }) {
     <View
       style={{
         flex: 1,
-        backgroundColor: theme.background,
+        backgroundColor: theme.bg,
       }}
     >
       {children}

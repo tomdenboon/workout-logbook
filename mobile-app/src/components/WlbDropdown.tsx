@@ -73,8 +73,8 @@ export default function WlbDropdown({
                 <TouchableOpacity
                   key={option.label}
                   onPress={() => {
-                    option.onPress();
                     handleClose();
+                    option.onPress();
                   }}
                   style={styles.menuOption}
                 >
@@ -100,7 +100,7 @@ const useDropdownStyles = () =>
     menu: {
       position: 'absolute',
       width: 80,
-      backgroundColor: theme.background,
+      backgroundColor: theme.bg,
       borderRadius: 5,
       padding: 10,
     },

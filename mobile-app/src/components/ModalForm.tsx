@@ -8,6 +8,7 @@ import WlbInput from './WlbInput';
 import WlbText from './WlbText';
 import WlbHeader from './WlbPage';
 import { Feather } from '@expo/vector-icons';
+import WlbSelect from 'components/WlbSelect';
 
 interface InputProps {
   type: 'text' | 'select';
@@ -55,6 +56,7 @@ export default function ModalForm(props: ModalProps) {
             onPress={() => props.onSave(value)}
           />
         }
+        containerStyle={{ gap: 16 }}
       >
         {props.inputs.map((input) => (
           <View key={input.key}>
@@ -68,21 +70,11 @@ export default function ModalForm(props: ModalProps) {
                 }
               />
             ) : (
-              <Picker
-                selectedValue={value?.[input.key]}
-                onValueChange={(v) => setValue({ ...value, [input.key]: v })}
-              >
-                {input.options?.map((option, idx) => (
-                  <Picker.Item
-                    key={idx}
-                    style={{
-                      color: 'white',
-                    }}
-                    label={option.label}
-                    value={option.value}
-                  />
-                ))}
-              </Picker>
+              <WlbSelect
+                value={value?.[input.key]}
+                onChange={(v) => setValue({ ...value, [input.key]: v })}
+                options={input.options ?? []}
+              />
             )}
           </View>
         ))}

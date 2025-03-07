@@ -23,7 +23,7 @@ export default function TabLayout() {
         screenOptions={{
           headerShown: false,
           tabBarStyle: {
-            backgroundColor: theme.background,
+            backgroundColor: theme.bg,
           },
           tabBarActiveTintColor: theme.text,
           tabBarInactiveTintColor: theme.sub,
@@ -33,7 +33,7 @@ export default function TabLayout() {
         <View
           style={{
             position: 'absolute',
-            backgroundColor: theme.background,
+            backgroundColor: theme.bg,
             bottom: 82,
             width: '100%',
             borderTopWidth: 2,

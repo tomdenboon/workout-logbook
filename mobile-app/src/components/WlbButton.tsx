@@ -8,7 +8,7 @@ export interface WlbButtonProps {
   icon?: keyof typeof MaterialIcons.glyphMap;
   title?: string;
   size?: 'small' | 'medium';
-  variant?: 'error' | 'primary' | 'secondary' | 'text';
+  variant?: 'error' | 'primary' | 'secondary' | 'text' | 'transparent';
   onPress: () => void;
   style?: StyleProp<ViewStyle>;
 }
@@ -24,11 +24,11 @@ export default function Button({
   const theme = useTheme();
   const styles = useButtonStyles(variant, size);
   const textColor = {
-    primary: 'background',
+    primary: 'bg',
     secondary: 'text',
     text: 'main',
-    error: 'background',
-    primaryAlt: 'main',
+    error: 'bg',
+    transparent: 'text',
   }[variant] as keyof Theme;
 
   const textColorPressed = (pressed: boolean) => {
@@ -38,7 +38,7 @@ export default function Button({
     if (variant === 'text') {
       return 'sub';
     }
-    return 'background';
+    return 'bg';
   };
 
   return (
@@ -82,7 +82,7 @@ export default function Button({
 }
 
 const useButtonStyles = (
-  variant: 'error' | 'primary' | 'secondary' | 'text',
+  variant: 'error' | 'primary' | 'secondary' | 'text' | 'transparent',
   size: 'small' | 'medium',
 ) =>
   useThemedStyleSheet(
@@ -105,6 +105,7 @@ const useButtonStyles = (
             primary: theme.main,
             secondary: theme.subAlt,
             error: theme.error,
+            transparent: theme.bg,
           }[variant],
         }),
       },

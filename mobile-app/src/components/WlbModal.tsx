@@ -36,8 +36,8 @@ const useStyles = () =>
     modal: {
       width: '90%',
       maxHeight: '80%',
-      overflow: 'hidden',
-      backgroundColor: theme.background,
+      backgroundColor: theme.bg,
       borderRadius: 8,
+      overflow: 'hidden',
     },
   }));

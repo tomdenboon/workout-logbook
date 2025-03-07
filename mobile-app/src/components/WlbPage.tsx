@@ -21,7 +21,7 @@ export const WlbHeader = ({
     <SafeAreaView
       edges={['top']}
       style={{
-        backgroundColor: theme.background,
+        backgroundColor: theme.bg,
         borderBottomWidth: 2,
         padding: 16,
         borderBottomColor: theme.subAlt,

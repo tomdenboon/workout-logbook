@@ -56,6 +56,7 @@ export default function useWorkout() {
     exerciseGroups: [] as any,
     startedAt: null,
     completedAt: null,
+    templateFolderId: null,
   });
 
   const initializeWorkout = useCallback(async () => {
@@ -65,6 +66,7 @@ export default function useWorkout() {
         exerciseGroups: [] as any,
         startedAt: null,
         completedAt: null,
+        templateFolderId: null,
       });
       return;
     } else {
@@ -77,8 +79,8 @@ export default function useWorkout() {
   }, [initializeWorkout]);
 
   const createExerciseRow = () => ({
-    reps: 10,
-    weight: 100,
+    reps: null,
+    weight: null,
     distance: null,
     time: null,
     rpe: null,
@@ -92,8 +94,6 @@ export default function useWorkout() {
   ) => {
     const newExerciseRow = {
       ...exerciseRow,
-      reps: Number(exerciseRow.reps),
-      weight: Number(exerciseRow.weight),
     };
 
     if (realtime) {
@@ -157,6 +157,7 @@ export default function useWorkout() {
       exerciseRowIndex,
       1,
     );
+
     setWorkout({ ...workout });
   };
 
@@ -177,31 +178,37 @@ export default function useWorkout() {
   };
 
   const addExerciseGroups = async (exercises: Exercise[]) => {
+    const newExerciseGroups: WorkoutForm['exerciseGroups'] = exercises.map(
+      (exercise) => ({
+        exercise,
+        exerciseRows: [createExerciseRow()],
+      }),
+    );
+
     if (realtime) {
       const result = await db
         .insert(schema.exerciseGroups)
         .values(
-          exercises.map((exercise) => ({
-            exerciseId: exercise.id,
+          newExerciseGroups.map((exerciseGroup) => ({
+            exerciseId: exerciseGroup.exercise.id,
             workoutId: workout.id as number,
           })),
         )
         .returning();
 
+      result.forEach((exerciseGroup, index) => {
+        newExerciseGroups[index].id = exerciseGroup.id;
+      });
+
       await db.insert(schema.exerciseRows).values(
-        result.map((exerciseGroup) => ({
-          exerciseGroupId: exerciseGroup.id,
-          ...createExerciseRow(),
+        newExerciseGroups.map((exerciseGroup) => ({
+          exerciseGroupId: exerciseGroup.id as number,
+          ...exerciseGroup.exerciseRows[0],
         })),
       );
     }
 
-    workout.exerciseGroups.push(
-      ...exercises.map((exercise) => ({
-        exercise,
-        exerciseRows: [createExerciseRow()],
-      })),
-    );
+    workout.exerciseGroups.push(...newExerciseGroups);
 
     setWorkout({ ...workout });
   };

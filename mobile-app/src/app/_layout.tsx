@@ -4,11 +4,18 @@ import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
 import * as schema from 'db/schema';
 import db from 'db';
 import migrations from '../../drizzle/migrations';
+import { ThemeProvider } from 'context/theme';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const App = () => {
   const { success, error } = useMigrations(db, migrations);
 
   const tt = async () => {
+    await db.delete(schema.workouts);
+    await db.delete(schema.exerciseGroups);
+    await db.delete(schema.exerciseRows);
+    await db.delete(schema.measurements);
+    await db.delete(schema.measurementPoints);
     await db.delete(schema.exercises);
     await db.insert(schema.exercises).values([
       {
@@ -43,10 +50,14 @@ const App = () => {
   }, []);
 
   return (
-    <Stack>
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="workouts/[id]" options={{ headerShown: false }} />
-    </Stack>
+    <ThemeProvider>
+      <GestureHandlerRootView>
+        <Stack>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="workouts/[id]" options={{ headerShown: false }} />
+        </Stack>
+      </GestureHandlerRootView>
+    </ThemeProvider>
   );
 };
 
