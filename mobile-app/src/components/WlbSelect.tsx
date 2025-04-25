@@ -1,63 +1,42 @@
+import useMeasureLayout from 'components/graphs/useMeasureLayout';
+import WlbButton from 'components/WlbButton';
+import WlbDropdown from 'components/WlbDropdown';
 import WlbInput from 'components/WlbInput';
 import WlbText from 'components/WlbText';
 import { useTheme } from 'context/theme';
 import React, { useRef, useState } from 'react';
 import { Modal, Pressable, TextInput, View } from 'react-native';
 
-export default function WlbSelect({
+export default function WlbSelect<T>({
   value,
+  size = 'medium',
   onChange,
   options,
 }: {
-  value: string;
-  onChange: (value: string) => void;
-  options: { label: string; value: string }[];
+  value: T;
+  size?: 'small' | 'medium';
+  onChange: (value: T) => void;
+  options: { label: string; value: T }[];
 }) {
-  const [visible, setVisible] = useState(false);
-  const inputRef = useRef<TextInput>(null);
-  const theme = useTheme();
   return (
-    <View>
-      <View ref={inputRef}>
-        <WlbInput
-          placeholder="Select"
-          value={value}
-          editable={false}
-          onChangeText={() => {}}
-          onPress={() => setVisible(!visible)}
+    <WlbDropdown
+      triggerComponent={({ onPress }) => (
+        <WlbButton
+          variant="secondary"
+          size={size}
+          title={
+            options.find((option) => option.value === value)?.label ?? 'Select'
+          }
+          onPress={onPress}
         />
-      </View>
-      {visible && (
-        <View
-          style={{
-            width: '100%',
-            marginTop: 8,
-            borderRadius: 8,
-            bottom: 0,
-            borderWidth: 1,
-            borderColor: theme.subAlt,
-            backgroundColor: theme.bg,
-            zIndex: 1000,
-          }}
-        >
-          {options.map((option) => (
-            <Pressable
-              key={option.label}
-              onPress={() => {
-                onChange(option.value);
-                setVisible(false);
-              }}
-              style={{
-                backgroundColor:
-                  value === option.value ? theme.subAlt : 'transparent',
-                padding: 8,
-              }}
-            >
-              <WlbText>{option.label}</WlbText>
-            </Pressable>
-          ))}
-        </View>
       )}
-    </View>
+      options={options.map((option) => ({
+        label: option.label,
+        onPress: () => {
+          onChange(option.value);
+        },
+        highlighted: option.value === value,
+      }))}
+    />
   );
 }

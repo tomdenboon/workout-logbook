@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import db from 'db';
 import * as schema from 'db/schema';
@@ -8,9 +8,7 @@ import WlbModalForm from 'components/ModalForm';
 import WlbView from 'components/WlbView';
 import WlbCard from 'components/WlbCard';
 import { useThemedStyleSheet, useTheme } from 'context/theme';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import WlbText from 'components/WlbText';
-import LineGraph from 'components/LineGraph';
+import LineGraph from 'components/graphs/LineGraph';
 
 export default function Measurements() {
   const [addMeasurementModalVisible, setAddMeasurementModalVisible] =
@@ -21,14 +19,11 @@ export default function Measurements() {
   );
 
   const { data: measurements } = useLiveQuery(
-    db.select().from(schema.measurements).orderBy(schema.measurements.name),
-  );
-
-  const { data: measurementPoints } = useLiveQuery(
-    db
-      .select()
-      .from(schema.measurementPoints)
-      .orderBy(schema.measurementPoints.date),
+    db.query.measurements.findMany({
+      with: {
+        measurementPoints: true,
+      },
+    }),
   );
 
   const addMeasurement = async (value: { name: string }) => {
@@ -50,35 +45,34 @@ export default function Measurements() {
     }
   };
 
-  useEffect(() => {
-    db.delete(schema.measurementPoints);
-    db.delete(schema.measurements);
+  const randomMockData = useMemo(() => {
+    const data = [];
+    const endDate = new Date();
+    const startDate = new Date();
+    startDate.setFullYear(endDate.getFullYear() - 1); // Go back 1 year
+
+    for (let i = 0; i < 100; i++) {
+      const randomDate =
+        startDate.getTime() +
+        Math.random() * (endDate.getTime() - startDate.getTime());
+
+      data.push({
+        value: Math.floor(Math.random() * 100) + 50, // Random value between 50-150
+        date: randomDate,
+      });
+    }
+
+    return data.sort((a, b) => a.value - b.value);
   }, []);
 
-  const theme = useTheme();
-
-  const mockPoints = [
-    {
-      value: 1,
-      date: new Date('2024-01-01'),
-    },
-    {
-      value: 2,
-      date: new Date('2024-01-02'),
-    },
-    {
-      value: 3,
-      date: new Date('2024-01-03'),
-    },
-    {
-      value: 2,
-      date: new Date('2024-01-04'),
-    },
-  ];
   return (
     <WlbView>
       <WlbPage
         title="Measurements"
+        containerStyle={{
+          padding: 16,
+          gap: 16,
+        }}
         headerRight={
           <WlbButton
             variant="text"
@@ -100,7 +94,13 @@ export default function Measurements() {
               />
             }
           >
-            <LineGraph />
+            <LineGraph
+              data={measurement.measurementPoints.map((p) => ({
+                date: p.date,
+                value: p.value,
+              }))}
+              period="3months"
+            />
           </WlbCard>
         ))}
 
@@ -128,24 +128,3 @@ export default function Measurements() {
     </WlbView>
   );
 }
-
-const useStyles = () =>
-  useThemedStyleSheet((theme) => ({
-    measurementContainer: {
-      padding: 16,
-      borderBottomWidth: 1,
-      borderBottomColor: theme.subAlt,
-    },
-    measurementItem: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-    },
-    measurementName: {
-      fontSize: 16,
-      color: theme.text,
-    },
-    pressed: {
-      opacity: 0.7,
-    },
-  }));

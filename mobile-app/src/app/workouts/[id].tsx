@@ -22,6 +22,7 @@ import {
   KeyboardData,
   useKeyboardContext,
 } from 'context/keyboard';
+import useDebounce from 'hooks/useDebounce';
 
 const VALID_FIELDS = {
   reps: ['reps'] as const,
@@ -57,6 +58,7 @@ function ExerRowFieldComponent({
   const [inputValue, setInputValue] = useState(
     toInputValue(exerciseRow[field]),
   );
+  const debouncedInputValue = useDebounce(inputValue, 300);
   const selection = useRef({
     start: 0,
     end: 0,
@@ -70,13 +72,12 @@ function ExerRowFieldComponent({
     return value.replace(/[^0-9]/g, '');
   };
 
-  const onBlur = () => {
-    disconnectKeyboard();
+  useEffect(() => {
     updateExerciseRow(exerciseGroupIndex, exerciseRowIndex, {
       ...exerciseRow,
       [field]: inputValue ? parseInt(inputValue) : null,
     });
-  };
+  }, [debouncedInputValue]);
 
   const onFocus = () => {
     selection.current = {
@@ -138,7 +139,9 @@ function ExerRowFieldComponent({
         setInputValue(cleanText(value));
       }}
       onFocus={onFocus}
-      onBlur={onBlur}
+      onBlur={() => {
+        disconnectKeyboard();
+      }}
       placeholder=""
       onSelectionChange={(e) => {
         selection.current = {
@@ -170,14 +173,17 @@ function ExerciseRowComponent({
   return (
     <View style={{ flexDirection: 'row', gap: 8 }}>
       <WlbDropdown
-        triggerProps={{
-          variant: 'secondary',
-          size: 'small',
-          title: `${exerciseRowIndex + 1}`,
-          style: {
-            width: 36,
-          },
-        }}
+        triggerComponent={({ onPress }) => (
+          <WlbButton
+            onPress={onPress}
+            variant="secondary"
+            size="small"
+            title={`${exerciseRowIndex + 1}`}
+            style={{
+              width: 36,
+            }}
+          />
+        )}
         options={[
           {
             label: 'Delete',
@@ -186,7 +192,6 @@ function ExerciseRowComponent({
             },
           },
         ]}
-        align="right"
       />
       {VALID_FIELDS[exerciseType].map((field) => (
         <ExerRowFieldComponent
@@ -245,18 +250,22 @@ function ExerciseGroupComponent({
           onPress={() => {}}
         />
         <WlbDropdown
-          triggerProps={{
-            variant: 'primary',
-            icon: 'keyboard-control',
-            size: 'small',
-          }}
+          triggerComponent={({ onPress }) => (
+            <WlbButton
+              onPress={onPress}
+              variant="primary"
+              icon="keyboard-control"
+              size="small"
+            />
+          )}
           options={[
-            { label: 'Edit', onPress: () => {} },
+            { label: 'Edit', onPress: () => {}, icon: 'edit' },
             {
               label: 'Delete',
               onPress: () => {
                 deleteExerciseGroup(exerciseGroupIndex);
               },
+              icon: 'delete',
             },
           ]}
         />

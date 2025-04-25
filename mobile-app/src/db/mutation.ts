@@ -1,21 +1,9 @@
 import db from 'db';
-import { and, eq, inArray, isNotNull, isNull } from 'drizzle-orm';
+import { and, eq, isNotNull, isNull } from 'drizzle-orm';
 import * as schema from 'db/schema';
 
 export async function deleteWorkout(id: number) {
   await db.delete(schema.workouts).where(eq(schema.workouts.id, id));
-
-  const ids = await db
-    .delete(schema.exerciseGroups)
-    .where(eq(schema.exerciseGroups.workoutId, id))
-    .returning();
-
-  await db.delete(schema.exerciseRows).where(
-    inArray(
-      schema.exerciseRows.exerciseGroupId,
-      ids.map((id) => id.id),
-    ),
-  );
 }
 
 export async function duplicateWorkout(id: number, start: boolean = false) {

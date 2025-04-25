@@ -116,7 +116,17 @@ export default function useWorkout() {
   };
 
   const addExerciseRow = async (exerciseGroupIndex: number) => {
-    const newExerciseRow: any = createExerciseRow();
+    const exerciseRows =
+      workout.exerciseGroups[exerciseGroupIndex].exerciseRows;
+    const newExerciseRow: any =
+      exerciseRows.length == 0
+        ? createExerciseRow()
+        : {
+            ...exerciseRows[exerciseRows.length - 1],
+            isLifted: 0,
+            id: undefined,
+          };
+
     if (realtime) {
       const result = await db
         .insert(schema.exerciseRows)

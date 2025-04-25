@@ -8,6 +8,7 @@ import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import { and, isNotNull, isNull } from 'drizzle-orm';
 import db from 'db';
 import { workouts } from 'db/schema';
+import WlbTabBar from 'components/WlbTabBar';
 
 export default function TabLayout() {
   const theme = useTheme();
@@ -20,13 +21,9 @@ export default function TabLayout() {
   return (
     <React.Fragment>
       <Tabs
+        tabBar={(props) => <WlbTabBar {...props} />}
         screenOptions={{
           headerShown: false,
-          tabBarStyle: {
-            backgroundColor: theme.bg,
-          },
-          tabBarActiveTintColor: theme.text,
-          tabBarInactiveTintColor: theme.sub,
         }}
       />
       {workout && (

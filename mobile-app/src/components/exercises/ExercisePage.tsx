@@ -11,13 +11,9 @@ import WlbPage, { WlbHeader } from 'components/WlbPage';
 import WlbText from 'components/WlbText';
 import { useThemedStyleSheet } from 'context/theme';
 import toOptions from 'toOptions';
-
-const EXERCISE_CATEGORIES = {
-  reps: 'Reps',
-  weighted: 'Weighted',
-  duration: 'Duration',
-  distance: 'Distance',
-} as const;
+import useEditExerciseModal from 'components/exercises/useEditExerciseModal';
+import { t } from 't';
+import { router } from 'expo-router';
 
 export default function ExercisePage({
   onClose,
@@ -27,12 +23,11 @@ export default function ExercisePage({
   addExercises?: (exercises: Exercise[]) => void;
 }) {
   const styles = useStyles();
+  const editExerciseModal = useEditExerciseModal();
   const [selectedExercises, setSelectedExercises] = useState<Exercise[]>([]);
   const { data: exercises } = useLiveQuery(
     db.select().from(schema.exercises).orderBy(schema.exercises.name),
   );
-  const [visible, setVisible] = useState(false);
-  const [selectedExercise, setSelectedExercise] = useState<Exercise>();
 
   const toggle = (exercise: Exercise) => {
     if (selectedExercises.includes(exercise)) {
@@ -42,34 +37,6 @@ export default function ExercisePage({
     } else {
       setSelectedExercises([...selectedExercises, exercise]);
     }
-  };
-
-  const closeModal = () => {
-    setVisible(false);
-    setSelectedExercise(undefined);
-  };
-
-  const openModal = (exercise?: Exercise) => {
-    setVisible(true);
-    setSelectedExercise(exercise);
-  };
-
-  const onSave = async (value: any) => {
-    if (selectedExercise) {
-      await db
-        .update(schema.exercises)
-        .set({
-          name: value.name,
-          type: value.type,
-        })
-        .where(eq(schema.exercises.id, selectedExercise.id));
-    } else {
-      await db.insert(schema.exercises).values({
-        name: value.name,
-        type: value.type,
-      });
-    }
-    closeModal();
   };
 
   const groupedExercises = exercises?.reduce((acc, exercise) => {
@@ -94,7 +61,11 @@ export default function ExercisePage({
               onPress={onClose}
             />
           )}
-          <WlbButton variant="text" onPress={() => openModal()} title="New" />
+          <WlbButton
+            variant="text"
+            onPress={() => editExerciseModal.openModal()}
+            title="New"
+          />
         </View>
       }
       headerRight={
@@ -111,25 +82,8 @@ export default function ExercisePage({
       }
       containerStyle={{ padding: 0, paddingBottom: 16 }}
     >
-      <ModalForm
-        title={selectedExercise ? 'Edit Exercise' : 'Add Exercise'}
-        visible={visible}
-        close={closeModal}
-        init={{
-          name: selectedExercise?.name ?? '',
-          type: selectedExercise?.type ?? 'reps',
-        }}
-        inputs={[
-          { type: 'text', key: 'name', label: 'Name' },
-          {
-            type: 'select',
-            key: 'type',
-            label: 'Category',
-            options: toOptions(EXERCISE_CATEGORIES),
-          },
-        ]}
-        onSave={onSave}
-      />
+      <ModalForm {...editExerciseModal} />
+
       {Object.entries(groupedExercises ?? {}).map(([letter, exercises]) => (
         <View key={letter}>
           <View style={styles.itemContainer}>
@@ -139,7 +93,9 @@ export default function ExercisePage({
             <Pressable
               key={exercise.id}
               onPress={() =>
-                !addExercises ? openModal(exercise) : toggle(exercise)
+                !addExercises
+                  ? router.push(`/exercises/${exercise.id}`)
+                  : toggle(exercise)
               }
               style={({ pressed }) => [
                 styles.itemContainer,
@@ -156,7 +112,7 @@ export default function ExercisePage({
                 <View>
                   <Text style={styles.exerciseName}>{exercise.name}</Text>
                   <Text style={styles.exerciseCategory}>
-                    {EXERCISE_CATEGORIES[exercise.type]}
+                    {t.categories[exercise.type]}
                   </Text>
                 </View>
                 {selectedExercises.includes(exercise) && (

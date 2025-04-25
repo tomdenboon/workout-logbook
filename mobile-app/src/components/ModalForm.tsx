@@ -1,13 +1,10 @@
 import { View } from 'react-native';
-import { useThemedStyleSheet } from '../context/theme';
 import WlbButton from './WlbButton';
 import WlbModal from './WlbModal';
-import { Picker } from '@react-native-picker/picker';
 import React, { useEffect, useState } from 'react';
 import WlbInput from './WlbInput';
 import WlbText from './WlbText';
 import WlbHeader from './WlbPage';
-import { Feather } from '@expo/vector-icons';
 import WlbSelect from 'components/WlbSelect';
 
 interface InputProps {
@@ -59,7 +56,12 @@ export default function ModalForm(props: ModalProps) {
         containerStyle={{ gap: 16 }}
       >
         {props.inputs.map((input) => (
-          <View key={input.key}>
+          <View
+            key={input.key}
+            style={{
+              gap: 8,
+            }}
+          >
             <WlbText>{input.label}</WlbText>
             {input.type === 'text' ? (
               <WlbInput

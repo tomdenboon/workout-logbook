@@ -5,7 +5,7 @@ import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import db from 'db';
 import WlbCard from 'components/WlbCard';
 import WlbText from 'components/WlbText';
-import { isNotNull } from 'drizzle-orm';
+import { desc, isNotNull } from 'drizzle-orm';
 import * as schema from 'db/schema';
 import groupBy from 'groupBy';
 import WlbDropdown from 'components/WlbDropdown';
@@ -24,13 +24,15 @@ export default function History() {
           },
         },
       },
+      orderBy: desc(schema.workouts.completedAt),
     }),
   );
 
-  const groupedWorkouts = groupBy(
-    workouts?.data ?? [],
-    (workout) =>
-      new Date(workout.completedAt as number).toISOString().split('T')[0],
+  const groupedWorkouts = groupBy(workouts?.data ?? [], (workout) =>
+    new Date(workout.completedAt as number).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+    }),
   );
 
   return (
@@ -50,11 +52,14 @@ export default function History() {
               onPress={() => {}}
               titleRight={
                 <WlbDropdown
-                  triggerProps={{
-                    variant: 'primary',
-                    size: 'small',
-                    icon: 'keyboard-control',
-                  }}
+                  triggerComponent={({ onPress }) => (
+                    <WlbButton
+                      onPress={onPress}
+                      variant="primary"
+                      size="small"
+                      icon="keyboard-control"
+                    />
+                  )}
                   options={[
                     {
                       label: 'Edit',

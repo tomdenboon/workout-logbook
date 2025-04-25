@@ -1,0 +1,15 @@
+<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100" height="100" fill="#323437"/>
+  <!-- Center bar (handle) -->
+  <rect x="35" y="45" width="30" height="10" fill="#d1d0c5"/>
+  
+  <!-- Left weights -->
+  <rect x="10" y="35" width="5" height="30" rx="1" fill="#e2b714"/>
+  <rect x="17" y="32" width="7" height="36" rx="1" fill="#e2b714"/>
+  <rect x="26" y="30" width="7" height="40" rx="1" fill="#e2b714"/>
+  
+  <!-- Right weights -->
+  <rect x="85" y="35" width="5" height="30" rx="1" fill="#e2b714"/>
+  <rect x="76" y="32" width="7" height="36" rx="1" fill="#e2b714"/>
+  <rect x="67" y="30" width="7" height="40" rx="1" fill="#e2b714"/>
+</svg>

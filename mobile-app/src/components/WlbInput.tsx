@@ -17,6 +17,7 @@ export default forwardRef<
     showSoftInputOnFocus?: boolean;
     keyboardType?: TextInputProps['keyboardType'];
     onSelectionChange?: TextInputProps['onSelectionChange'];
+    onLayout?: TextInputProps['onLayout'];
     editable?: boolean;
   }
 >(
@@ -34,6 +35,7 @@ export default forwardRef<
       keyboardType,
       editable = true,
       onPress,
+      onLayout,
     },
     ref,
   ) => {
@@ -50,6 +52,7 @@ export default forwardRef<
         onSelectionChange={onSelectionChange}
         onPressIn={onPress}
         editable={editable}
+        onLayout={onLayout}
         style={[
           {
             backgroundColor: theme.subAlt,

@@ -74,11 +74,14 @@ export default function TrainingTab() {
               title={workout.name}
               titleRight={
                 <WlbDropdown
-                  triggerProps={{
-                    variant: 'primary',
-                    icon: 'keyboard-control',
-                    size: 'small',
-                  }}
+                  triggerComponent={({ onPress }) => (
+                    <WlbButton
+                      onPress={onPress}
+                      variant="primary"
+                      icon="keyboard-control"
+                      size="small"
+                    />
+                  )}
                   options={[
                     {
                       label: 'Edit',

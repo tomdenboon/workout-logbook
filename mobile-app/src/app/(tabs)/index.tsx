@@ -1,78 +1,94 @@
+import BarGraph from 'components/graphs/BarGraph';
+import ThemeSelector from 'components/home/ThemeSelector';
 import WlbButton from 'components/WlbButton';
-import WlbModal from 'components/WlbModal';
-import WlbPage, { WlbHeader } from 'components/WlbPage';
+import WlbCard from 'components/WlbCard';
+import WlbPage from 'components/WlbPage';
+import WlbSelect from 'components/WlbSelect';
 import WlbView from 'components/WlbView';
-import { ThemeName, useTheme } from 'context/theme';
-import { THEMES } from 'context/themes';
-import { Link, router } from 'expo-router';
-import React from 'react';
-import { FlatList, Pressable, Text, View } from 'react-native';
+import db from 'db';
+import { and, eq, isNotNull, sql } from 'drizzle-orm';
+import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
+import React, { useState } from 'react';
+import * as schema from 'db/schema';
+import { resetSeed } from 'db/seed';
+import { View } from 'react-native';
 
 export default function ProfileTab() {
   const [themeModalVisible, setThemeModalVisible] = React.useState(false);
-  const { setTheme, theme } = useTheme();
-
-  const colorSortedThemes: ThemeName[] = (
-    Object.keys(THEMES) as ThemeName[]
-  ).sort((a, b) => {
-    return THEMES[b as keyof typeof THEMES].bg.localeCompare(
-      THEMES[a as keyof typeof THEMES].bg,
-    );
-  });
+  const [period, setPeriod] = useState<'3months' | '1year' | ''>('');
+  const { data: graphData } = useLiveQuery(
+    db
+      .select({
+        id: schema.workouts.id,
+        completedAt: schema.workouts.completedAt,
+        value: sql<number>`sum(${schema.exerciseRows.reps})`,
+        month: sql`strftime('%Y-%m', ${schema.workouts.completedAt} / 1000, 'unixepoch')`,
+      })
+      .from(schema.workouts)
+      .leftJoin(
+        schema.exerciseGroups,
+        eq(schema.workouts.id, schema.exerciseGroups.workoutId),
+      )
+      .leftJoin(
+        schema.exerciseRows,
+        eq(schema.exerciseGroups.id, schema.exerciseRows.exerciseGroupId),
+      )
+      .groupBy(
+        sql`strftime('%Y-%m', ${schema.workouts.completedAt} / 1000, 'unixepoch')`,
+      )
+      .where(and(isNotNull(schema.workouts.completedAt))),
+  );
 
   return (
     <WlbView>
       <WlbPage
         title="Home"
         headerRight={
-          <WlbButton
-            variant="text"
-            size="small"
-            icon="format-paint"
-            onPress={() => setThemeModalVisible(true)}
-          />
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <WlbButton
+              variant="text"
+              size="small"
+              icon="format-paint"
+              onPress={() => setThemeModalVisible(true)}
+            />
+            <WlbButton
+              variant="text"
+              size="small"
+              icon="refresh"
+              onPress={resetSeed}
+            />
+          </View>
         }
       >
-        <Text>Tab Home</Text>
-        <Link href="/workouts/new">Open Modal</Link>
+        <WlbCard
+          title="General"
+          titleRight={
+            <WlbSelect
+              options={
+                [
+                  { label: '3 months', value: '3months' },
+                  { label: '1 year', value: '1year' },
+                  { label: 'All time', value: '' },
+                ] as const
+              }
+              size="small"
+              value={period}
+              onChange={(value) => setPeriod(value)}
+            />
+          }
+        >
+          <BarGraph
+            data={graphData.map((item) => ({
+              date: item.completedAt ?? 0,
+              value: item.value,
+            }))}
+          />
+        </WlbCard>
       </WlbPage>
-      <WlbModal
+      <ThemeSelector
         visible={themeModalVisible}
-        close={() => setThemeModalVisible(false)}
-      >
-        <WlbHeader title="Theme" />
-        <FlatList
-          data={colorSortedThemes}
-          renderItem={({ item }) => (
-            <Pressable
-              onPress={() => {
-                setTheme(item);
-              }}
-              style={{
-                backgroundColor: THEMES[item].subAlt,
-                padding: 12,
-                margin: 4,
-                marginHorizontal: 8,
-                borderRadius: 8,
-                borderWidth: 2,
-                borderColor: theme === item ? THEMES[item].main : 'transparent',
-                flex: 1,
-              }}
-            >
-              <Text
-                style={{
-                  color: THEMES[item as keyof typeof THEMES].main,
-                  textAlign: 'center',
-                  fontSize: 16,
-                  fontWeight: 'bold',
-                }}
-              >
-                {item}
-              </Text>
-            </Pressable>
-          )}
-        />
-      </WlbModal>
+        setVisible={setThemeModalVisible}
+      />
     </WlbView>
   );
 }

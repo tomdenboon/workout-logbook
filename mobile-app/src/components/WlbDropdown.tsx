@@ -1,33 +1,32 @@
-import WlbButton, { WlbButtonProps } from 'components/WlbButton';
 import WlbText from 'components/WlbText';
-import { useThemedStyleSheet } from 'context/theme';
-import React, { useRef, useEffect, useState, ReactNode } from 'react';
+import { MaterialIcons } from '@expo/vector-icons';
+import { useTheme, useThemedStyleSheet } from 'context/theme';
+import React, { useState, ReactNode } from 'react';
 import {
   View,
   Modal,
-  StyleSheet,
   TouchableWithoutFeedback,
-  TouchableOpacity,
+  SafeAreaView,
+  Pressable,
 } from 'react-native';
 
 interface DropdownMenuProps {
-  triggerProps: Omit<WlbButtonProps, 'onPress'>;
-  options: { label: string; onPress: () => void }[];
-  dropdownWidth?: number;
-  align?: 'left' | 'right';
+  triggerComponent: (props: { onPress: () => void }) => ReactNode;
+  options: {
+    label: string;
+    onPress: () => void;
+    highlighted?: boolean;
+    icon?: keyof typeof MaterialIcons.glyphMap;
+  }[];
 }
 
 export default function WlbDropdown({
-  triggerProps,
+  triggerComponent,
   options,
-  dropdownWidth = 150,
-  align = 'left',
 }: DropdownMenuProps) {
-  const triggerRef = useRef<View>(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [position, setPosition] = useState<{ x: number; y: number }>();
   const styles = useDropdownStyles();
-
+  const theme = useTheme();
   const handleClose = () => {
     setIsOpen(false);
   };
@@ -36,52 +35,70 @@ export default function WlbDropdown({
     setIsOpen(true);
   };
 
-  useEffect(() => {
-    if (triggerRef.current && isOpen) {
-      triggerRef.current.measure((fx, fy, width, height, px, py) => {
-        setPosition({
-          x: px + (align === 'left' ? width - dropdownWidth : 0),
-          y: py + height + 4,
-        });
-      });
-    }
-  }, [isOpen]);
-
   return (
     <View>
-      <View ref={triggerRef}>
-        <WlbButton onPress={handleOpen} {...triggerProps} />
-      </View>
-      <Modal
-        transparent={true}
-        visible={isOpen && !!position}
-        onRequestClose={handleClose}
-      >
+      {triggerComponent({ onPress: handleOpen })}
+      <Modal transparent={true} visible={isOpen} onRequestClose={handleClose}>
         <TouchableWithoutFeedback onPress={handleClose}>
           <View style={styles.modalOverlay}>
-            <View
-              style={[
-                styles.menu,
-                {
-                  top: position?.y,
-                  left: position?.x,
-                  width: dropdownWidth,
-                },
-              ]}
-            >
-              {options.map((option) => (
-                <TouchableOpacity
-                  key={option.label}
-                  onPress={() => {
-                    handleClose();
-                    option.onPress();
-                  }}
-                  style={styles.menuOption}
-                >
-                  <WlbText>{option.label}</WlbText>
-                </TouchableOpacity>
-              ))}
-            </View>
+            <SafeAreaView style={styles.menu}>
+              <View
+                style={{
+                  margin: 16,
+                  borderRadius: 8,
+                  gap: 2,
+                  overflow: 'hidden',
+                }}
+              >
+                {options.map((option, index) => (
+                  <Pressable
+                    key={option.label}
+                    onPress={() => {
+                      handleClose();
+                      option.onPress();
+                    }}
+                    style={({ pressed }) => [
+                      {
+                        padding: 16,
+                        backgroundColor: pressed ? theme.sub : theme.subAlt,
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                      },
+                    ]}
+                  >
+                    {({ pressed }) => (
+                      <>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            gap: 8,
+                            alignItems: 'center',
+                          }}
+                        >
+                          {option.icon && (
+                            <MaterialIcons
+                              name={option.icon}
+                              size={24}
+                              color={pressed ? theme.bg : theme.text}
+                            />
+                          )}
+                          <WlbText color={pressed ? 'bg' : 'text'}>
+                            {option.label}
+                          </WlbText>
+                        </View>
+                        {option.highlighted && (
+                          <MaterialIcons
+                            name="check"
+                            size={24}
+                            color={pressed ? theme.bg : theme.text}
+                          />
+                        )}
+                      </>
+                    )}
+                  </Pressable>
+                ))}
+              </View>
+            </SafeAreaView>
           </View>
         </TouchableWithoutFeedback>
       </Modal>
@@ -99,12 +116,10 @@ const useDropdownStyles = () =>
     },
     menu: {
       position: 'absolute',
-      width: 80,
+      bottom: 0,
+      width: '100%',
       backgroundColor: theme.bg,
-      borderRadius: 5,
-      padding: 10,
-    },
-    menuOption: {
-      padding: 5,
+      borderRadius: 8,
+      overflow: 'hidden',
     },
   }));
