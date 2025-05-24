@@ -1,5 +1,4 @@
-import WlbPage, { WlbHeader } from 'components/WlbPage';
-import WlbView from 'components/WlbView';
+import { WlbHeader, WlbScreenPage } from 'components/WlbPage';
 import { View, Text, SectionList } from 'react-native';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import db from 'db';
@@ -36,8 +35,7 @@ export default function History() {
   );
 
   return (
-    <WlbView>
-      <WlbHeader title="History" />
+    <WlbScreenPage title="History">
       {groupedWorkouts.length > 0 ? (
         <SectionList
           style={{
@@ -90,6 +88,6 @@ export default function History() {
           />
         </View>
       )}
-    </WlbView>
+    </WlbScreenPage>
   );
 }

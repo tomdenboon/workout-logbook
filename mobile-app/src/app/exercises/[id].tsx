@@ -1,10 +1,8 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import WlbPage from 'components/WlbPage';
-import WlbView from 'components/WlbView';
+import { WlbScreenPage } from 'components/WlbPage';
 import * as schema from 'db/schema';
 import db from 'db';
 import { and, eq, isNotNull, SQL, sql } from 'drizzle-orm';
-import WlbText from 'components/WlbText';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import WlbButton from 'components/WlbButton';
 import LineGraph from 'components/graphs/LineGraph';
@@ -119,34 +117,27 @@ export default function Exercise() {
   );
 
   return (
-    <WlbView>
-      <WlbPage
-        containerStyle={{ gap: 16 }}
-        title={exercise?.[0]?.name}
-        headerLeft={
-          <WlbButton
-            variant="text"
-            title="Back"
-            onPress={() => router.back()}
-          />
-        }
-        headerRight={
-          <WlbButton
-            variant="text"
-            title="Edit"
-            onPress={() => router.push(`/schema.exercises/${id}/edit`)}
-          />
-        }
-      >
-        {exerciseTypeToAggregations[exercise?.[0]?.type]?.map((e) => (
-          <ExerciseGraph
-            key={e.label}
-            id={id}
-            label={e.label}
-            aggregation={e.aggregation}
-          />
-        ))}
-      </WlbPage>
-    </WlbView>
+    <WlbScreenPage
+      title={exercise?.[0]?.name}
+      headerLeft={
+        <WlbButton variant="text" title="Back" onPress={() => router.back()} />
+      }
+      headerRight={
+        <WlbButton
+          variant="text"
+          title="Edit"
+          onPress={() => router.push(`/schema.exercises/${id}/edit`)}
+        />
+      }
+    >
+      {exerciseTypeToAggregations[exercise?.[0]?.type]?.map((e) => (
+        <ExerciseGraph
+          key={e.label}
+          id={id}
+          label={e.label}
+          aggregation={e.aggregation}
+        />
+      ))}
+    </WlbScreenPage>
   );
 }

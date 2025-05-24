@@ -5,6 +5,12 @@ import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { useTheme } from 'context/theme';
 import WlbText from './WlbText';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import db from 'db';
+import { workouts } from 'db/schema';
+import { and, isNotNull, isNull } from 'drizzle-orm';
+import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
+import WlbButton from 'components/WlbButton';
+import { router } from 'expo-router';
 
 type RouteInfo = {
   icon: string;
@@ -38,6 +44,34 @@ const routeMap: RouteMap = {
   },
 };
 
+const ActiveWorkout = () => {
+  const theme = useTheme();
+  const { data: workout } = useLiveQuery(
+    db.query.workouts.findFirst({
+      where: and(isNotNull(workouts.startedAt), isNull(workouts.completedAt)),
+    }),
+  );
+
+  return workout ? (
+    <View
+      style={{
+        backgroundColor: theme.bg,
+        borderBottomWidth: 2,
+        borderColor: theme.subAlt,
+        padding: 16,
+      }}
+    >
+      <WlbButton
+        variant="primary"
+        title="Resume workout"
+        onPress={() => {
+          router.push(`/workouts/${workout.id}`);
+        }}
+      />
+    </View>
+  ) : null;
+};
+
 const WlbTabBar = ({ state, navigation }: BottomTabBarProps) => {
   const theme = useTheme();
 
@@ -45,40 +79,46 @@ const WlbTabBar = ({ state, navigation }: BottomTabBarProps) => {
     <SafeAreaView
       edges={['bottom']}
       style={[
-        styles.container,
-        { backgroundColor: theme.bg, borderTopColor: theme.subAlt },
+        {
+          borderTopWidth: 2,
+          backgroundColor: theme.bg,
+          borderTopColor: theme.subAlt,
+        },
       ]}
     >
-      {state.routes.map((route, index) => {
-        const isFocused = state.index === index;
-        const { icon, label } = routeMap[route.name];
+      <ActiveWorkout />
+      <View
+        style={{
+          flexDirection: 'row',
+        }}
+      >
+        {state.routes.map((route, index) => {
+          const isFocused = state.index === index;
+          const { icon, label } = routeMap[route.name];
 
-        return (
-          <TouchableOpacity
-            key={route.key}
-            onPress={() => navigation.navigate(route.name)}
-            style={styles.tab}
-          >
-            <MaterialCommunityIcons
-              name={icon as any}
-              size={24}
-              color={isFocused ? theme.main : theme.sub}
-            />
-            <WlbText size={12} color={isFocused ? 'main' : 'sub'}>
-              {label}
-            </WlbText>
-          </TouchableOpacity>
-        );
-      })}
+          return (
+            <TouchableOpacity
+              key={route.key}
+              onPress={() => navigation.navigate(route.name)}
+              style={styles.tab}
+            >
+              <MaterialCommunityIcons
+                name={icon as any}
+                size={24}
+                color={isFocused ? theme.main : theme.sub}
+              />
+              <WlbText size={12} color={isFocused ? 'main' : 'sub'}>
+                {label}
+              </WlbText>
+            </TouchableOpacity>
+          );
+        })}
+      </View>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    borderTopWidth: 2,
-  },
   tab: {
     flex: 1,
     justifyContent: 'center',

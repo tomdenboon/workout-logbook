@@ -2,16 +2,15 @@ import BarGraph from 'components/graphs/BarGraph';
 import ThemeSelector from 'components/home/ThemeSelector';
 import WlbButton from 'components/WlbButton';
 import WlbCard from 'components/WlbCard';
-import WlbPage from 'components/WlbPage';
+import { WlbScreenPage } from 'components/WlbPage';
 import WlbSelect from 'components/WlbSelect';
-import WlbView from 'components/WlbView';
 import db from 'db';
 import { and, eq, isNotNull, sql } from 'drizzle-orm';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import React, { useState } from 'react';
 import * as schema from 'db/schema';
-import { resetSeed } from 'db/seed';
 import { View } from 'react-native';
+import { seedData } from 'db/seed';
 
 export default function ProfileTab() {
   const [themeModalVisible, setThemeModalVisible] = React.useState(false);
@@ -40,55 +39,53 @@ export default function ProfileTab() {
   );
 
   return (
-    <WlbView>
-      <WlbPage
-        title="Home"
-        headerRight={
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <WlbButton
-              variant="text"
-              size="small"
-              icon="format-paint"
-              onPress={() => setThemeModalVisible(true)}
-            />
-            <WlbButton
-              variant="text"
-              size="small"
-              icon="refresh"
-              onPress={resetSeed}
-            />
-          </View>
+    <WlbScreenPage
+      title="Home"
+      headerRight={
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <WlbButton
+            variant="text"
+            size="small"
+            icon="format-paint"
+            onPress={() => setThemeModalVisible(true)}
+          />
+          <WlbButton
+            variant="text"
+            size="small"
+            icon="refresh"
+            onPress={() => seedData({ reset: true })}
+          />
+        </View>
+      }
+    >
+      <WlbCard
+        title="General"
+        titleRight={
+          <WlbSelect
+            options={
+              [
+                { label: '3 months', value: '3months' },
+                { label: '1 year', value: '1year' },
+                { label: 'All time', value: '' },
+              ] as const
+            }
+            size="small"
+            value={period}
+            onChange={(value) => setPeriod(value)}
+          />
         }
       >
-        <WlbCard
-          title="General"
-          titleRight={
-            <WlbSelect
-              options={
-                [
-                  { label: '3 months', value: '3months' },
-                  { label: '1 year', value: '1year' },
-                  { label: 'All time', value: '' },
-                ] as const
-              }
-              size="small"
-              value={period}
-              onChange={(value) => setPeriod(value)}
-            />
-          }
-        >
-          <BarGraph
-            data={graphData.map((item) => ({
-              date: item.completedAt ?? 0,
-              value: item.value,
-            }))}
-          />
-        </WlbCard>
-      </WlbPage>
+        <BarGraph
+          data={graphData.map((item) => ({
+            date: item.completedAt ?? 0,
+            value: item.value,
+          }))}
+        />
+      </WlbCard>
       <ThemeSelector
         visible={themeModalVisible}
         setVisible={setThemeModalVisible}
       />
-    </WlbView>
+    </WlbScreenPage>
   );
 }

@@ -3,11 +3,9 @@ import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import db from 'db';
 import * as schema from 'db/schema';
 import WlbButton from 'components/WlbButton';
-import WlbPage from 'components/WlbPage';
+import { WlbScreenPage } from 'components/WlbPage';
 import WlbModalForm from 'components/ModalForm';
-import WlbView from 'components/WlbView';
 import WlbCard from 'components/WlbCard';
-import { useThemedStyleSheet, useTheme } from 'context/theme';
 import LineGraph from 'components/graphs/LineGraph';
 
 export default function Measurements() {
@@ -66,65 +64,59 @@ export default function Measurements() {
   }, []);
 
   return (
-    <WlbView>
-      <WlbPage
-        title="Measurements"
-        containerStyle={{
-          padding: 16,
-          gap: 16,
-        }}
-        headerRight={
-          <WlbButton
-            variant="text"
-            onPress={() => setAddMeasurementModalVisible(true)}
-            title="New"
-          />
-        }
-      >
-        {measurements?.map((measurement) => (
-          <WlbCard
-            key={measurement.id}
-            title={measurement.name}
-            titleRight={
-              <WlbButton
-                variant="text"
-                size="small"
-                title="Add Point"
-                onPress={() => setAddPointModalVisible(true)}
-              />
-            }
-          >
-            <LineGraph
-              data={measurement.measurementPoints.map((p) => ({
-                date: p.date,
-                value: p.value,
-              }))}
-              period="3months"
+    <WlbScreenPage
+      title="Measurements"
+      headerRight={
+        <WlbButton
+          variant="text"
+          onPress={() => setAddMeasurementModalVisible(true)}
+          title="New"
+        />
+      }
+    >
+      {measurements?.map((measurement) => (
+        <WlbCard
+          key={measurement.id}
+          title={measurement.name}
+          titleRight={
+            <WlbButton
+              variant="text"
+              size="small"
+              title="Add Point"
+              onPress={() => setAddPointModalVisible(true)}
             />
-          </WlbCard>
-        ))}
+          }
+        >
+          <LineGraph
+            data={measurement.measurementPoints.map((p) => ({
+              date: p.date,
+              value: p.value,
+            }))}
+            period="3months"
+          />
+        </WlbCard>
+      ))}
 
-        <WlbModalForm
-          visible={addMeasurementModalVisible}
-          close={() => setAddMeasurementModalVisible(false)}
-          title="Add Measurement"
-          init={{ name: '' }}
-          inputs={[{ type: 'text', key: 'name', label: 'Measurement Name' }]}
-          onSave={addMeasurement}
-        />
+      <WlbModalForm
+        visible={addMeasurementModalVisible}
+        close={() => setAddMeasurementModalVisible(false)}
+        title="Add Measurement"
+        init={{ name: '' }}
+        inputs={[{ type: 'text', key: 'name', label: 'Measurement Name' }]}
+        onSave={addMeasurement}
+      />
 
-        <WlbModalForm
-          visible={addPointModalVisible}
-          close={() => setAddPointModalVisible(false)}
-          title="Add Measurement Point"
-          init={{ name: '', value: '' }}
-          inputs={[
-            { type: 'text', key: 'name', label: 'Point Name' },
-            { type: 'text', key: 'value', label: 'Value' },
-          ]}
-          onSave={addMeasurementPoint}
-        />
-      </WlbPage>
-    </WlbView>
+      <WlbModalForm
+        visible={addPointModalVisible}
+        close={() => setAddPointModalVisible(false)}
+        title="Add Measurement Point"
+        init={{ name: '', value: '' }}
+        inputs={[
+          { type: 'text', key: 'name', label: 'Point Name' },
+          { type: 'text', key: 'value', label: 'Value' },
+        ]}
+        onSave={addMeasurementPoint}
+      />
+    </WlbScreenPage>
   );
 }

@@ -7,7 +7,7 @@ import { Exercise } from 'db/types';
 import * as schema from 'db/schema';
 import ModalForm from 'components/ModalForm';
 import WlbButton from 'components/WlbButton';
-import WlbPage, { WlbHeader } from 'components/WlbPage';
+import { WlbHeader, WlbModalPage, WlbScreenPage } from 'components/WlbPage';
 import WlbText from 'components/WlbText';
 import { useThemedStyleSheet } from 'context/theme';
 import toOptions from 'toOptions';
@@ -16,11 +16,13 @@ import { t } from 't';
 import { router } from 'expo-router';
 
 export default function ExercisePage({
-  onClose,
-  addExercises,
+  modal,
 }: {
-  onClose?: () => void;
-  addExercises?: (exercises: Exercise[]) => void;
+  modal?: {
+    close: () => void;
+    addExercises: (exercises: Exercise[]) => void;
+    visible: boolean;
+  };
 }) {
   const styles = useStyles();
   const editExerciseModal = useEditExerciseModal();
@@ -48,42 +50,52 @@ export default function ExercisePage({
     return acc;
   }, {} as Record<string, Exercise[]>);
 
-  return (
-    <WlbPage
-      title="Exercises"
-      headerLeft={
-        <View style={{ flexDirection: 'row', gap: 8 }}>
-          {onClose && (
+  const editExerciseButton = (
+    <WlbButton
+      variant="text"
+      onPress={() => editExerciseModal.openModal()}
+      title="New"
+    />
+  );
+
+  const container = (children: React.ReactNode) =>
+    modal ? (
+      <WlbModalPage
+        title="Add exercises"
+        headerLeft={
+          <View style={{ flexDirection: 'row', gap: 8 }}>
             <WlbButton
               variant="secondary"
               size="small"
               icon="close"
-              onPress={onClose}
+              onPress={modal.close}
             />
-          )}
-          <WlbButton
-            variant="text"
-            onPress={() => editExerciseModal.openModal()}
-            title="New"
-          />
-        </View>
-      }
-      headerRight={
-        addExercises && (
+            {editExerciseButton}
+          </View>
+        }
+        headerRight={
           <WlbButton
             variant="text"
             title="Add"
             onPress={() => {
-              addExercises(selectedExercises);
-              onClose?.();
+              modal.addExercises(selectedExercises);
+              modal.close();
             }}
           />
-        )
-      }
-      containerStyle={{ padding: 0, paddingBottom: 16 }}
-    >
-      <ModalForm {...editExerciseModal} />
+        }
+        {...modal}
+      >
+        {children}
+      </WlbModalPage>
+    ) : (
+      <WlbScreenPage title="Exercises" headerLeft={editExerciseButton}>
+        {children}
+      </WlbScreenPage>
+    );
 
+  return container(
+    <>
+      <ModalForm {...editExerciseModal} />
       {Object.entries(groupedExercises ?? {}).map(([letter, exercises]) => (
         <View key={letter}>
           <View style={styles.itemContainer}>
@@ -93,7 +105,7 @@ export default function ExercisePage({
             <Pressable
               key={exercise.id}
               onPress={() =>
-                !addExercises
+                !modal
                   ? router.push(`/exercises/${exercise.id}`)
                   : toggle(exercise)
               }
@@ -123,7 +135,7 @@ export default function ExercisePage({
           ))}
         </View>
       ))}
-    </WlbPage>
+    </>,
   );
 }
 

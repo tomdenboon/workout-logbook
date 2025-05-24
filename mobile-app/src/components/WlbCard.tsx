@@ -7,7 +7,7 @@ import {
   StyleProp,
   ViewStyle,
 } from 'react-native';
-import { useThemedStyleSheet } from '../context/theme';
+import { useTheme } from '../context/theme';
 import WlbText from './WlbText';
 
 export default function WlbCard({
@@ -23,15 +23,27 @@ export default function WlbCard({
   onPress?: () => void;
   style?: StyleProp<ViewStyle>;
 }) {
-  const styles = useStyles();
+  const theme = useTheme();
 
   return (
-    <Pressable style={({ pressed }) => [styles.card, style]} onPress={onPress}>
+    <Pressable
+      style={({ pressed }) => [
+        {
+          padding: 12,
+          borderRadius: 10,
+          borderColor: pressed && onPress ? theme.sub : theme.subAlt,
+          borderWidth: 2,
+          backgroundColor: theme.bg,
+        },
+        style,
+      ]}
+      onPress={onPress}
+    >
       <View
         style={{
           flexDirection: 'row',
           justifyContent: 'space-between',
-          paddingBottom: 16,
+          paddingBottom: 12,
         }}
       >
         <WlbText fontWeight="bold">{title}</WlbText>
@@ -41,14 +53,3 @@ export default function WlbCard({
     </Pressable>
   );
 }
-
-const useStyles = () =>
-  useThemedStyleSheet((theme) => ({
-    card: {
-      padding: 16,
-      borderRadius: 10,
-      borderColor: theme.subAlt,
-      borderWidth: 2,
-      backgroundColor: theme.bg,
-    },
-  }));

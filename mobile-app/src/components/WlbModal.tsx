@@ -1,7 +1,7 @@
 import { View, Modal, TouchableWithoutFeedback, Text } from 'react-native';
 import { useThemedStyleSheet } from '../context/theme';
 
-interface ModalProps {
+export interface ModalProps {
   visible: boolean;
   close: () => void;
   children: React.ReactNode;

@@ -17,7 +17,7 @@ const App = () => {
       return;
     }
 
-    seedData();
+    seedData({});
   }, [success]);
 
   return (

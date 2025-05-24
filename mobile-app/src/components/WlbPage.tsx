@@ -3,18 +3,21 @@ import WlbText from './WlbText';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../context/theme';
 import React from 'react';
+import WlbModal, { ModalProps } from 'components/WlbModal';
+
+interface HeaderProps {
+  headerLeft?: React.ReactNode;
+  headerRight?: React.ReactNode;
+  headerBottom?: React.ReactNode;
+  title: string;
+}
 
 export const WlbHeader = ({
   headerLeft,
   headerRight,
   headerBottom,
   title,
-}: {
-  headerLeft?: React.ReactNode;
-  headerRight?: React.ReactNode;
-  headerBottom?: React.ReactNode;
-  title: string;
-}) => {
+}: HeaderProps) => {
   const theme = useTheme();
 
   return (
@@ -49,32 +52,29 @@ export const WlbHeader = ({
   );
 };
 
-export default function WlbPage({
-  headerLeft,
-  headerRight,
-  headerBottom,
-  title,
-  children,
-  containerStyle,
-}: {
-  headerLeft?: React.ReactNode;
-  headerRight?: React.ReactNode;
-  title: string;
-  children?: React.ReactNode;
-  headerBottom?: React.ReactNode;
-  containerStyle?: StyleProp<ViewStyle>;
-}) {
+export function WlbModalPage(props: HeaderProps & ModalProps) {
   return (
-    <React.Fragment>
-      <WlbHeader
-        headerLeft={headerLeft}
-        headerRight={headerRight}
-        headerBottom={headerBottom}
-        title={title}
-      />
-      <ScrollView>
-        <View style={[{ padding: 16 }, containerStyle]}>{children}</View>
-      </ScrollView>
-    </React.Fragment>
+    <WlbModal {...props}>
+      <WlbHeader {...props} />
+      {props.children}
+    </WlbModal>
+  );
+}
+
+export function WlbScreenPage(
+  props: HeaderProps & { children: React.ReactNode },
+) {
+  const theme = useTheme();
+
+  return (
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: theme.bg,
+      }}
+    >
+      <WlbHeader {...props} />
+      {props.children}
+    </View>
   );
 }

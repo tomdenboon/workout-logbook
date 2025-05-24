@@ -4,8 +4,8 @@ import WlbModal from './WlbModal';
 import React, { useEffect, useState } from 'react';
 import WlbInput from './WlbInput';
 import WlbText from './WlbText';
-import WlbHeader from './WlbPage';
 import WlbSelect from 'components/WlbSelect';
+import { WlbModalPage } from 'components/WlbPage';
 
 interface InputProps {
   type: 'text' | 'select';
@@ -35,52 +35,49 @@ export default function ModalForm(props: ModalProps) {
   }, [props.init]);
 
   return (
-    <WlbModal visible={visible} close={close}>
-      <WlbHeader
-        title={title}
-        headerLeft={
-          <WlbButton
-            icon="close"
-            variant="secondary"
-            size="small"
-            onPress={close}
-          />
-        }
-        headerRight={
-          <WlbButton
-            variant="text"
-            title="Save"
-            onPress={() => props.onSave(value)}
-          />
-        }
-        containerStyle={{ gap: 16 }}
-      >
-        {props.inputs.map((input) => (
-          <View
-            key={input.key}
-            style={{
-              gap: 8,
-            }}
-          >
-            <WlbText>{input.label}</WlbText>
-            {input.type === 'text' ? (
-              <WlbInput
-                placeholder={input.label}
-                value={value?.[input.key]}
-                onChangeText={(text) =>
-                  setValue({ ...value, [input.key]: text })
-                }
-              />
-            ) : (
-              <WlbSelect
-                value={value?.[input.key]}
-                onChange={(v) => setValue({ ...value, [input.key]: v })}
-                options={input.options ?? []}
-              />
-            )}
-          </View>
-        ))}
-      </WlbHeader>
-    </WlbModal>
+    <WlbModalPage
+      visible={visible}
+      close={close}
+      title={title}
+      headerLeft={
+        <WlbButton
+          icon="close"
+          variant="secondary"
+          size="small"
+          onPress={close}
+        />
+      }
+      headerRight={
+        <WlbButton
+          variant="text"
+          title="Save"
+          onPress={() => props.onSave(value)}
+        />
+      }
+    >
+      {props.inputs.map((input) => (
+        <View
+          key={input.key}
+          style={{
+            gap: 8,
+          }}
+        >
+          <WlbText>{input.label}</WlbText>
+          {input.type === 'text' ? (
+            <WlbInput
+              placeholder={input.label}
+              value={value?.[input.key]}
+              onChangeText={(text) => setValue({ ...value, [input.key]: text })}
+            />
+          ) : (
+            <WlbSelect
+              value={value?.[input.key]}
+              onChange={(v) => setValue({ ...value, [input.key]: v })}
+              options={input.options ?? []}
+            />
+          )}
+        </View>
+      ))}
+    </WlbModalPage>
   );
 }

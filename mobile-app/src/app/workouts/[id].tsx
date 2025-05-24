@@ -1,12 +1,11 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import { router, useLocalSearchParams } from 'expo-router';
-import { Pressable, ScrollView, TextInput, View } from 'react-native';
+import { ScrollView, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useState } from 'react';
 import WlbInput from 'components/WlbInput';
 import WlbModal from 'components/WlbModal';
-import WlbPage, { WlbHeader } from 'components/WlbPage';
-import WlbView from 'components/WlbView';
+import { WlbScreenPage } from 'components/WlbPage';
 import useWorkout, { WorkoutForm } from 'hooks/useWorkout';
 import WlbButton from 'components/WlbButton';
 import WlbDropdown from 'components/WlbDropdown';
@@ -308,7 +307,7 @@ function ExerciseGroupComponent({
   );
 }
 
-function WorkoutHeader({
+function workoutHeaderProps({
   workout,
   type,
   flush,
@@ -355,19 +354,17 @@ function WorkoutHeader({
     );
   }, [type, flush]);
 
-  return (
-    <WlbHeader
-      title={title}
-      headerRight={headerRight}
-      headerLeft={
-        <WlbButton
-          onPress={() => router.back()}
-          variant="secondary"
-          icon="close"
-        />
-      }
-    />
-  );
+  return {
+    title: title,
+    headerRight: headerRight,
+    headerLeft: (
+      <WlbButton
+        onPress={() => router.back()}
+        variant="secondary"
+        icon="close"
+      />
+    ),
+  };
 }
 
 function WorkoutKeyboard() {
@@ -545,8 +542,7 @@ export default function Workout() {
 
   return (
     <KeyboardContext.Provider value={keyboardContext}>
-      <WlbView>
-        <WorkoutHeader workout={workout} type={type} flush={flush} />
+      <WlbScreenPage {...workoutHeaderProps({ workout, type, flush })}>
         <ScrollView>
           <View style={{ gap: 20, padding: 16, paddingBottom: 32 }}>
             {type === 'completed' && (
@@ -574,15 +570,13 @@ export default function Workout() {
               onPress={() => setAddExerciseModalVisible(true)}
             />
 
-            <WlbModal
-              visible={addExerciseModalVisible}
-              close={() => setAddExerciseModalVisible(false)}
-            >
-              <ExercisePage
-                addExercises={addExerciseGroups}
-                onClose={() => setAddExerciseModalVisible(false)}
-              />
-            </WlbModal>
+            <ExercisePage
+              modal={{
+                addExercises: addExerciseGroups,
+                visible: addExerciseModalVisible,
+                close: () => setAddExerciseModalVisible(false),
+              }}
+            />
             {workout.id && (
               <WlbButton
                 title={
@@ -603,7 +597,7 @@ export default function Workout() {
           </View>
         </ScrollView>
         <WorkoutKeyboard />
-      </WlbView>
+      </WlbScreenPage>
     </KeyboardContext.Provider>
   );
 }

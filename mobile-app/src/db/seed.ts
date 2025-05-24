@@ -1,25 +1,23 @@
 import * as schema from './schema';
-import db from 'db';
+import db, { fastDb } from 'db';
 
-export async function resetSeed() {
-  await db.delete(schema.workouts);
-  await db.delete(schema.exercises);
-  await db.delete(schema.measurements);
+export async function seedData({ reset = false }) {
+  if (reset) {
+    await fastDb.delete(schema.workouts);
+    await fastDb.delete(schema.exercises);
+    await fastDb.delete(schema.measurements);
+  }
 
-  await seedData();
-}
-
-function delay(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-export async function seedData() {
-  if ((await db.$count(schema.exercises)) != 0) {
+  if ((await fastDb.$count(schema.exercises)) != 0) {
     return;
   }
 
   await seedMeasurements();
-  const exercises = await db
+  await seedWorkouts();
+}
+
+async function seedExercises() {
+  return await fastDb
     .insert(schema.exercises)
     .values([
       {
@@ -40,52 +38,29 @@ export async function seedData() {
       },
     ])
     .returning();
-
-  for (let i = 0; i < 100; i++) {
-    const startedAt = randomDate(new Date('2015-01-01'), new Date());
-    const completedAt = randomDate(
-      startedAt,
-      new Date(startedAt.getTime() + randomInt(1000000, 10000000)),
-    );
-    await seedWorkout(
-      `Workout ${i + 1}`,
-      startedAt.getTime(),
-      completedAt.getTime(),
-      exercises,
-    );
-
-    await delay(10);
-  }
 }
 
-export async function seedWorkout(
-  name: string,
-  startedAt: number,
-  completedAt: number,
-  exercises: any[],
-) {
-  const workout = await db
+async function seedWorkouts() {
+  const exercises = await seedExercises();
+
+  const workouts = await fastDb
     .insert(schema.workouts)
-    .values([
-      {
-        name,
-        startedAt,
-        completedAt,
-      },
-    ])
+    .values(Array.from({ length: 1000 }, (_, i) => generateWorkout(i)))
     .returning();
 
-  const groups = await db
+  const groups = await fastDb
     .insert(schema.exerciseGroups)
     .values(
-      exercises.map((exercise) => ({
-        workoutId: workout[0].id,
-        exerciseId: exercise.id,
-      })),
+      workouts.flatMap((workout) =>
+        exercises.map((exercise) => ({
+          workoutId: workout.id,
+          exerciseId: exercise.id,
+        })),
+      ),
     )
     .returning();
 
-  await db.insert(schema.exerciseRows).values(
+  const chunkedExerciseRows = chunk(
     groups.flatMap((group) =>
       Array.from({ length: randomInt(1, 10) }, () => ({
         exerciseGroupId: group.id,
@@ -97,7 +72,26 @@ export async function seedWorkout(
         isLifted: 1,
       })),
     ),
+    200,
   );
+
+  chunkedExerciseRows.forEach(
+    async (c) => await fastDb.insert(schema.exerciseRows).values(c),
+  );
+}
+
+function generateWorkout(i: number) {
+  const startedAt = randomDate(new Date('2015-01-01'), new Date());
+  const completedAt = randomDate(
+    startedAt,
+    new Date(startedAt.getTime() + randomInt(1000000, 10000000)),
+  );
+
+  return {
+    name: `Workout ${i}`,
+    startedAt: startedAt.getTime(),
+    completedAt: completedAt.getTime(),
+  };
 }
 
 function randomDate(start: Date, end: Date) {
@@ -111,21 +105,26 @@ function randomInt(min: number, max: number) {
 }
 
 export async function seedMeasurements() {
-  const measurements = await db
+  const measurements = await fastDb
     .insert(schema.measurements)
     .values([{ name: 'Weight' }, { name: 'Body Fat' }, { name: 'Muscle Mass' }])
     .returning();
 
-  for (const measurement of measurements) {
-    for (let i = 0; i < 50; i++) {
-      const date = randomDate(new Date('2020-01-01'), new Date()).getTime();
-      const value = randomInt(50, 100);
-
-      await db.insert(schema.measurementPoints).values({
+  await fastDb.insert(schema.measurementPoints).values(
+    measurements.flatMap((measurement) =>
+      Array.from({ length: randomInt(20, 50) }, () => ({
         measurementId: measurement.id,
-        date,
-        value,
-      });
-    }
+        date: randomDate(new Date('2020-01-01'), new Date()).getTime(),
+        value: randomInt(50, 100),
+      })),
+    ),
+  );
+}
+
+function chunk<T>(arr: T[], size: number): T[][] {
+  const result: T[][] = [];
+  for (let i = 0; i < arr.length; i += size) {
+    result.push(arr.slice(i, i + size));
   }
+  return result;
 }

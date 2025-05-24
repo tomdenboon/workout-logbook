@@ -131,7 +131,6 @@ const LineGraph = ({ data = [], containerHeight = 180 }: LineGraphI) => {
   return (
     <View
       style={{
-        flex: 1,
         height: containerHeight,
         paddingBottom: 16,
       }}
