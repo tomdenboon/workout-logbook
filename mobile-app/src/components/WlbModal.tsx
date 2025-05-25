@@ -1,4 +1,4 @@
-import { View, Modal, TouchableWithoutFeedback, Text } from 'react-native';
+import { View, Modal, Pressable } from 'react-native';
 import { useThemedStyleSheet } from '../context/theme';
 
 export interface ModalProps {
@@ -13,14 +13,11 @@ export default function WlbModal(props: ModalProps) {
   const styles = useStyles();
 
   return (
-    <Modal visible={visible} transparent={true}>
-      <TouchableWithoutFeedback onPress={close}>
-        <View style={styles.backdrop}>
-          <TouchableWithoutFeedback>
-            <View style={styles.modal}>{children}</View>
-          </TouchableWithoutFeedback>
-        </View>
-      </TouchableWithoutFeedback>
+    <Modal visible={visible} transparent={true} onRequestClose={close}>
+      <View style={styles.backdrop}>
+        <Pressable style={styles.backdropPressable} onPress={close} />
+        <View style={styles.modal}>{children}</View>
+      </View>
     </Modal>
   );
 }
@@ -32,6 +29,13 @@ const useStyles = () =>
       justifyContent: 'center',
       alignItems: 'center',
       backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    backdropPressable: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
     },
     modal: {
       width: '90%',

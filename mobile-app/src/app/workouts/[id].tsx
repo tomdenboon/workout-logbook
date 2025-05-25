@@ -440,7 +440,7 @@ function useWorkoutKeyboard(
   const [keyboardData, setKeyboardData] = useState<KeyboardData | undefined>(
     undefined,
   );
-  const timeOutId = useRef<NodeJS.Timeout | null>(null);
+  const timeOutId = useRef<number | null>(null);
 
   const connectKeyboard = (data: KeyboardData) => {
     if (timeOutId.current) {

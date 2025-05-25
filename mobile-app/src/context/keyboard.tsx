@@ -6,7 +6,7 @@ export interface KeyboardData {
   exerciseRowIndex: number;
   field: 'reps' | 'weight' | 'time' | 'distance';
   onChangeText: (value: string) => void;
-  inputRef: React.RefObject<TextInput>;
+  inputRef: React.RefObject<TextInput | null>;
 }
 
 export const KeyboardContext = React.createContext<{
