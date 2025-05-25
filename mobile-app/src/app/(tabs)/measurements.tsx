@@ -7,6 +7,7 @@ import { WlbScreenPage } from 'components/WlbPage';
 import WlbModalForm from 'components/ModalForm';
 import WlbCard from 'components/WlbCard';
 import LineGraph from 'components/graphs/LineGraph';
+import { View } from 'react-native';
 
 export default function Measurements() {
   const [addMeasurementModalVisible, setAddMeasurementModalVisible] =
@@ -43,26 +44,6 @@ export default function Measurements() {
     }
   };
 
-  const randomMockData = useMemo(() => {
-    const data = [];
-    const endDate = new Date();
-    const startDate = new Date();
-    startDate.setFullYear(endDate.getFullYear() - 1); // Go back 1 year
-
-    for (let i = 0; i < 100; i++) {
-      const randomDate =
-        startDate.getTime() +
-        Math.random() * (endDate.getTime() - startDate.getTime());
-
-      data.push({
-        value: Math.floor(Math.random() * 100) + 50, // Random value between 50-150
-        date: randomDate,
-      });
-    }
-
-    return data.sort((a, b) => a.value - b.value);
-  }, []);
-
   return (
     <WlbScreenPage
       title="Measurements"
@@ -74,29 +55,30 @@ export default function Measurements() {
         />
       }
     >
-      {measurements?.map((measurement) => (
-        <WlbCard
-          key={measurement.id}
-          title={measurement.name}
-          titleRight={
-            <WlbButton
-              variant="text"
-              size="small"
-              title="Add Point"
-              onPress={() => setAddPointModalVisible(true)}
+      <View style={{ padding: 16 }}>
+        {measurements?.map((measurement) => (
+          <WlbCard
+            key={measurement.id}
+            title={measurement.name}
+            titleRight={
+              <WlbButton
+                variant="text"
+                size="small"
+                title="Add Point"
+                onPress={() => setAddPointModalVisible(true)}
+              />
+            }
+          >
+            <LineGraph
+              data={measurement.measurementPoints.map((p) => ({
+                date: p.date,
+                value: p.value,
+              }))}
+              period="3months"
             />
-          }
-        >
-          <LineGraph
-            data={measurement.measurementPoints.map((p) => ({
-              date: p.date,
-              value: p.value,
-            }))}
-            period="3months"
-          />
-        </WlbCard>
-      ))}
-
+          </WlbCard>
+        ))}
+      </View>
       <WlbModalForm
         visible={addMeasurementModalVisible}
         close={() => setAddMeasurementModalVisible(false)}

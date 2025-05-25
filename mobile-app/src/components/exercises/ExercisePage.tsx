@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Text, View, Pressable } from 'react-native';
+import { Text, View, Pressable, ScrollView } from 'react-native';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import { eq } from 'drizzle-orm';
 import db from 'db';
@@ -94,12 +94,14 @@ export default function ExercisePage({
     );
 
   return container(
-    <>
+    <ScrollView>
       <ModalForm {...editExerciseModal} />
       {Object.entries(groupedExercises ?? {}).map(([letter, exercises]) => (
         <View key={letter}>
           <View style={styles.itemContainer}>
-            <Text style={styles.letter}>{letter}</Text>
+            <WlbText size={14} color="sub">
+              {letter}
+            </WlbText>
           </View>
           {exercises.map((exercise) => (
             <Pressable
@@ -121,11 +123,11 @@ export default function ExercisePage({
                   alignItems: 'center',
                 }}
               >
-                <View>
-                  <Text style={styles.exerciseName}>{exercise.name}</Text>
-                  <Text style={styles.exerciseCategory}>
+                <View style={{ gap: 4 }}>
+                  <WlbText fontWeight="bold">{exercise.name}</WlbText>
+                  <WlbText size={14} color="sub">
                     {t.categories[exercise.type]}
-                  </Text>
+                  </WlbText>
                 </View>
                 {selectedExercises.includes(exercise) && (
                   <WlbText color="main">Selected</WlbText>
@@ -135,7 +137,7 @@ export default function ExercisePage({
           ))}
         </View>
       ))}
-    </>,
+    </ScrollView>,
   );
 }
 
@@ -158,19 +160,5 @@ const useStyles = () =>
       right: 0,
       top: 0,
       backgroundColor: theme.main,
-    },
-    letter: {
-      fontSize: 14,
-      color: theme.sub,
-    },
-    exerciseName: {
-      fontSize: 16,
-      fontWeight: '600',
-      color: theme.text,
-    },
-    exerciseCategory: {
-      fontSize: 14,
-      color: theme.sub,
-      marginTop: 4,
     },
   }));

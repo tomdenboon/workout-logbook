@@ -41,8 +41,6 @@ const LineGraph = ({
 
   const isMeasured = width > 0 && height > 0;
 
-  console.log(height, containerHeight);
-
   const { minValue, maxValue } = useMemo(() => {
     let min = Math.min(...data.map((item) => item.value));
     let max = Math.max(...data.map((item) => item.value));

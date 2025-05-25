@@ -58,30 +58,32 @@ export default function ProfileTab() {
         </View>
       }
     >
-      <WlbCard
-        title="General"
-        titleRight={
-          <WlbSelect
-            options={
-              [
-                { label: '3 months', value: '3months' },
-                { label: '1 year', value: '1year' },
-                { label: 'All time', value: '' },
-              ] as const
-            }
-            size="small"
-            value={period}
-            onChange={(value) => setPeriod(value)}
+      <View style={{ padding: 16 }}>
+        <WlbCard
+          title="General"
+          titleRight={
+            <WlbSelect
+              options={
+                [
+                  { label: '3 months', value: '3months' },
+                  { label: '1 year', value: '1year' },
+                  { label: 'All time', value: '' },
+                ] as const
+              }
+              size="small"
+              value={period}
+              onChange={(value) => setPeriod(value)}
+            />
+          }
+        >
+          <BarGraph
+            data={graphData.map((item) => ({
+              date: item.completedAt ?? 0,
+              value: item.value,
+            }))}
           />
-        }
-      >
-        <BarGraph
-          data={graphData.map((item) => ({
-            date: item.completedAt ?? 0,
-            value: item.value,
-          }))}
-        />
-      </WlbCard>
+        </WlbCard>
+      </View>
       <ThemeSelector
         visible={themeModalVisible}
         setVisible={setThemeModalVisible}

@@ -30,7 +30,7 @@ export default function TrainingTab() {
 
   return (
     <WlbScreenPage title="Start workout">
-      <View style={{ gap: 12 }}>
+      <View style={{ gap: 12, padding: 16 }}>
         <WlbButton
           onPress={() => {
             createWorkout().then((id) => {
