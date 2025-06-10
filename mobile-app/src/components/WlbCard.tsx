@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Pressable,
-  StyleProp,
-  ViewStyle,
-} from 'react-native';
+import { View, Pressable, StyleProp, ViewStyle } from 'react-native';
 import { useTheme } from '../context/theme';
 import WlbText from './WlbText';
 

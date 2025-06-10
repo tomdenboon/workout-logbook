@@ -6,6 +6,7 @@ import db from 'db';
 import * as schema from 'db/schema';
 import { Exercise, Workout, ExerciseGroup, ExerciseRow } from 'db/types';
 import { deleteWorkout } from 'db/mutation';
+import { useUnit } from 'context/unit';
 
 type PartialKeys<T, TRequired extends keyof T> = Omit<T, TRequired> &
   Partial<Pick<T, TRequired>>;

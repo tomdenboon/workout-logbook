@@ -14,26 +14,8 @@ import { router } from 'expo-router';
 import WlbButton from 'components/WlbButton';
 import WlbTimer from 'components/WlbTimer';
 import { ExerciseRow } from 'db/types';
-import { ExerciseCategory } from 't';
-
-function exerciseRowToText(
-  exerciseCategory: ExerciseCategory,
-  row: ExerciseRow,
-) {
-  if (exerciseCategory === 'weighted') {
-    return `${row.weight} kg x ${row.reps}`;
-  }
-  if (exerciseCategory === 'duration') {
-    return `${row.time}s`;
-  }
-  if (exerciseCategory === 'distance') {
-    return `${row.distance}m in ${row.time}s`;
-  }
-  if (exerciseCategory === 'reps') {
-    return `${row.reps}`;
-  }
-  return '';
-}
+import { ExerciseCategory, VALID_FIELDS } from 't';
+import { useUnit } from 'context/unit';
 
 function WorkoutCard({
   workoutId,
@@ -56,6 +38,23 @@ function WorkoutCard({
       },
     }),
   );
+
+  const { formatValueWithUnit } = useUnit();
+
+  function exerciseRowToText(
+    exerciseCategory: ExerciseCategory,
+    row: ExerciseRow,
+  ) {
+    const fields = VALID_FIELDS[exerciseCategory];
+
+    const formattedFields = fields.map((field) =>
+      formatValueWithUnit(row[field] ?? 0, field),
+    );
+
+    const joiner = exerciseCategory === 'weighted' ? ' x ' : ' in ';
+
+    return formattedFields.join(joiner);
+  }
 
   const { data: historicalPRs } = useLiveQuery(
     db
@@ -106,7 +105,6 @@ function WorkoutCard({
     exerciseGroups.forEach((group) => {
       const exerciseId = group.exercise.id;
       const exerciseType = group.exercise.type;
-      const exerciseName = group.exercise.name;
 
       // Find historical PR for this exercise
       const historicalPR = historicalPRs.find(
@@ -269,6 +267,7 @@ function WorkoutCard({
   }
 
   const totalVolume = calculateTotalVolume(workoutDetails.exerciseGroups);
+  const totalVolumeFormatted = formatValueWithUnit(totalVolume, 'weight');
   const prs = calculatePRs(workoutDetails.exerciseGroups);
   const completedDate = new Date(workoutDetails.completedAt as number);
   const currentYear = new Date().getFullYear();
@@ -325,9 +324,7 @@ function WorkoutCard({
             )}
           </View>
 
-          {totalVolume > 0 && (
-            <WlbText>V: {Math.round(totalVolume)} kg</WlbText>
-          )}
+          {totalVolume > 0 && <WlbText>V: {totalVolumeFormatted}</WlbText>}
 
           {prs.length > 0 && (
             <WlbText color="main" fontWeight="bold">
@@ -378,7 +375,7 @@ function WorkoutCard({
             </View>
 
             {totalVolume > 0 && (
-              <WlbText>Total Volume: {Math.round(totalVolume)} kg</WlbText>
+              <WlbText>Total Volume: {totalVolumeFormatted}</WlbText>
             )}
           </View>
         }
@@ -436,7 +433,7 @@ export default function History() {
   const workouts = useLiveQuery(
     db.query.workouts.findMany({
       where: isNotNull(schema.workouts.completedAt),
-      orderBy: asc(schema.workouts.completedAt),
+      orderBy: desc(schema.workouts.completedAt),
     }),
   );
 
@@ -458,7 +455,11 @@ export default function History() {
           ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
           SectionSeparatorComponent={() => <View style={{ height: 16 }} />}
           renderItem={({ item }) => (
-            <WorkoutCard workoutId={item.id} completedAt={item.completedAt} />
+            <WorkoutCard
+              key={item.id}
+              workoutId={item.id}
+              completedAt={item.completedAt}
+            />
           )}
           stickySectionHeadersEnabled={false}
           renderSectionHeader={({ section }) => (

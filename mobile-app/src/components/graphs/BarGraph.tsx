@@ -27,9 +27,15 @@ interface LineGraphI {
   }[];
   containerHeight?: number;
   period?: '3months' | '1year' | '';
+  valueFormatter?: (value: number) => string;
 }
 
-const LineGraph = ({ data = [], containerHeight = 180 }: LineGraphI) => {
+const LineGraph = ({
+  data = [],
+  containerHeight = 180,
+  period,
+  valueFormatter = (value) => value.toFixed(1),
+}: LineGraphI) => {
   const theme = useTheme();
   const [selectedPoint, setSelectedPoint] = useState<{
     x: number;
@@ -44,8 +50,26 @@ const LineGraph = ({ data = [], containerHeight = 180 }: LineGraphI) => {
 
   const isMeasured = width > 0 && height > 0;
 
+  const filteredData = useMemo(() => {
+    const now = Date.now();
+    let cutoffDate: number;
+
+    switch (period) {
+      case '3months':
+        cutoffDate = now - 3 * 30 * 24 * 60 * 60 * 1000; // 3 months ago
+        break;
+      case '1year':
+        cutoffDate = now - 365 * 24 * 60 * 60 * 1000; // 1 year ago
+        break;
+      default:
+        return data;
+    }
+
+    return data.filter((item) => item.date >= cutoffDate);
+  }, [data, period]);
+
   const { minValue, maxValue } = useMemo(() => {
-    let max = Math.max(...data.map((item) => item.value));
+    let max = Math.max(...filteredData.map((item) => item.value));
 
     max = Math.ceil(max / 10) * 10;
 
@@ -53,24 +77,24 @@ const LineGraph = ({ data = [], containerHeight = 180 }: LineGraphI) => {
       minValue: 0,
       maxValue: max,
     };
-  }, [data]);
+  }, [filteredData]);
 
-  const barWidth = (width - 8) / data.length;
+  const barWidth = width / filteredData.length;
   const points = useMemo(() => {
     const getX = (index: number) => {
-      return 4 + index * barWidth;
+      return index * barWidth;
     };
 
     const getY = (value: number) =>
-      height - 4 - ((value - minValue) / (maxValue - minValue)) * (height - 8);
+      ((value - minValue) / (maxValue - minValue)) * height;
 
-    return data.map((p, i) => ({
+    return filteredData.map((p, i) => ({
       x: getX(i),
       y: getY(p.value),
       date: p.date,
       value: p.value,
     }));
-  }, [data, width, height, minValue, maxValue]);
+  }, [filteredData, width, height, minValue, maxValue]);
 
   const tickerPoints = useMemo(() => {
     if (width === 0 || points.length === 0) return [];
@@ -94,18 +118,9 @@ const LineGraph = ({ data = [], containerHeight = 180 }: LineGraphI) => {
     'worklet';
     if (points.length === 0) return null;
 
-    let closest = points[0];
-    let minDistance = Math.abs(touchX - closest.x);
-
-    for (let i = 1; i < points.length; i++) {
-      const distance = Math.abs(touchX - points[i].x);
-      if (distance < minDistance) {
-        minDistance = distance;
-        closest = points[i];
-      }
-    }
-
-    return closest;
+    const barIndex = Math.floor(touchX / barWidth);
+    const clampedIndex = Math.max(0, Math.min(barIndex, points.length - 1));
+    return points[clampedIndex];
   };
 
   const touchGesture = Gesture.Tap().onStart((e) => {
@@ -131,21 +146,22 @@ const LineGraph = ({ data = [], containerHeight = 180 }: LineGraphI) => {
   return (
     <View
       style={{
-        height: containerHeight,
         paddingBottom: 16,
+        height: containerHeight,
       }}
     >
-      <View style={{ flex: 1, flexDirection: 'row', gap: 4, paddingRight: 8 }}>
+      <View style={{ flex: 1, flexDirection: 'row' }}>
         <View
           style={{
             justifyContent: 'space-between',
             alignItems: 'flex-end',
+            paddingRight: 4,
             marginVertical: -6,
           }}
           onLayout={handleYAxisLayout}
         >
-          <WlbText>{maxValue}</WlbText>
-          <WlbText>{minValue}</WlbText>
+          <WlbText size={12}>{valueFormatter(maxValue)}</WlbText>
+          <WlbText size={12}>{valueFormatter(minValue)}</WlbText>
         </View>
         <GestureDetector
           gesture={Gesture.Simultaneous(touchGesture, panGesture)}
@@ -153,6 +169,10 @@ const LineGraph = ({ data = [], containerHeight = 180 }: LineGraphI) => {
           <View
             style={{
               flex: 1,
+              borderBottomWidth: 2,
+              borderBottomColor: theme.subAlt,
+              borderTopWidth: 2,
+              borderTopColor: theme.subAlt,
             }}
             onLayout={handleChartLayout}
           >
@@ -162,26 +182,13 @@ const LineGraph = ({ data = [], containerHeight = 180 }: LineGraphI) => {
                   flex: 1,
                 }}
               >
-                <Line
-                  p1={vec(0, 4)}
-                  p2={vec(width, 4)}
-                  color={theme.subAlt}
-                  strokeWidth={2}
-                />
-                <Line
-                  p1={vec(0, height - 4)}
-                  p2={vec(width, height - 4)}
-                  color={theme.subAlt}
-                  strokeWidth={2}
-                />
-
                 {points.map((p) => (
                   <Rect
                     key={p.x}
                     x={p.x + barWidth / 8}
-                    y={p.y}
+                    y={height}
                     width={barWidth - barWidth / 4}
-                    height={height - p.y - 4}
+                    height={-p.y}
                     color={theme.main}
                   />
                 ))}
@@ -197,9 +204,9 @@ const LineGraph = ({ data = [], containerHeight = 180 }: LineGraphI) => {
         <View
           style={{
             position: 'absolute',
-            left: yAxisWidth + selectedPoint.x - 96 + barWidth / 2,
-            top: selectedPoint.y - 24,
-            width: 200,
+            left: yAxisWidth + selectedPoint.x - 100,
+            bottom: selectedPoint.y + 20,
+            width: 200 + barWidth,
             alignItems: 'center',
           }}
         >
@@ -211,8 +218,8 @@ const LineGraph = ({ data = [], containerHeight = 180 }: LineGraphI) => {
               borderRadius: 4,
             }}
           >
-            <WlbText size={14}>
-              {selectedPoint.value.toFixed(1)},{' '}
+            <WlbText size={12}>{valueFormatter(selectedPoint.value)}</WlbText>
+            <WlbText size={12}>
               {new Date(selectedPoint.date).toLocaleDateString('en-US', {
                 month: 'short',
                 year: 'numeric',
@@ -229,13 +236,13 @@ const LineGraph = ({ data = [], containerHeight = 180 }: LineGraphI) => {
             key={i}
             style={{
               position: 'absolute',
-              left: yAxisWidth + point.x - 26,
-              bottom: -8,
-              width: 60 + barWidth,
+              left: yAxisWidth + point.x - 100,
+              bottom: 0,
+              width: 200 + barWidth,
               alignItems: 'center',
             }}
           >
-            <WlbText size={14}>
+            <WlbText size={12}>
               {new Date(point.date).toLocaleDateString('en-US', {
                 month: 'short',
                 day: 'numeric',

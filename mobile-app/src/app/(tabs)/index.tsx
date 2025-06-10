@@ -10,11 +10,13 @@ import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import React, { useState } from 'react';
 import * as schema from 'db/schema';
 import { View } from 'react-native';
-import { seedData } from 'db/seed';
+import { router } from 'expo-router';
+import { useUnit } from 'context/unit';
 
 export default function ProfileTab() {
   const [themeModalVisible, setThemeModalVisible] = React.useState(false);
   const [period, setPeriod] = useState<'3months' | '1year' | ''>('');
+  const { formatValueWithUnit } = useUnit();
   const { data: graphData } = useLiveQuery(
     db
       .select({
@@ -46,14 +48,14 @@ export default function ProfileTab() {
           <WlbButton
             variant="text"
             size="small"
-            icon="format-paint"
-            onPress={() => setThemeModalVisible(true)}
+            icon="settings"
+            onPress={() => router.push('/settings')}
           />
           <WlbButton
             variant="text"
             size="small"
-            icon="refresh"
-            onPress={() => seedData({ reset: true })}
+            icon="palette"
+            onPress={() => setThemeModalVisible(true)}
           />
         </View>
       }
@@ -77,8 +79,10 @@ export default function ProfileTab() {
           }
         >
           <BarGraph
+            period={period}
+            valueFormatter={(value) => formatValueWithUnit(value, 'reps')}
             data={graphData.map((item) => ({
-              date: item.completedAt ?? 0,
+              date: new Date(item.month as string).getTime(),
               value: item.value,
             }))}
           />

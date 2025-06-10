@@ -18,6 +18,7 @@ interface LineGraphI {
     date: number;
     value: number;
   }[];
+  valueFormatter?: (value: number) => string;
   containerHeight?: number;
   period?: '3months' | '1year' | '';
 }
@@ -26,6 +27,7 @@ const LineGraph = ({
   data = [],
   containerHeight = 180,
   period = '3months',
+  valueFormatter = (value) => value.toFixed(1),
 }: LineGraphI) => {
   const theme = useTheme();
   const [selectedPoint, setSelectedPoint] = useState<{
@@ -92,18 +94,11 @@ const LineGraph = ({
     'worklet';
     if (points.length === 0) return null;
 
-    let closest = points[0];
-    let minDistance = Math.abs(touchX - closest.x);
-
-    for (let i = 1; i < points.length; i++) {
-      const distance = Math.abs(touchX - points[i].x);
-      if (distance < minDistance) {
-        minDistance = distance;
-        closest = points[i];
-      }
-    }
-
-    return closest;
+    return points.reduce((closest, current) =>
+      Math.abs(touchX - current.x) < Math.abs(touchX - closest.x)
+        ? current
+        : closest,
+    );
   };
 
   const touchGesture = Gesture.Tap().onStart((e) => {
@@ -142,8 +137,8 @@ const LineGraph = ({
           }}
           onLayout={handleYAxisLayout}
         >
-          <WlbText>{maxValue}</WlbText>
-          <WlbText>{minValue}</WlbText>
+          <WlbText size={12}>{valueFormatter(maxValue)}</WlbText>
+          <WlbText size={12}>{valueFormatter(minValue)}</WlbText>
         </View>
         <GestureDetector
           gesture={Gesture.Simultaneous(touchGesture, panGesture)}
@@ -225,8 +220,8 @@ const LineGraph = ({
               borderRadius: 4,
             }}
           >
-            <WlbText size={14}>
-              {selectedPoint.value.toFixed(1)},{' '}
+            <WlbText size={12}>
+              {valueFormatter(selectedPoint.value)},{' '}
               {new Date(selectedPoint.date).toLocaleDateString('en-US', {
                 month: 'short',
                 year: 'numeric',
@@ -249,7 +244,7 @@ const LineGraph = ({
               alignItems: 'center',
             }}
           >
-            <WlbText size={14}>
+            <WlbText size={12}>
               {new Date(point.date).toLocaleDateString('en-US', {
                 month: 'short',
                 day: 'numeric',

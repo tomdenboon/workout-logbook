@@ -7,6 +7,7 @@ import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import WlbButton from 'components/WlbButton';
 import LineGraph from 'components/graphs/LineGraph';
 import WlbCard from 'components/WlbCard';
+import { useUnit } from 'context/unit';
 
 const val = {
   oneRm: sql<number>`${schema.exerciseRows.weight} * (1 + ${schema.exerciseRows.reps} / 30.0)`,
@@ -27,32 +28,39 @@ const exerciseTypeToAggregations = {
   reps: [
     {
       label: 'Total Reps',
+      field: 'reps',
       aggregation: agg.sum(val.reps),
     },
     {
       label: 'Max Reps',
+      field: 'reps',
       aggregation: agg.max(val.reps),
     },
   ],
   weighted: [
     {
       label: 'Max weight',
+      field: 'weight',
       aggregation: agg.max(val.weight),
     },
     {
       label: 'One Rep Max',
+      field: 'weight',
       aggregation: agg.max(val.oneRm),
     },
     {
       label: 'Max Volume',
+      field: 'weight',
       aggregation: agg.max(val.volume),
     },
     {
       label: 'Total Volume',
+      field: 'weight',
       aggregation: agg.sum(val.volume),
     },
     {
       label: 'Total Reps',
+      field: 'reps',
       aggregation: agg.sum(val.reps),
     },
   ],
@@ -64,11 +72,15 @@ function ExerciseGraph({
   id,
   label,
   aggregation,
+  field,
 }: {
   id: string;
   label: string;
   aggregation: SQL<number>;
+  field: string;
 }) {
+  const { formatValueWithUnit } = useUnit();
+
   const { data: graphData } = useLiveQuery(
     db
       .select({
@@ -97,6 +109,7 @@ function ExerciseGraph({
   return (
     <WlbCard title={label}>
       <LineGraph
+        valueFormatter={(value) => formatValueWithUnit(value, field)}
         data={graphData?.map((e) => ({
           date: e.completedAt ?? 0,
           value: e.value,
@@ -131,12 +144,7 @@ export default function Exercise() {
       }
     >
       {exerciseTypeToAggregations[exercise?.[0]?.type]?.map((e) => (
-        <ExerciseGraph
-          key={e.label}
-          id={id}
-          label={e.label}
-          aggregation={e.aggregation}
-        />
+        <ExerciseGraph key={e.label} id={id} {...e} />
       ))}
     </WlbScreenPage>
   );

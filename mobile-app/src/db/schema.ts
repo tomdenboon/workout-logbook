@@ -137,3 +137,9 @@ export const measurementPointsRelations = relations(
     }),
   }),
 );
+
+export const settings = sqliteTable('settings', {
+  id: integer().primaryKey({ autoIncrement: true }),
+  key: text().notNull().unique(),
+  value: text().notNull(),
+});

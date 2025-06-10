@@ -1,6 +1,7 @@
 import WlbModal from 'components/WlbModal';
 import { WlbHeader } from 'components/WlbPage';
-import { useTheme, ThemeName } from 'context/theme';
+import { ThemeName, useTheme } from 'context/theme';
+import { setTheme } from 'db/mutation';
 import { THEMES } from 'context/themes';
 import { Text, FlatList, Pressable } from 'react-native';
 
@@ -11,7 +12,7 @@ export default function ThemeSelector({
   visible: boolean;
   setVisible: (visible: boolean) => void;
 }) {
-  const { setTheme, theme } = useTheme();
+  const { theme } = useTheme();
 
   const colorSortedThemes: ThemeName[] = (
     Object.keys(THEMES) as ThemeName[]
@@ -28,9 +29,7 @@ export default function ThemeSelector({
         data={colorSortedThemes}
         renderItem={({ item }) => (
           <Pressable
-            onPress={() => {
-              setTheme(item);
-            }}
+            onPress={() => setTheme(item)}
             style={{
               backgroundColor: THEMES[item].bg,
               padding: 12,

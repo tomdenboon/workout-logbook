@@ -22,13 +22,8 @@ import {
   useKeyboardContext,
 } from 'context/keyboard';
 import useDebounce from 'hooks/useDebounce';
-
-const VALID_FIELDS = {
-  reps: ['reps'] as const,
-  weighted: ['reps', 'weight'] as const,
-  duration: ['time'] as const,
-  distance: ['time', 'distance'] as const,
-} as const;
+import { useUnit } from 'context/unit';
+import { VALID_FIELDS } from 't';
 
 function ExerRowFieldComponent({
   field,
@@ -43,12 +38,14 @@ function ExerRowFieldComponent({
   exerciseRowIndex: number;
   updateExerciseRow: ReturnType<typeof useWorkout>['updateExerciseRow'];
 }) {
+  const { convertToDisplayUnit, convertToStorageUnit } = useUnit();
+
   const toInputValue = (value: number | null) => {
     if (value === null) {
       return '';
     }
 
-    return value.toString();
+    return parseFloat(convertToDisplayUnit(value, field).toFixed(1)).toString();
   };
 
   const { keyboardData, connectKeyboard, disconnectKeyboard } =
@@ -72,9 +69,17 @@ function ExerRowFieldComponent({
   };
 
   useEffect(() => {
+    if (debouncedInputValue === toInputValue(exerciseRow[field])) {
+      return;
+    }
+
+    let value = inputValue
+      ? convertToStorageUnit(parseFloat(inputValue), field)
+      : null;
+
     updateExerciseRow(exerciseGroupIndex, exerciseRowIndex, {
       ...exerciseRow,
-      [field]: inputValue ? parseInt(inputValue) : null,
+      [field]: value,
     });
   }, [debouncedInputValue]);
 
@@ -239,6 +244,8 @@ function ExerciseGroupComponent({
   deleteExerciseGroup: ReturnType<typeof useWorkout>['deleteExerciseGroup'];
 }) {
   const theme = useTheme();
+  const { weightUnit } = useUnit();
+
   return (
     <View style={{ gap: 12 }}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -276,7 +283,9 @@ function ExerciseGroupComponent({
         </View>
         {VALID_FIELDS[exerciseGroup.exercise.type].map((field) => (
           <View style={{ flex: 1, alignItems: 'center' }} key={field}>
-            <WlbText fontWeight="700">{field}</WlbText>
+            <WlbText fontWeight="700">
+              {field === 'weight' ? weightUnit : field}
+            </WlbText>
           </View>
         ))}
         <View style={{ width: 36, alignItems: 'center' }}>
