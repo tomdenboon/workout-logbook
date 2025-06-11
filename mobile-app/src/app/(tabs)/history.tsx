@@ -7,14 +7,14 @@ import WlbCard from 'components/WlbCard';
 import WlbText from 'components/WlbText';
 import { desc, isNotNull, eq } from 'drizzle-orm';
 import * as schema from 'db/schema';
-import groupBy from 'groupBy';
+import groupBy from 'utils/groupBy';
 import WlbDropdown from 'components/WlbDropdown';
 import { deleteWorkout } from 'db/mutation';
 import { router } from 'expo-router';
 import WlbButton from 'components/WlbButton';
 import WlbTimer from 'components/WlbTimer';
-import { ExerciseRow } from 'db/types';
-import { ExerciseCategory, VALID_FIELDS } from 't';
+import { ExerciseCategory, ExerciseRow } from 'db/types';
+import { VALID_FIELDS } from 'config';
 import { useUnit } from 'context/unit';
 import { usePRCalculations } from 'hooks/usePRCalculations';
 

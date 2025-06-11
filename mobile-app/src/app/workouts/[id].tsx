@@ -23,7 +23,8 @@ import {
 } from 'context/keyboard';
 import useDebounce from 'hooks/useDebounce';
 import { useUnit } from 'context/unit';
-import { VALID_FIELDS } from 't';
+import { ExerciseField } from 'db/types';
+import { VALID_FIELDS } from 'config';
 
 function ExerRowFieldComponent({
   field,
@@ -32,7 +33,7 @@ function ExerRowFieldComponent({
   exerciseRowIndex,
   updateExerciseRow,
 }: {
-  field: 'reps' | 'weight' | 'time' | 'distance';
+  field: ExerciseField;
   exerciseRow: WorkoutForm['exerciseGroups'][0]['exerciseRows'][0];
   exerciseGroupIndex: number;
   exerciseRowIndex: number;

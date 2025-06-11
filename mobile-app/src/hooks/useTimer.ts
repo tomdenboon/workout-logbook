@@ -33,7 +33,7 @@ export function useTimer(
   const [endDate, setEndDate] = useState(end ? end : Date.now());
 
   useEffect(() => {
-    let intervalId: any;
+    let intervalId: number;
     if (!end) {
       intervalId = setInterval(() => {
         setEndDate(Date.now());

@@ -1,10 +1,11 @@
+import { ExerciseField } from 'db/types';
 import React, { useState } from 'react';
 import { TextInput } from 'react-native';
 
 export interface KeyboardData {
   exerciseGroupIndex: number;
   exerciseRowIndex: number;
-  field: 'reps' | 'weight' | 'time' | 'distance';
+  field: ExerciseField;
   onChangeText: (value: string) => void;
   inputRef: React.RefObject<TextInput | null>;
 }

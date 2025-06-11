@@ -3,8 +3,9 @@ import { Exercise } from 'db/types';
 import * as schema from 'db/schema';
 import { eq } from 'drizzle-orm';
 import { useState } from 'react';
-import toOptions from 'toOptions';
-import { t } from 't';
+import toOptions from 'utils/toOptions';
+import { EXERCISE_CATEGORIES } from 'config';
+
 export default function useEditExerciseModal() {
   const [visible, setVisible] = useState(false);
   const [selectedExercise, setSelectedExercise] = useState<Exercise>();
@@ -49,7 +50,7 @@ export default function useEditExerciseModal() {
         type: 'select' as const,
         key: 'type',
         label: 'Category',
-        options: toOptions(t.categories),
+        options: toOptions(EXERCISE_CATEGORIES),
       },
     ],
     visible,

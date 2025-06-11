@@ -1,6 +1,5 @@
-import { ExerciseGroupFull } from 'db/types';
-import { ExerciseCategory } from 't';
-import { CALCULATION_TYPES, CalculationType } from 'utils/exerciseCalculations';
+import { CalculationType, CALCULATION_TYPES } from 'config';
+import { ExerciseGroupFull, ExerciseCategory } from 'db/types';
 
 export interface PR {
   exerciseRowId: number;

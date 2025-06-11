@@ -10,10 +10,9 @@ import WlbButton from 'components/WlbButton';
 import { WlbHeader, WlbModalPage, WlbScreenPage } from 'components/WlbPage';
 import WlbText from 'components/WlbText';
 import { useThemedStyleSheet } from 'context/theme';
-import toOptions from 'toOptions';
 import useEditExerciseModal from 'components/exercises/useEditExerciseModal';
-import { t } from 't';
 import { router } from 'expo-router';
+import { EXERCISE_CATEGORIES } from 'config';
 
 export default function ExercisePage({
   modal,
@@ -126,7 +125,7 @@ export default function ExercisePage({
                 <View style={{ gap: 4 }}>
                   <WlbText fontWeight="bold">{exercise.name}</WlbText>
                   <WlbText size={14} color="sub">
-                    {t.categories[exercise.type]}
+                    {EXERCISE_CATEGORIES[exercise.type]}
                   </WlbText>
                 </View>
                 {selectedExercises.includes(exercise) && (

@@ -58,7 +58,7 @@ export default function useWorkout() {
 
   const [workout, setWorkout] = useState<WorkoutForm>({
     name: '',
-    exerciseGroups: [] as any,
+    exerciseGroups: [],
     startedAt: null,
     completedAt: null,
     templateFolderId: null,
@@ -68,7 +68,7 @@ export default function useWorkout() {
     if (!currentWorkout) {
       setWorkout({
         name: '',
-        exerciseGroups: [] as any,
+        exerciseGroups: [],
         startedAt: null,
         completedAt: null,
         templateFolderId: null,

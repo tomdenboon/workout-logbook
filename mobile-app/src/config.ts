@@ -1,7 +1,20 @@
+import { ExerciseCategory, ExerciseField, ExerciseRow } from 'db/types';
 import { SQL, sql } from 'drizzle-orm';
 import * as schema from 'db/schema';
-import { ExerciseRow } from 'db/types';
-import { ExerciseCategory } from 't';
+
+export const EXERCISE_CATEGORIES: Record<ExerciseCategory, string> = {
+  reps: 'Reps',
+  weighted: 'Weighted',
+  duration: 'Duration',
+  distance: 'Distance',
+};
+
+export const VALID_FIELDS: Record<ExerciseCategory, ExerciseField[]> = {
+  reps: ['reps'],
+  weighted: ['weight', 'reps'],
+  duration: ['time'],
+  distance: ['time', 'distance'],
+};
 
 export interface CalculationType {
   label: string;

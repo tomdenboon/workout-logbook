@@ -7,8 +7,8 @@ import {
   calculateTotalVolume,
   type PR,
 } from 'utils/prCalculations';
-import { CALCULATION_TYPES } from 'utils/exerciseCalculations';
 import { ExerciseGroupFull } from 'db/types';
+import { CALCULATION_TYPES } from 'config';
 
 interface UsePRCalculationsResult {
   prs: PR[];

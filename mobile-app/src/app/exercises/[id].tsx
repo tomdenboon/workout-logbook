@@ -8,10 +8,7 @@ import WlbButton from 'components/WlbButton';
 import LineGraph from 'components/graphs/LineGraph';
 import WlbCard from 'components/WlbCard';
 import { useUnit } from 'context/unit';
-import {
-  AggregationFields,
-  CALCULATION_TYPES,
-} from 'utils/exerciseCalculations';
+import { AggregationFields, CALCULATION_TYPES } from 'config';
 
 const getAggregation = (
   aggregationType: AggregationFields,
