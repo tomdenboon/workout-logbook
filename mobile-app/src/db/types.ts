@@ -5,3 +5,8 @@ export type Exercise = InferSelectModel<typeof schema.exercises>;
 export type Workout = InferSelectModel<typeof schema.workouts>;
 export type ExerciseGroup = InferSelectModel<typeof schema.exerciseGroups>;
 export type ExerciseRow = InferSelectModel<typeof schema.exerciseRows>;
+
+export type ExerciseGroupFull = ExerciseGroup & {
+  exercise: Exercise;
+  exerciseRows: ExerciseRow[];
+};

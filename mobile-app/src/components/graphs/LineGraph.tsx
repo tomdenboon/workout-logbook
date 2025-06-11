@@ -12,15 +12,19 @@ import WlbText from 'components/WlbText';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { runOnJS } from 'react-native-reanimated';
 import useMeasureLayout from 'components/graphs/useMeasureLayout';
+import {
+  ChartDataPoint,
+  Period,
+  calculateMinMaxValues,
+  generateTickerPoints,
+  formatDateLabel,
+} from 'components/graphs/chartUtils';
 
 interface LineGraphI {
-  data: {
-    date: number;
-    value: number;
-  }[];
+  data: ChartDataPoint[];
   valueFormatter?: (value: number) => string;
   containerHeight?: number;
-  period?: '3months' | '1year' | '';
+  period?: Period;
 }
 
 const LineGraph = ({
@@ -44,16 +48,7 @@ const LineGraph = ({
   const isMeasured = width > 0 && height > 0;
 
   const { minValue, maxValue } = useMemo(() => {
-    let min = Math.min(...data.map((item) => item.value));
-    let max = Math.max(...data.map((item) => item.value));
-
-    min = Math.floor(min / 10) * 10;
-    max = Math.ceil(max / 10) * 10;
-
-    return {
-      minValue: min,
-      maxValue: max,
-    };
+    return calculateMinMaxValues(data);
   }, [data]);
 
   const points = useMemo(() => {
@@ -73,21 +68,7 @@ const LineGraph = ({
   }, [data, width, height, minValue, maxValue]);
 
   const tickerPoints = useMemo(() => {
-    if (width === 0 || points.length === 0) return [];
-    if (points.length === 1) return points;
-    const minLabelSpacing = 70;
-    const maxLabels = Math.max(2, Math.floor(width / minLabelSpacing));
-    if (points.length <= maxLabels) return points;
-
-    const result = [];
-    const step = (points.length - 1) / (maxLabels - 1);
-
-    for (let i = 0; i < maxLabels; i++) {
-      const index = Math.round(i * step);
-      result.push(points[index]);
-    }
-
-    return result;
+    return generateTickerPoints(points, width);
   }, [points, width]);
 
   const findClosestPoint = (touchX: number) => {
@@ -222,11 +203,7 @@ const LineGraph = ({
           >
             <WlbText size={12}>
               {valueFormatter(selectedPoint.value)},{' '}
-              {new Date(selectedPoint.date).toLocaleDateString('en-US', {
-                month: 'short',
-                year: 'numeric',
-                day: 'numeric',
-              })}
+              {formatDateLabel(selectedPoint.date, true)}
             </WlbText>
           </View>
         </View>
@@ -244,12 +221,7 @@ const LineGraph = ({
               alignItems: 'center',
             }}
           >
-            <WlbText size={12}>
-              {new Date(point.date).toLocaleDateString('en-US', {
-                month: 'short',
-                day: 'numeric',
-              })}
-            </WlbText>
+            <WlbText size={12}>{formatDateLabel(point.date)}</WlbText>
           </View>
         ))}
     </View>

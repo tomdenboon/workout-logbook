@@ -19,14 +19,19 @@ import WlbText from 'components/WlbText';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { runOnJS } from 'react-native-reanimated';
 import useMeasureLayout from 'components/graphs/useMeasureLayout';
+import {
+  ChartDataPoint,
+  Period,
+  filterDataByPeriod,
+  calculateMinMaxValues,
+  generateTickerPoints,
+  formatDateLabel,
+} from 'components/graphs/chartUtils';
 
 interface LineGraphI {
-  data: {
-    date: number;
-    value: number;
-  }[];
+  data: ChartDataPoint[];
   containerHeight?: number;
-  period?: '3months' | '1year' | '';
+  period?: Period;
   valueFormatter?: (value: number) => string;
 }
 
@@ -51,32 +56,11 @@ const LineGraph = ({
   const isMeasured = width > 0 && height > 0;
 
   const filteredData = useMemo(() => {
-    const now = Date.now();
-    let cutoffDate: number;
-
-    switch (period) {
-      case '3months':
-        cutoffDate = now - 3 * 30 * 24 * 60 * 60 * 1000; // 3 months ago
-        break;
-      case '1year':
-        cutoffDate = now - 365 * 24 * 60 * 60 * 1000; // 1 year ago
-        break;
-      default:
-        return data;
-    }
-
-    return data.filter((item) => item.date >= cutoffDate);
+    return filterDataByPeriod(data, period);
   }, [data, period]);
 
   const { minValue, maxValue } = useMemo(() => {
-    let max = Math.max(...filteredData.map((item) => item.value));
-
-    max = Math.ceil(max / 10) * 10;
-
-    return {
-      minValue: 0,
-      maxValue: max,
-    };
+    return calculateMinMaxValues(filteredData);
   }, [filteredData]);
 
   const barWidth = width / filteredData.length;
@@ -97,21 +81,7 @@ const LineGraph = ({
   }, [filteredData, width, height, minValue, maxValue]);
 
   const tickerPoints = useMemo(() => {
-    if (width === 0 || points.length === 0) return [];
-    if (points.length === 1) return points;
-    const minLabelSpacing = 70;
-    const maxLabels = Math.max(2, Math.floor(width / minLabelSpacing));
-    if (points.length <= maxLabels) return points;
-
-    const result = [];
-    const step = (points.length - 1) / (maxLabels - 1);
-
-    for (let i = 0; i < maxLabels; i++) {
-      const index = Math.round(i * step);
-      result.push(points[index]);
-    }
-
-    return result;
+    return generateTickerPoints(points, width);
   }, [points, width]);
 
   const findClosestPoint = (touchX: number) => {
@@ -219,13 +189,7 @@ const LineGraph = ({
             }}
           >
             <WlbText size={12}>{valueFormatter(selectedPoint.value)}</WlbText>
-            <WlbText size={12}>
-              {new Date(selectedPoint.date).toLocaleDateString('en-US', {
-                month: 'short',
-                year: 'numeric',
-                day: 'numeric',
-              })}
-            </WlbText>
+            <WlbText size={12}>{formatDateLabel(selectedPoint.date)}</WlbText>
           </View>
         </View>
       )}
@@ -242,12 +206,7 @@ const LineGraph = ({
               alignItems: 'center',
             }}
           >
-            <WlbText size={12}>
-              {new Date(point.date).toLocaleDateString('en-US', {
-                month: 'short',
-                day: 'numeric',
-              })}
-            </WlbText>
+            <WlbText size={12}>{formatDateLabel(point.date)}</WlbText>
           </View>
         ))}
     </View>

@@ -5,7 +5,7 @@ import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import db from 'db';
 import WlbCard from 'components/WlbCard';
 import WlbText from 'components/WlbText';
-import { desc, isNotNull, eq, and, lt, max, sql, asc } from 'drizzle-orm';
+import { desc, isNotNull, eq } from 'drizzle-orm';
 import * as schema from 'db/schema';
 import groupBy from 'groupBy';
 import WlbDropdown from 'components/WlbDropdown';
@@ -16,6 +16,7 @@ import WlbTimer from 'components/WlbTimer';
 import { ExerciseRow } from 'db/types';
 import { ExerciseCategory, VALID_FIELDS } from 't';
 import { useUnit } from 'context/unit';
+import { usePRCalculations } from 'hooks/usePRCalculations';
 
 function WorkoutCard({
   workoutId,
@@ -56,209 +57,13 @@ function WorkoutCard({
     return formattedFields.join(joiner);
   }
 
-  const { data: historicalPRs } = useLiveQuery(
-    db
-      .select({
-        exerciseId: schema.exerciseGroups.exerciseId,
-        exerciseType: schema.exercises.type,
-        maxWeight: max(schema.exerciseRows.weight),
-        maxReps: max(schema.exerciseRows.reps),
-        maxOneRM: max(
-          sql<number>`${schema.exerciseRows.weight} * (1 + ${schema.exerciseRows.reps} / 30.0)`,
-        ),
-        maxVolume: max(
-          sql<number>`${schema.exerciseRows.weight} * ${schema.exerciseRows.reps}`,
-        ),
-        maxTime: max(schema.exerciseRows.time),
-        maxDistance: max(schema.exerciseRows.distance),
-      })
-      .from(schema.workouts)
-      .leftJoin(
-        schema.exerciseGroups,
-        eq(schema.workouts.id, schema.exerciseGroups.workoutId),
-      )
-      .leftJoin(
-        schema.exerciseRows,
-        eq(schema.exerciseGroups.id, schema.exerciseRows.exerciseGroupId),
-      )
-      .leftJoin(
-        schema.exercises,
-        eq(schema.exerciseGroups.exerciseId, schema.exercises.id),
-      )
-      .where(
-        and(
-          isNotNull(schema.workouts.completedAt),
-          lt(schema.workouts.completedAt, completedAt ?? 0),
-          isNotNull(schema.exerciseRows.id),
-        ),
-      )
-      .groupBy(schema.exerciseGroups.exerciseId, schema.exercises.type),
-    [completedAt],
-  );
+  const {
+    prs,
+    totalVolume,
+    isLoading: prLoading,
+  } = usePRCalculations(workoutDetails?.exerciseGroups || [], completedAt);
 
-  const calculatePRs = (exerciseGroups: any[]) => {
-    const prs: {
-      exerciseRowId: number;
-      badgeType: string;
-    }[] = [];
-
-    exerciseGroups.forEach((group) => {
-      const exerciseId = group.exercise.id;
-      const exerciseType = group.exercise.type;
-
-      // Find historical PR for this exercise
-      const historicalPR = historicalPRs.find(
-        (pr) => pr.exerciseId === exerciseId,
-      );
-
-      if (exerciseType === 'weighted') {
-        // Find the row with max weight
-        const maxWeightRow = group.exerciseRows.reduce(
-          (max: any, row: any) =>
-            (row.weight || 0) > (max.weight || 0) ? row : max,
-          group.exerciseRows[0],
-        );
-        const currentMaxWeight = maxWeightRow?.weight || 0;
-
-        // Find the row with max 1RM
-        const maxOneRMRow = group.exerciseRows.reduce((max: any, row: any) => {
-          const currentOneRM =
-            row.weight && row.reps ? row.weight * (1 + row.reps / 30.0) : 0;
-          const maxOneRM =
-            max.weight && max.reps ? max.weight * (1 + max.reps / 30.0) : 0;
-          return currentOneRM > maxOneRM ? row : max;
-        }, group.exerciseRows[0]);
-        const currentMaxOneRM =
-          maxOneRMRow?.weight && maxOneRMRow?.reps
-            ? maxOneRMRow.weight * (1 + maxOneRMRow.reps / 30.0)
-            : 0;
-
-        // Find the row with max volume
-        const maxVolumeRow = group.exerciseRows.reduce((max: any, row: any) => {
-          const currentVolume =
-            row.weight && row.reps ? row.weight * row.reps : 0;
-          const maxVolume = max.weight && max.reps ? max.weight * max.reps : 0;
-          return currentVolume > maxVolume ? row : max;
-        }, group.exerciseRows[0]);
-        const currentMaxVolume =
-          maxVolumeRow?.weight && maxVolumeRow?.reps
-            ? maxVolumeRow.weight * maxVolumeRow.reps
-            : 0;
-
-        // Check for Weight PR
-        if (
-          currentMaxWeight > 0 &&
-          (!historicalPR?.maxWeight ||
-            currentMaxWeight > Number(historicalPR.maxWeight))
-        ) {
-          prs.push({
-            exerciseRowId: maxWeightRow.id,
-            badgeType: 'Weight',
-          });
-        }
-
-        // Check for One Rep Max PR
-        if (
-          currentMaxOneRM > 0 &&
-          (!historicalPR?.maxOneRM ||
-            currentMaxOneRM > Number(historicalPR.maxOneRM))
-        ) {
-          prs.push({
-            exerciseRowId: maxOneRMRow.id,
-            badgeType: '1RM',
-          });
-        }
-
-        // Check for Volume PR
-        if (
-          currentMaxVolume > 0 &&
-          (!historicalPR?.maxVolume ||
-            currentMaxVolume > Number(historicalPR.maxVolume))
-        ) {
-          prs.push({
-            exerciseRowId: maxVolumeRow.id,
-            badgeType: 'Volume',
-          });
-        }
-      } else if (exerciseType === 'reps') {
-        const maxRepsRow = group.exerciseRows.reduce(
-          (max: any, row: any) =>
-            (row.reps || 0) > (max.reps || 0) ? row : max,
-          group.exerciseRows[0],
-        );
-        const currentMaxReps = maxRepsRow?.reps || 0;
-
-        if (
-          currentMaxReps > 0 &&
-          (!historicalPR?.maxReps ||
-            currentMaxReps > Number(historicalPR.maxReps))
-        ) {
-          prs.push({
-            exerciseRowId: maxRepsRow.id,
-            badgeType: 'Reps',
-          });
-        }
-      } else if (exerciseType === 'duration') {
-        const maxTimeRow = group.exerciseRows.reduce(
-          (max: any, row: any) =>
-            (row.time || 0) > (max.time || 0) ? row : max,
-          group.exerciseRows[0],
-        );
-        const currentMaxTime = maxTimeRow?.time || 0;
-
-        if (
-          currentMaxTime > 0 &&
-          (!historicalPR?.maxTime ||
-            currentMaxTime > Number(historicalPR.maxTime))
-        ) {
-          prs.push({
-            exerciseRowId: maxTimeRow.id,
-            badgeType: 'Time',
-          });
-        }
-      } else if (exerciseType === 'distance') {
-        const maxDistanceRow = group.exerciseRows.reduce(
-          (max: any, row: any) =>
-            (row.distance || 0) > (max.distance || 0) ? row : max,
-          group.exerciseRows[0],
-        );
-        const currentMaxDistance = maxDistanceRow?.distance || 0;
-
-        if (
-          currentMaxDistance > 0 &&
-          (!historicalPR?.maxDistance ||
-            currentMaxDistance > Number(historicalPR.maxDistance))
-        ) {
-          prs.push({
-            exerciseRowId: maxDistanceRow.id,
-            badgeType: 'Distance',
-          });
-        }
-      }
-    });
-
-    return prs;
-  };
-
-  const calculateTotalVolume = (exerciseGroups: any[]) => {
-    return exerciseGroups.reduce((total, group) => {
-      if (group.exercise.type === 'weighted') {
-        const groupVolume = group.exerciseRows.reduce(
-          (sum: number, row: any) => {
-            if (row.weight && row.reps) {
-              return sum + row.weight * row.reps;
-            }
-            return sum;
-          },
-          0,
-        );
-        return total + groupVolume;
-      }
-      return total;
-    }, 0);
-  };
-
-  if (!workoutDetails || !historicalPRs) {
+  if (!workoutDetails || prLoading) {
     return (
       <WlbCard title="Loading...">
         <WlbText>Loading...</WlbText>
@@ -266,9 +71,7 @@ function WorkoutCard({
     );
   }
 
-  const totalVolume = calculateTotalVolume(workoutDetails.exerciseGroups);
   const totalVolumeFormatted = formatValueWithUnit(totalVolume, 'weight');
-  const prs = calculatePRs(workoutDetails.exerciseGroups);
   const completedDate = new Date(workoutDetails.completedAt as number);
   const currentYear = new Date().getFullYear();
   const isCurrentYear = completedDate.getFullYear() === currentYear;
@@ -412,8 +215,10 @@ function WorkoutCard({
                             justifyContent: 'flex-end',
                           }}
                         >
-                          {rowPRs.map((pr, prIndex) => (
-                            <WlbText size={14}>🏆 {pr.badgeType}</WlbText>
+                          {rowPRs.map((pr) => (
+                            <WlbText key={pr.badgeType} size={14}>
+                              🏆 {pr.badgeType}
+                            </WlbText>
                           ))}
                         </View>
                       )}

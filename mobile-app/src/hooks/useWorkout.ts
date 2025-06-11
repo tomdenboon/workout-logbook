@@ -21,8 +21,7 @@ export type WorkoutForm = PartialKeys<Workout, 'id'> & {
 
 function useCurrentWorkout() {
   const { id } = useLocalSearchParams();
-
-  return useLiveQuery(
+  const data = useLiveQuery(
     db.query.workouts.findFirst({
       where: eq(schema.workouts.id, Number(id)),
       with: {
@@ -35,11 +34,16 @@ function useCurrentWorkout() {
       },
     }),
     [id],
-  ).data;
+  );
+
+  return {
+    data: data.data,
+    waitForData: id !== undefined && data.data === undefined,
+  };
 }
 
 export default function useWorkout() {
-  const currentWorkout = useCurrentWorkout();
+  const { data: currentWorkout, waitForData } = useCurrentWorkout();
 
   const type: 'active' | 'completed' | 'template' = useMemo(() => {
     if (currentWorkout?.completedAt) {
@@ -252,6 +256,7 @@ export default function useWorkout() {
 
   return {
     workout,
+    waitForData,
     type,
     setWorkout,
     addExerciseRow,

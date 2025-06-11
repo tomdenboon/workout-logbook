@@ -316,7 +316,7 @@ function ExerciseGroupComponent({
   );
 }
 
-function workoutHeaderProps({
+function useWorkoutHeaderProps({
   workout,
   type,
   flush,
@@ -546,12 +546,22 @@ export default function Workout() {
     deleteExerciseGroup,
     updateExerciseRow,
     flush,
+    waitForData,
   } = useWorkout();
   const keyboardContext = useWorkoutKeyboard(workout, updateExerciseRow);
+  const workoutHeaderProps = useWorkoutHeaderProps({ workout, type, flush });
+
+  if (waitForData) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <WlbText>Loading...</WlbText>
+      </View>
+    );
+  }
 
   return (
     <KeyboardContext.Provider value={keyboardContext}>
-      <WlbScreenPage {...workoutHeaderProps({ workout, type, flush })}>
+      <WlbScreenPage {...workoutHeaderProps}>
         <ScrollView>
           <View style={{ gap: 20, padding: 16, paddingBottom: 32 }}>
             {type === 'completed' && (

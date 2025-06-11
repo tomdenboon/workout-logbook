@@ -2,70 +2,39 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { WlbScreenPage } from 'components/WlbPage';
 import * as schema from 'db/schema';
 import db from 'db';
-import { and, eq, isNotNull, SQL, sql } from 'drizzle-orm';
+import { and, eq, isNotNull, max, SQL, sql, sum } from 'drizzle-orm';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import WlbButton from 'components/WlbButton';
 import LineGraph from 'components/graphs/LineGraph';
 import WlbCard from 'components/WlbCard';
 import { useUnit } from 'context/unit';
+import {
+  AggregationFields,
+  CALCULATION_TYPES,
+} from 'utils/exerciseCalculations';
 
-const val = {
-  oneRm: sql<number>`${schema.exerciseRows.weight} * (1 + ${schema.exerciseRows.reps} / 30.0)`,
-  volume: sql<number>`${schema.exerciseRows.weight} * ${schema.exerciseRows.reps}`,
-  weight: sql<number>`${schema.exerciseRows.weight}`,
-  reps: sql<number>`${schema.exerciseRows.reps}`,
-  time: sql<number>`${schema.exerciseRows.time}`,
-  distance: sql<number>`${schema.exerciseRows.distance}`,
-  pace: sql<number>`${schema.exerciseRows.distance} / ${schema.exerciseRows.time}`,
-};
-
-const agg = {
-  sum: (q: SQL) => sql<number>`sum(${q})`,
-  max: (q: SQL) => sql<number>`max(${q})`,
+const getAggregation = (
+  aggregationType: AggregationFields,
+  type: 'sum' | 'max',
+) => {
+  const { label, field, sqlValue } = CALCULATION_TYPES[aggregationType];
+  return {
+    label: `${type === 'sum' ? 'Total' : 'Max'} ${label}`,
+    field,
+    aggregation: type === 'sum' ? sum(sqlValue) : max(sqlValue),
+  };
 };
 
 const exerciseTypeToAggregations = {
-  reps: [
-    {
-      label: 'Total Reps',
-      field: 'reps',
-      aggregation: agg.sum(val.reps),
-    },
-    {
-      label: 'Max Reps',
-      field: 'reps',
-      aggregation: agg.max(val.reps),
-    },
-  ],
+  reps: [getAggregation('reps', 'sum'), getAggregation('reps', 'max')],
   weighted: [
-    {
-      label: 'Max weight',
-      field: 'weight',
-      aggregation: agg.max(val.weight),
-    },
-    {
-      label: 'One Rep Max',
-      field: 'weight',
-      aggregation: agg.max(val.oneRm),
-    },
-    {
-      label: 'Max Volume',
-      field: 'weight',
-      aggregation: agg.max(val.volume),
-    },
-    {
-      label: 'Total Volume',
-      field: 'weight',
-      aggregation: agg.sum(val.volume),
-    },
-    {
-      label: 'Total Reps',
-      field: 'reps',
-      aggregation: agg.sum(val.reps),
-    },
+    getAggregation('weight', 'max'),
+    getAggregation('oneRm', 'max'),
+    getAggregation('volume', 'max'),
+    getAggregation('volume', 'sum'),
   ],
-  duration: [],
-  distance: [],
+  duration: [getAggregation('time', 'sum')],
+  distance: [getAggregation('distance', 'sum')],
 };
 
 function ExerciseGraph({
@@ -76,7 +45,7 @@ function ExerciseGraph({
 }: {
   id: string;
   label: string;
-  aggregation: SQL<number>;
+  aggregation: SQL<string | null>;
   field: string;
 }) {
   const { formatValueWithUnit } = useUnit();
@@ -112,7 +81,7 @@ function ExerciseGraph({
         valueFormatter={(value) => formatValueWithUnit(value, field)}
         data={graphData?.map((e) => ({
           date: e.completedAt ?? 0,
-          value: e.value,
+          value: Number(e.value ?? 0),
         }))}
       />
     </WlbCard>
