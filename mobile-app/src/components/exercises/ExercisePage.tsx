@@ -12,7 +12,7 @@ import WlbText from 'components/WlbText';
 import { useThemedStyleSheet } from 'context/theme';
 import useEditExerciseModal from 'components/exercises/useEditExerciseModal';
 import { router } from 'expo-router';
-import { EXERCISE_CATEGORIES } from 'config';
+import { EXERCISE_CATEGORIES } from 'const';
 
 export default function ExercisePage({
   modal,
@@ -41,7 +41,7 @@ export default function ExercisePage({
   };
 
   const groupedExercises = exercises?.reduce((acc, exercise) => {
-    const firstLetter = exercise.name[0].toUpperCase();
+    const firstLetter = (exercise.name[0] ?? '-').toUpperCase();
     if (!acc[firstLetter]) {
       acc[firstLetter] = [];
     }
@@ -87,7 +87,11 @@ export default function ExercisePage({
         {children}
       </WlbModalPage>
     ) : (
-      <WlbScreenPage title="Exercises" headerLeft={editExerciseButton}>
+      <WlbScreenPage
+        title="Exercises"
+        headerLeft={editExerciseButton}
+        noContainer
+      >
         {children}
       </WlbScreenPage>
     );

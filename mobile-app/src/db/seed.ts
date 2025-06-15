@@ -36,6 +36,10 @@ async function seedExercises() {
         name: 'Pull-Up',
         type: 'reps',
       },
+      {
+        name: 'Running',
+        type: 'distance',
+      },
     ])
     .returning();
 }
@@ -64,10 +68,10 @@ async function seedWorkouts() {
     groups.flatMap((group) =>
       Array.from({ length: randomInt(1, 10) }, () => ({
         exerciseGroupId: group.id,
-        weight: randomInt(1, 100),
+        weight: randomFloat(1, 100),
         reps: randomInt(1, 20),
-        time: randomInt(1, 10),
-        distance: randomInt(1, 10),
+        time: randomInt(6000, 10000),
+        distance: randomFloat(1, 10),
         rpe: randomInt(1, 10),
         isLifted: 1,
       })),
@@ -102,6 +106,10 @@ function randomDate(start: Date, end: Date) {
 
 function randomInt(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function randomFloat(min: number, max: number) {
+  return parseFloat((Math.random() * (max - min) + min).toFixed(1));
 }
 
 export async function seedMeasurements() {

@@ -7,7 +7,6 @@ import WlbInput from 'components/WlbInput';
 import WlbModal from 'components/WlbModal';
 import { WlbScreenPage } from 'components/WlbPage';
 import useWorkout, { WorkoutForm } from 'hooks/useWorkout';
-import WlbButton from 'components/WlbButton';
 import WlbDropdown from 'components/WlbDropdown';
 import WlbText from 'components/WlbText';
 import { formatTime, useTimer } from 'hooks/useTimer';
@@ -16,6 +15,8 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useTheme } from 'context/theme';
 import WlbTimer from 'components/WlbTimer';
 import ExercisePage from 'components/exercises/ExercisePage';
+import { useRestTimer } from 'context/restTimer';
+import RestTimerModal from 'components/RestTimerModal';
 import {
   KeyboardContext,
   KeyboardData,
@@ -24,16 +25,19 @@ import {
 import useDebounce from 'hooks/useDebounce';
 import { useUnit } from 'context/unit';
 import { ExerciseField } from 'db/types';
-import { VALID_FIELDS } from 'config';
+import { VALID_FIELDS } from 'const';
+import WlbButton from 'components/WlbButton';
 
 function ExerRowFieldComponent({
   field,
   exerciseRow,
   exerciseGroupIndex,
   exerciseRowIndex,
+  fieldIndex,
   updateExerciseRow,
 }: {
   field: ExerciseField;
+  fieldIndex: number;
   exerciseRow: WorkoutForm['exerciseGroups'][0]['exerciseRows'][0];
   exerciseGroupIndex: number;
   exerciseRowIndex: number;
@@ -44,18 +48,18 @@ function ExerRowFieldComponent({
   const toInputValue = (value: number | null) => {
     if (value === null) {
       return '';
+    } else if (field === 'time') {
+      return formatTime(value, 'digital');
     }
 
-    return parseFloat(convertToDisplayUnit(value, field).toFixed(1)).toString();
+    return parseFloat(convertToDisplayUnit(value, field).toFixed(2)).toString();
   };
 
-  const { keyboardData, connectKeyboard, disconnectKeyboard } =
-    useKeyboardContext();
+  const { keyboardData, connectKeyboard } = useKeyboardContext();
   const inputRef = useRef<TextInput>(null);
   const [inputValue, setInputValue] = useState(
     toInputValue(exerciseRow[field]),
   );
-  const debouncedInputValue = useDebounce(inputValue, 300);
   const selection = useRef({
     start: 0,
     end: 0,
@@ -66,48 +70,85 @@ function ExerRowFieldComponent({
   }, [exerciseRow[field]]);
 
   const cleanText = (value: string) => {
-    return value.replace(/[^0-9]/g, '');
+    switch (field) {
+      case 'weight':
+      case 'distance':
+        const parts = value.split('.');
+        if (parts.length > 2) {
+          return parts[0] + ',' + parts.slice(1).join('');
+        }
+        return value.replace(/[^0-9.]/g, '');
+      case 'time':
+        const numbers = parseInt(value.replace(/[^0-9]/g, ''), 10).toString();
+        let final = numbers.slice(0, 2);
+        if (numbers.length > 2) {
+          final += ':' + numbers.slice(2, 4);
+        }
+        if (numbers.length > 4) {
+          final += ':' + numbers.slice(4, 6);
+        }
+        return final;
+      default:
+        return value.replace(/[^0-9]/g, '');
+    }
   };
 
-  useEffect(() => {
-    if (debouncedInputValue === toInputValue(exerciseRow[field])) {
-      return;
-    }
+  const saveExerciseRow = () => {
+    let value: number | null = null;
 
-    let value = inputValue
-      ? convertToStorageUnit(parseFloat(inputValue), field)
-      : null;
+    if (inputValue) {
+      if (field === 'time') {
+        value = inputValue
+          .split(':')
+          .reverse()
+          .reduce((acc, part, i) => {
+            const multiplier = [1, 60, 3600][i] * 1000;
+            return acc + parseInt(part, 10) * multiplier;
+          }, 0);
+      } else {
+        value = convertToStorageUnit(parseFloat(inputValue), field);
+      }
+    }
 
     updateExerciseRow(exerciseGroupIndex, exerciseRowIndex, {
       ...exerciseRow,
       [field]: value,
     });
-  }, [debouncedInputValue]);
+  };
+
+  useEffect(() => {
+    inputRef.current?.setSelection(
+      selection.current.start,
+      selection.current.end,
+    );
+  }, [selection.current]);
 
   const onFocus = () => {
     selection.current = {
       start: 0,
       end: inputValue.length,
     };
-    inputRef.current?.setSelection(
-      selection.current.start,
-      selection.current.end,
-    );
     connectKeyboard({
       inputRef,
       exerciseGroupIndex,
       exerciseRowIndex,
-      field,
+      fieldIndex,
       onChangeText: (value) => {
         setInputValue((val) => {
-          let x: string;
-          if (selection.current.start === selection.current.end) {
-            x = value === '' ? val.slice(0, -1) : val + value;
-          } else {
+          let x = cleanText(val);
+
+          x =
+            x.slice(0, selection.current.start) +
+            value +
+            x.slice(selection.current.end);
+
+          if (
+            selection.current.start === selection.current.end &&
+            value === ''
+          ) {
             x =
-              val.slice(0, selection.current.start) +
-              value +
-              val.slice(selection.current.end);
+              val.slice(0, selection.current.start - 1) +
+              val.slice(selection.current.start);
           }
           x = cleanText(x);
 
@@ -116,7 +157,7 @@ function ExerRowFieldComponent({
             end: x.length,
           };
 
-          return x;
+          return cleanText(x);
         });
       },
     });
@@ -126,7 +167,7 @@ function ExerRowFieldComponent({
     if (
       keyboardData?.exerciseGroupIndex === exerciseGroupIndex &&
       keyboardData?.exerciseRowIndex === exerciseRowIndex &&
-      keyboardData?.field === field
+      keyboardData?.fieldIndex === fieldIndex
     ) {
       inputRef.current?.focus();
     }
@@ -145,14 +186,11 @@ function ExerRowFieldComponent({
       }}
       onFocus={onFocus}
       onBlur={() => {
-        disconnectKeyboard();
+        saveExerciseRow();
       }}
       placeholder=""
       onSelectionChange={(e) => {
-        selection.current = {
-          start: e.nativeEvent.selection.start,
-          end: e.nativeEvent.selection.end,
-        };
+        selection.current = e.nativeEvent.selection;
       }}
     />
   );
@@ -198,10 +236,11 @@ function ExerciseRowComponent({
           },
         ]}
       />
-      {VALID_FIELDS[exerciseType].map((field) => (
+      {VALID_FIELDS[exerciseType].map((field, fieldIndex) => (
         <ExerRowFieldComponent
           key={field}
           field={field}
+          fieldIndex={fieldIndex}
           exerciseRow={exerciseRow}
           exerciseGroupIndex={exerciseGroupIndex}
           exerciseRowIndex={exerciseRowIndex}
@@ -342,14 +381,17 @@ function useWorkoutHeaderProps({
   const headerRight = useMemo(() => {
     if (type === 'active') {
       return (
-        <WlbButton
-          title="Finish"
-          onPress={() =>
-            finishWorkout(workout.id as number).then(() => {
-              router.dismissTo('/history');
-            })
-          }
-        />
+        <View style={{ flexDirection: 'row', gap: 8 }}>
+          <RestTimerModal />
+          <WlbButton
+            title="Finish"
+            onPress={() =>
+              finishWorkout(workout.id as number).then(() => {
+                router.dismissTo('/history');
+              })
+            }
+          />
+        </View>
       );
     }
 
@@ -381,7 +423,7 @@ function WorkoutKeyboard() {
   const theme = useTheme();
   const { keyboardData, onNext, disconnectKeyboard } = useKeyboardContext();
 
-  const inputs = ['1', '2', '3', '4', '5', '6', '7', '8', '9', ',', '0', ''];
+  const inputs = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '0', ''];
 
   return keyboardData ? (
     <SafeAreaView
@@ -392,6 +434,7 @@ function WorkoutKeyboard() {
         flexDirection: 'row',
         borderTopWidth: 2,
         borderTopColor: theme.subAlt,
+        backgroundColor: theme.bg,
       }}
     >
       <View style={{ gap: 8, flex: 5 }}>
@@ -460,10 +503,8 @@ function useWorkoutKeyboard(
   };
 
   const disconnectKeyboard = () => {
-    timeOutId.current = setTimeout(() => {
-      keyboardData?.inputRef.current?.blur();
-      setKeyboardData(undefined);
-    }, 50);
+    keyboardData?.inputRef.current?.blur();
+    setKeyboardData(undefined);
   };
 
   return {
@@ -476,21 +517,16 @@ function useWorkoutKeyboard(
       const {
         exerciseGroupIndex: currentGroupIndex,
         exerciseRowIndex: currentRowIndex,
-        field: currentField,
+        fieldIndex: currentFieldIndex,
       } = keyboardData;
 
       const exerciseGroup = workout.exerciseGroups[currentGroupIndex];
       const exerciseRow = exerciseGroup.exerciseRows[currentRowIndex];
       const fields = VALID_FIELDS[exerciseGroup.exercise.type];
-      const fieldIndex = fields.findIndex((field) => field === currentField);
-
-      if (fieldIndex === -1) {
-        return;
-      }
 
       let newGroupIndex = currentGroupIndex;
       let newRowIndex = currentRowIndex;
-      let newFieldIndex = fieldIndex;
+      let newFieldIndex = currentFieldIndex;
 
       const isLastField = newFieldIndex === fields.length - 1;
       const isLastRow = newRowIndex === exerciseGroup.exerciseRows.length - 1;
@@ -526,7 +562,7 @@ function useWorkoutKeyboard(
           ...keyboardData,
           exerciseGroupIndex: newGroupIndex,
           exerciseRowIndex: newRowIndex,
-          field: VALID_FIELDS[exerciseGroup.exercise.type][newFieldIndex],
+          fieldIndex: newFieldIndex,
         });
       }
     },
@@ -550,7 +586,11 @@ export default function Workout() {
     waitForData,
   } = useWorkout();
   const keyboardContext = useWorkoutKeyboard(workout, updateExerciseRow);
-  const workoutHeaderProps = useWorkoutHeaderProps({ workout, type, flush });
+  const workoutHeaderProps = useWorkoutHeaderProps({
+    workout,
+    type,
+    flush,
+  });
 
   if (waitForData) {
     return (
@@ -563,61 +603,58 @@ export default function Workout() {
   return (
     <KeyboardContext.Provider value={keyboardContext}>
       <WlbScreenPage {...workoutHeaderProps}>
-        <ScrollView>
-          <View style={{ gap: 20, padding: 16, paddingBottom: 32 }}>
-            {type === 'completed' && (
-              <WlbTimer start={workout.startedAt} end={workout.completedAt} />
-            )}
-            <WlbInput
-              value={workout.name}
-              onChangeText={(value) => setWorkout({ ...workout, name: value })}
-              placeholder="Workout name"
-            />
-            {workout.exerciseGroups.map((exerciseGroup, index: number) => (
-              <ExerciseGroupComponent
-                key={index}
-                workoutType={type}
-                exerciseGroupIndex={index}
-                exerciseGroup={exerciseGroup}
-                addExerciseRow={addExerciseRow}
-                updateExerciseRow={updateExerciseRow}
-                deleteExerciseRow={deleteExerciseRow}
-                deleteExerciseGroup={deleteExerciseGroup}
-              />
-            ))}
-            <WlbButton
-              title="Add exercises"
-              onPress={() => setAddExerciseModalVisible(true)}
-            />
+        {type === 'completed' && (
+          <WlbTimer start={workout.startedAt} end={workout.completedAt} />
+        )}
+        <WlbInput
+          value={workout.name}
+          onChangeText={(value) => setWorkout({ ...workout, name: value })}
+          placeholder="Workout name"
+        />
+        {workout.exerciseGroups.map((exerciseGroup, index: number) => (
+          <ExerciseGroupComponent
+            key={index}
+            workoutType={type}
+            exerciseGroupIndex={index}
+            exerciseGroup={exerciseGroup}
+            addExerciseRow={addExerciseRow}
+            updateExerciseRow={updateExerciseRow}
+            deleteExerciseRow={deleteExerciseRow}
+            deleteExerciseGroup={deleteExerciseGroup}
+          />
+        ))}
+        <WlbButton
+          title="Add exercises"
+          onPress={() => setAddExerciseModalVisible(true)}
+        />
 
-            <ExercisePage
-              modal={{
-                addExercises: addExerciseGroups,
-                visible: addExerciseModalVisible,
-                close: () => setAddExerciseModalVisible(false),
-              }}
-            />
-            {workout.id && (
-              <WlbButton
-                title={
-                  {
-                    active: 'Cancel workout',
-                    completed: 'Delete workout',
-                    template: 'Delete template',
-                  }[type]
-                }
-                variant="error"
-                onPress={() => {
-                  deleteWorkout(workout.id as number).then(() => {
-                    router.back();
-                  });
-                }}
-              />
-            )}
-          </View>
-        </ScrollView>
-        <WorkoutKeyboard />
+        <ExercisePage
+          modal={{
+            addExercises: addExerciseGroups,
+            visible: addExerciseModalVisible,
+            close: () => setAddExerciseModalVisible(false),
+          }}
+        />
+
+        {workout.id && (
+          <WlbButton
+            title={
+              {
+                active: 'Cancel workout',
+                completed: 'Delete workout',
+                template: 'Delete template',
+              }[type]
+            }
+            variant="error"
+            onPress={() => {
+              deleteWorkout(workout.id as number).then(() => {
+                router.back();
+              });
+            }}
+          />
+        )}
       </WlbScreenPage>
+      <WorkoutKeyboard />
     </KeyboardContext.Provider>
   );
 }

@@ -1,4 +1,4 @@
-import { FlatList, View } from 'react-native';
+import { FlatList, ScrollView, View } from 'react-native';
 import React, { useState } from 'react';
 import { router } from 'expo-router';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
@@ -30,77 +30,75 @@ export default function TrainingTab() {
 
   return (
     <WlbScreenPage title="Start workout">
-      <View style={{ gap: 12, padding: 16 }}>
-        <WlbButton
-          onPress={() => {
-            createWorkout().then((id) => {
-              router.push(`/workouts/${id}`);
-            });
-          }}
-          variant={'primary'}
-          title="Start an empty workout"
-        />
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'flex-end',
-          }}
-        >
-          <WlbText>Templates</WlbText>
-          <View style={{ flexDirection: 'row', gap: 8 }}>
-            <WlbButton
-              size="small"
-              icon="folder"
-              onPress={() => {}}
-              variant="secondary"
-            />
-            <WlbButton
-              size="small"
-              title="Template"
-              icon="add"
-              onPress={() => router.push('workouts/new')}
-              variant="secondary"
-            />
-          </View>
+      <WlbButton
+        onPress={() => {
+          createWorkout().then((id) => {
+            router.push(`/workouts/${id}`);
+          });
+        }}
+        variant={'primary'}
+        title="Start an empty workout"
+      />
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'flex-end',
+        }}
+      >
+        <WlbText>Templates</WlbText>
+        <View style={{ flexDirection: 'row', gap: 8 }}>
+          <WlbButton
+            size="small"
+            icon="folder"
+            onPress={() => {}}
+            variant="secondary"
+          />
+          <WlbButton
+            size="small"
+            title="Template"
+            icon="add"
+            onPress={() => router.push('workouts/new')}
+            variant="secondary"
+          />
         </View>
-
-        {workouts?.map((workout) => (
-          <WlbCard
-            key={workout.id}
-            title={workout.name}
-            titleRight={
-              <WlbDropdown
-                triggerComponent={({ onPress }) => (
-                  <WlbButton
-                    onPress={onPress}
-                    variant="primary"
-                    icon="keyboard-control"
-                    size="small"
-                  />
-                )}
-                options={[
-                  {
-                    label: 'Edit',
-                    onPress: () => router.push(`/workouts/${workout.id}`),
-                  },
-                  {
-                    label: 'Delete',
-                    onPress: () => deleteWorkout(workout.id),
-                  },
-                ]}
-              />
-            }
-            onPress={() => setSelectedTemplate(workout)}
-          >
-            <WlbText>
-              {workout.exerciseGroups
-                .map((exerciseGroups) => exerciseGroups.exercise.name)
-                .join(', ')}
-            </WlbText>
-          </WlbCard>
-        ))}
       </View>
+
+      {workouts?.map((workout) => (
+        <WlbCard
+          key={workout.id}
+          title={workout.name}
+          titleRight={
+            <WlbDropdown
+              triggerComponent={({ onPress }) => (
+                <WlbButton
+                  onPress={onPress}
+                  variant="primary"
+                  icon="keyboard-control"
+                  size="small"
+                />
+              )}
+              options={[
+                {
+                  label: 'Edit',
+                  onPress: () => router.push(`/workouts/${workout.id}`),
+                },
+                {
+                  label: 'Delete',
+                  onPress: () => deleteWorkout(workout.id),
+                },
+              ]}
+            />
+          }
+          onPress={() => setSelectedTemplate(workout)}
+        >
+          <WlbText>
+            {workout.exerciseGroups
+              .map((exerciseGroups) => exerciseGroups.exercise.name)
+              .join(', ')}
+          </WlbText>
+        </WlbCard>
+      ))}
       {selectedTemplate && (
         <WlbModalPage
           visible={!!selectedTemplate}

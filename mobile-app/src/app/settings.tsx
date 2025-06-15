@@ -10,6 +10,7 @@ import { seedData } from 'db/seed';
 import { router } from 'expo-router';
 import { setDistanceUnit, setWeightUnit } from 'db/mutation';
 import { useUnit } from 'context/unit';
+import { ScrollView } from 'react-native-gesture-handler';
 
 export default function SettingsTab() {
   const [themeModalVisible, setThemeModalVisible] = useState(false);
@@ -63,95 +64,92 @@ export default function SettingsTab() {
         <WlbButton variant="text" title="Back" onPress={() => router.back()} />
       }
     >
-      <View style={{ padding: 16, gap: 16 }}>
-        <WlbCard title="Units">
-          <View style={{ gap: 12 }}>
-            <View style={{ gap: 8 }}>
-              <WlbText size={16} color="text">
-                Weight
-              </WlbText>
-              <WlbSelect
-                options={
-                  [
-                    { label: 'Kilograms (kg)', value: 'kg' },
-                    { label: 'Pounds (lbs)', value: 'lbs' },
-                  ] as const
-                }
-                value={weightUnit}
-                onChange={(value) => setWeightUnit(value)}
-              />
-            </View>
-            <View style={{ gap: 8 }}>
-              <WlbText size={16} color="text">
-                Distance
-              </WlbText>
-              <WlbSelect
-                options={
-                  [
-                    { label: 'Kilometers (km)', value: 'km' },
-                    { label: 'Miles (mi)', value: 'mi' },
-                  ] as const
-                }
-                value={distanceUnit}
-                onChange={(value) => setDistanceUnit(value)}
-              />
-            </View>
-          </View>
-        </WlbCard>
-
-        <WlbCard title="Appearance">
-          <View style={{ gap: 12 }}>
-            <WlbButton
-              variant="secondary"
-              title="Change Theme"
-              icon="palette"
-              onPress={() => setThemeModalVisible(true)}
+      <WlbCard title="Units">
+        <View style={{ gap: 12 }}>
+          <View style={{ gap: 8 }}>
+            <WlbText size={16} color="text">
+              Weight
+            </WlbText>
+            <WlbSelect
+              options={
+                [
+                  { label: 'Kilograms (kg)', value: 'kg' },
+                  { label: 'Pounds (lbs)', value: 'lbs' },
+                ] as const
+              }
+              value={weightUnit}
+              onChange={(value) => setWeightUnit(value)}
             />
-            <WlbText size={14} color="sub">
-              Customize the app's appearance with different color themes
+          </View>
+          <View style={{ gap: 8 }}>
+            <WlbText size={16} color="text">
+              Distance
+            </WlbText>
+            <WlbSelect
+              options={
+                [
+                  { label: 'Kilometers (km)', value: 'km' },
+                  { label: 'Miles (mi)', value: 'mi' },
+                ] as const
+              }
+              value={distanceUnit}
+              onChange={(value) => setDistanceUnit(value)}
+            />
+          </View>
+        </View>
+      </WlbCard>
+
+      <WlbCard title="Appearance">
+        <View style={{ gap: 12 }}>
+          <WlbButton
+            variant="secondary"
+            title="Change Theme"
+            icon="palette"
+            onPress={() => setThemeModalVisible(true)}
+          />
+          <WlbText size={14} color="sub">
+            Customize the app's appearance with different color themes
+          </WlbText>
+        </View>
+      </WlbCard>
+
+      <WlbCard title="Data Management">
+        <View style={{ gap: 12 }}>
+          <WlbButton
+            variant="secondary"
+            title="Add Sample Data"
+            icon="add"
+            onPress={handleSeedData}
+          />
+          <WlbButton
+            variant="error"
+            title="Reset All Data"
+            icon="delete"
+            onPress={handleResetData}
+          />
+          <WlbText size={14} color="sub">
+            Manage your workout data and reset if needed
+          </WlbText>
+        </View>
+      </WlbCard>
+
+      <WlbCard title="About">
+        <View style={{ gap: 12 }}>
+          <View
+            style={{ flexDirection: 'row', justifyContent: 'space-between' }}
+          >
+            <WlbText size={16} color="text">
+              App Version
+            </WlbText>
+            <WlbText size={16} color="sub">
+              1.0.0
             </WlbText>
           </View>
-        </WlbCard>
-
-        <WlbCard title="Data Management">
-          <View style={{ gap: 12 }}>
-            <WlbButton
-              variant="secondary"
-              title="Add Sample Data"
-              icon="add"
-              onPress={handleSeedData}
-            />
-            <WlbButton
-              variant="error"
-              title="Reset All Data"
-              icon="delete"
-              onPress={handleResetData}
-            />
-            <WlbText size={14} color="sub">
-              Manage your workout data and reset if needed
-            </WlbText>
-          </View>
-        </WlbCard>
-
-        <WlbCard title="About">
-          <View style={{ gap: 12 }}>
-            <View
-              style={{ flexDirection: 'row', justifyContent: 'space-between' }}
-            >
-              <WlbText size={16} color="text">
-                App Version
-              </WlbText>
-              <WlbText size={16} color="sub">
-                1.0.0
-              </WlbText>
-            </View>
-            <WlbText size={14} color="sub">
-              Workout Logbook - Track your fitness journey
-            </WlbText>
-          </View>
-        </WlbCard>
-      </View>
-
+          <WlbText size={14} color="sub">
+            Workout Logbook - Track your fitness journey
+          </WlbText>
+        </View>
+      </WlbCard>
       <ThemeSelector
         visible={themeModalVisible}
         setVisible={setThemeModalVisible}

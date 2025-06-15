@@ -7,7 +7,7 @@ import { WlbScreenPage } from 'components/WlbPage';
 import WlbModalForm from 'components/ModalForm';
 import WlbCard from 'components/WlbCard';
 import LineGraph from 'components/graphs/LineGraph';
-import { View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 
 export default function Measurements() {
   const [addMeasurementModalVisible, setAddMeasurementModalVisible] =
@@ -55,30 +55,29 @@ export default function Measurements() {
         />
       }
     >
-      <View style={{ padding: 16 }}>
-        {measurements?.map((measurement) => (
-          <WlbCard
-            key={measurement.id}
-            title={measurement.name}
-            titleRight={
-              <WlbButton
-                variant="text"
-                size="small"
-                title="Add Point"
-                onPress={() => setAddPointModalVisible(true)}
-              />
-            }
-          >
-            <LineGraph
-              data={measurement.measurementPoints.map((p) => ({
-                date: p.date,
-                value: p.value,
-              }))}
-              period="3months"
+      {measurements?.map((measurement) => (
+        <WlbCard
+          key={measurement.id}
+          title={measurement.name}
+          titleRight={
+            <WlbButton
+              variant="text"
+              size="small"
+              title="Add Point"
+              onPress={() => setAddPointModalVisible(true)}
             />
-          </WlbCard>
-        ))}
-      </View>
+          }
+        >
+          <LineGraph
+            data={measurement.measurementPoints.map((p) => ({
+              date: p.date,
+              value: p.value,
+            }))}
+            period="3months"
+          />
+        </WlbCard>
+      ))}
+
       <WlbModalForm
         visible={addMeasurementModalVisible}
         close={() => setAddMeasurementModalVisible(false)}

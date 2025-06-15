@@ -1,8 +1,8 @@
 import WlbModal from 'components/WlbModal';
 import { WlbHeader } from 'components/WlbPage';
+import { THEMES } from 'const';
 import { ThemeName, useTheme } from 'context/theme';
 import { setTheme } from 'db/mutation';
-import { THEMES } from 'context/themes';
 import { Text, FlatList, Pressable } from 'react-native';
 
 export default function ThemeSelector({

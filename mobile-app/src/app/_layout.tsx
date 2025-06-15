@@ -5,6 +5,7 @@ import db, { expo } from 'db';
 import migrations from '../../drizzle/migrations';
 import { ThemeProvider } from 'context/theme';
 import { UnitProvider } from 'context/unit';
+import { RestTimerProvider } from 'context/restTimer';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { seedData } from 'db/seed';
 import { useDrizzleStudio } from 'expo-drizzle-studio-plugin';
@@ -24,20 +25,22 @@ const App = () => {
   return (
     <ThemeProvider>
       <UnitProvider>
-        <GestureHandlerRootView>
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen
-              name="workouts/[id]"
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="exercises/[id]"
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen name="settings" options={{ headerShown: false }} />
-          </Stack>
-        </GestureHandlerRootView>
+        <RestTimerProvider>
+          <GestureHandlerRootView>
+            <Stack>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen
+                name="workouts/[id]"
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="exercises/[id]"
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen name="settings" options={{ headerShown: false }} />
+            </Stack>
+          </GestureHandlerRootView>
+        </RestTimerProvider>
       </UnitProvider>
     </ThemeProvider>
   );

@@ -8,7 +8,7 @@ import {
   type PR,
 } from 'utils/prCalculations';
 import { ExerciseGroupFull } from 'db/types';
-import { CALCULATION_TYPES } from 'config';
+import { CALCULATION_TYPES } from 'const';
 
 interface UsePRCalculationsResult {
   prs: PR[];

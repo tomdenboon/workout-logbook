@@ -4,7 +4,7 @@ import * as schema from 'db/schema';
 import { eq } from 'drizzle-orm';
 import { useState } from 'react';
 import toOptions from 'utils/toOptions';
-import { EXERCISE_CATEGORIES } from 'config';
+import { EXERCISE_CATEGORIES } from 'const';
 
 export default function useEditExerciseModal() {
   const [visible, setVisible] = useState(false);

@@ -8,7 +8,9 @@ import WlbButton from 'components/WlbButton';
 import LineGraph from 'components/graphs/LineGraph';
 import WlbCard from 'components/WlbCard';
 import { useUnit } from 'context/unit';
-import { AggregationFields, CALCULATION_TYPES } from 'config';
+import { AggregationFields, CALCULATION_TYPES } from 'const';
+import { filterDataByPeriod } from 'components/graphs/chartUtils';
+import { ScrollView } from 'react-native';
 
 const getAggregation = (
   aggregationType: AggregationFields,
@@ -76,10 +78,13 @@ function ExerciseGraph({
     <WlbCard title={label}>
       <LineGraph
         valueFormatter={(value) => formatValueWithUnit(value, field)}
-        data={graphData?.map((e) => ({
-          date: e.completedAt ?? 0,
-          value: Number(e.value ?? 0),
-        }))}
+        data={filterDataByPeriod(
+          graphData?.map((e) => ({
+            date: e.completedAt ?? 0,
+            value: Number(e.value ?? 0),
+          })),
+          '3months',
+        )}
       />
     </WlbCard>
   );

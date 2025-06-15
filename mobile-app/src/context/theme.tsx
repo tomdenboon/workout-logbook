@@ -1,4 +1,4 @@
-import { THEMES } from 'context/themes';
+import { THEMES } from 'const';
 import { useSetting } from 'hooks/useSetting';
 import React, { useMemo } from 'react';
 import { ImageStyle, StyleSheet, TextStyle, ViewStyle } from 'react-native';

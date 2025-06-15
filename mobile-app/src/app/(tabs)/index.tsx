@@ -1,17 +1,17 @@
-import BarGraph from 'components/graphs/BarGraph';
-import ThemeSelector from 'components/home/ThemeSelector';
-import WlbButton from 'components/WlbButton';
-import WlbCard from 'components/WlbCard';
 import { WlbScreenPage } from 'components/WlbPage';
-import WlbSelect from 'components/WlbSelect';
 import db from 'db';
 import { and, eq, isNotNull, sql } from 'drizzle-orm';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import React, { useState } from 'react';
 import * as schema from 'db/schema';
-import { View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import { router } from 'expo-router';
 import { useUnit } from 'context/unit';
+import BarGraph from 'components/graphs/BarGraph';
+import ThemeSelector from 'components/home/ThemeSelector';
+import WlbButton from 'components/WlbButton';
+import WlbCard from 'components/WlbCard';
+import WlbSelect from 'components/WlbSelect';
 
 export default function ProfileTab() {
   const [themeModalVisible, setThemeModalVisible] = React.useState(false);
@@ -60,34 +60,32 @@ export default function ProfileTab() {
         </View>
       }
     >
-      <View style={{ padding: 16 }}>
-        <WlbCard
-          title="General"
-          titleRight={
-            <WlbSelect
-              options={
-                [
-                  { label: '3 months', value: '3months' },
-                  { label: '1 year', value: '1year' },
-                  { label: 'All time', value: '' },
-                ] as const
-              }
-              size="small"
-              value={period}
-              onChange={(value) => setPeriod(value)}
-            />
-          }
-        >
-          <BarGraph
-            period={period}
-            valueFormatter={(value) => formatValueWithUnit(value, 'reps')}
-            data={graphData.map((item) => ({
-              date: new Date(item.month as string).getTime(),
-              value: item.value,
-            }))}
+      <WlbCard
+        title="General"
+        titleRight={
+          <WlbSelect
+            options={
+              [
+                { label: '3 months', value: '3months' },
+                { label: '1 year', value: '1year' },
+                { label: 'All time', value: '' },
+              ] as const
+            }
+            size="small"
+            value={period}
+            onChange={(value) => setPeriod(value)}
           />
-        </WlbCard>
-      </View>
+        }
+      >
+        <BarGraph
+          period={period}
+          valueFormatter={(value) => formatValueWithUnit(value, 'reps')}
+          data={graphData.map((item) => ({
+            date: new Date(item.month as string).getTime(),
+            value: item.value,
+          }))}
+        />
+      </WlbCard>
       <ThemeSelector
         visible={themeModalVisible}
         setVisible={setThemeModalVisible}

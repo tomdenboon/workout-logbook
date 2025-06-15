@@ -2,19 +2,7 @@ import { ExerciseCategory, ExerciseField, ExerciseRow } from 'db/types';
 import { SQL, sql } from 'drizzle-orm';
 import * as schema from 'db/schema';
 
-export const EXERCISE_CATEGORIES: Record<ExerciseCategory, string> = {
-  reps: 'Reps',
-  weighted: 'Weighted',
-  duration: 'Duration',
-  distance: 'Distance',
-};
-
-export const VALID_FIELDS: Record<ExerciseCategory, ExerciseField[]> = {
-  reps: ['reps'],
-  weighted: ['weight', 'reps'],
-  duration: ['time'],
-  distance: ['time', 'distance'],
-};
+export { default as THEMES } from './theme';
 
 export interface CalculationType {
   label: string;
@@ -75,4 +63,18 @@ export const CALCULATION_TYPES: Record<AggregationFields, CalculationType> = {
     sqlValue: sql<number>`${schema.exerciseRows.distance} / ${schema.exerciseRows.time}`,
     getValue: (row) => (row.distance || 0) / (row.time || 1),
   },
+};
+
+export const EXERCISE_CATEGORIES: Record<ExerciseCategory, string> = {
+  reps: 'Reps',
+  weighted: 'Weighted',
+  duration: 'Duration',
+  distance: 'Distance',
+};
+
+export const VALID_FIELDS: Record<ExerciseCategory, ExerciseField[]> = {
+  reps: ['reps'],
+  weighted: ['weight', 'reps'],
+  duration: ['time'],
+  distance: ['time', 'distance'],
 };

@@ -1,6 +1,6 @@
+import WlbTabBar from 'components/WlbTabBar';
 import { Tabs } from 'expo-router';
 import React from 'react';
-import WlbTabBar from 'components/WlbTabBar';
 
 export default function TabLayout() {
   return (

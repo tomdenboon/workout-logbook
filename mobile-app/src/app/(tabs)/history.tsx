@@ -14,9 +14,9 @@ import { router } from 'expo-router';
 import WlbButton from 'components/WlbButton';
 import WlbTimer from 'components/WlbTimer';
 import { ExerciseCategory, ExerciseRow } from 'db/types';
-import { VALID_FIELDS } from 'config';
 import { useUnit } from 'context/unit';
 import { usePRCalculations } from 'hooks/usePRCalculations';
+import { VALID_FIELDS } from 'const';
 
 function WorkoutCard({
   workoutId,
@@ -184,51 +184,47 @@ function WorkoutCard({
         }
         title={workoutDetails.name}
       >
-        <ScrollView contentContainerStyle={{ gap: 16, padding: 16 }}>
-          {workoutDetails.exerciseGroups.map((group) => (
-            <View key={group.id} style={{ gap: 8 }}>
-              <WlbText fontWeight="bold">{group.exercise.name}</WlbText>
-              <View style={{ gap: 4 }}>
-                {group.exerciseRows.map((row, index) => {
-                  const rowPRs = prs.filter(
-                    (pr) => pr.exerciseRowId === row.id,
-                  );
-                  return (
-                    <View key={row.id} style={{ gap: 4 }}>
+        {workoutDetails.exerciseGroups.map((group) => (
+          <View key={group.id} style={{ gap: 8 }}>
+            <WlbText fontWeight="bold">{group.exercise.name}</WlbText>
+            <View style={{ gap: 4 }}>
+              {group.exerciseRows.map((row, index) => {
+                const rowPRs = prs.filter((pr) => pr.exerciseRowId === row.id);
+                return (
+                  <View key={row.id} style={{ gap: 4 }}>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                      }}
+                    >
+                      <WlbText color="sub">Set {index + 1}</WlbText>
+                      <WlbText>
+                        {exerciseRowToText(group.exercise.type, row)}
+                      </WlbText>
+                    </View>
+                    {rowPRs.length > 0 && (
                       <View
                         style={{
                           flexDirection: 'row',
-                          justifyContent: 'space-between',
+                          flexWrap: 'wrap',
+                          gap: 8,
+                          justifyContent: 'flex-end',
                         }}
                       >
-                        <WlbText color="sub">Set {index + 1}</WlbText>
-                        <WlbText>
-                          {exerciseRowToText(group.exercise.type, row)}
-                        </WlbText>
+                        {rowPRs.map((pr) => (
+                          <WlbText key={pr.badgeType} size={14}>
+                            🏆 {pr.badgeType}
+                          </WlbText>
+                        ))}
                       </View>
-                      {rowPRs.length > 0 && (
-                        <View
-                          style={{
-                            flexDirection: 'row',
-                            flexWrap: 'wrap',
-                            gap: 8,
-                            justifyContent: 'flex-end',
-                          }}
-                        >
-                          {rowPRs.map((pr) => (
-                            <WlbText key={pr.badgeType} size={14}>
-                              🏆 {pr.badgeType}
-                            </WlbText>
-                          ))}
-                        </View>
-                      )}
-                    </View>
-                  );
-                })}
-              </View>
+                    )}
+                  </View>
+                );
+              })}
             </View>
-          ))}
-        </ScrollView>
+          </View>
+        ))}
       </WlbModalPage>
     </>
   );
@@ -250,12 +246,10 @@ export default function History() {
   );
 
   return (
-    <WlbScreenPage title="History">
+    <WlbScreenPage title="History" noContainer>
       {groupedWorkouts.length > 0 ? (
         <SectionList
-          style={{
-            padding: 16,
-          }}
+          contentContainerStyle={{ padding: 16 }}
           sections={groupedWorkouts}
           ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
           SectionSeparatorComponent={() => <View style={{ height: 16 }} />}

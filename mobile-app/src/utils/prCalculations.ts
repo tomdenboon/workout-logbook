@@ -1,12 +1,12 @@
-import { CalculationType, CALCULATION_TYPES } from 'config';
-import { ExerciseGroupFull, ExerciseCategory } from 'db/types';
+import { ExerciseGroupFull } from 'db/types';
+import { CALCULATION_TYPES } from 'const';
 
 export interface PR {
   exerciseRowId: number;
   badgeType: string;
 }
 
-const PR_CONFIGS: Record<ExerciseCategory, CalculationType[]> = {
+const PR_CONFIGS = {
   weighted: [
     CALCULATION_TYPES.weight,
     CALCULATION_TYPES.reps,
@@ -16,7 +16,7 @@ const PR_CONFIGS: Record<ExerciseCategory, CalculationType[]> = {
   reps: [CALCULATION_TYPES.reps],
   duration: [CALCULATION_TYPES.time],
   distance: [CALCULATION_TYPES.distance],
-};
+} as const;
 
 export function calculateWorkoutPRs(
   exerciseGroups: ExerciseGroupFull[],

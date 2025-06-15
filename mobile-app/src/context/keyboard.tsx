@@ -5,7 +5,7 @@ import { TextInput } from 'react-native';
 export interface KeyboardData {
   exerciseGroupIndex: number;
   exerciseRowIndex: number;
-  field: ExerciseField;
+  fieldIndex: number;
   onChangeText: (value: string) => void;
   inputRef: React.RefObject<TextInput | null>;
 }

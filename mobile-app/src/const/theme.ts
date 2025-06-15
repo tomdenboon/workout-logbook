@@ -1,4 +1,4 @@
-export const THEMES = {
+export default {
   terminal: {
     bg: '#191a1b',
     main: '#79a617',

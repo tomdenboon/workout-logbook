@@ -52,17 +52,28 @@ export const WlbHeader = ({
   );
 };
 
-export function WlbModalPage(props: HeaderProps & ModalProps) {
+export function WlbModalPage(
+  props: HeaderProps & ModalProps & { noContainer?: boolean },
+) {
   return (
     <WlbModal {...props}>
       <WlbHeader {...props} />
-      {props.children}
+      {props.noContainer ? (
+        props.children
+      ) : (
+        <ScrollView contentContainerStyle={{ padding: 16, gap: 16 }}>
+          {props.children}
+        </ScrollView>
+      )}
     </WlbModal>
   );
 }
 
 export function WlbScreenPage(
-  props: HeaderProps & { children: React.ReactNode },
+  props: HeaderProps & {
+    children: React.ReactNode;
+    noContainer?: boolean;
+  },
 ) {
   const theme = useTheme();
 
@@ -74,7 +85,13 @@ export function WlbScreenPage(
       }}
     >
       <WlbHeader {...props} />
-      {props.children}
+      {props.noContainer ? (
+        props.children
+      ) : (
+        <ScrollView contentContainerStyle={{ padding: 16, gap: 16 }}>
+          {props.children}
+        </ScrollView>
+      )}
     </View>
   );
 }
