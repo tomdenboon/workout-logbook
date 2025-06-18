@@ -52,23 +52,35 @@ const ActiveWorkout = () => {
     }),
   );
 
-  return workout ? (
+  if (!workout) return null;
+
+  return (
     <View
       style={{
-        backgroundColor: theme.bg,
-        borderBottomWidth: 2,
-        borderColor: theme.subAlt,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        backgroundColor: theme.subAlt,
         padding: 16,
+        gap: 12,
       }}
     >
+      <MaterialCommunityIcons name="clock" size={28} color={theme.main} />
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <WlbText size={14} fontWeight="bold" color="main">
+          Active workout in progress
+        </WlbText>
+        <WlbText size={12}>Don't forget to finish your session!</WlbText>
+      </View>
       <WlbButton
-        title="Resume workout"
+        title="Resume"
+        size="small"
         onPress={() => {
           router.push(`/workouts/${workout.id}`);
         }}
       />
     </View>
-  ) : null;
+  );
 };
 
 const WlbTabBar = ({ state, navigation }: BottomTabBarProps) => {
