@@ -22,7 +22,7 @@ export default function WlbSelect<T>({
     <WlbDropdown
       triggerComponent={({ onPress }) => (
         <WlbButton
-          variant="secondary"
+          color="subAlt"
           size={size}
           title={
             options.find((option) => option.value === value)?.label ?? 'Select'

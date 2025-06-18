@@ -38,7 +38,7 @@ function useCurrentWorkout() {
 
   return {
     data: data.data,
-    waitForData: id !== undefined && data.data === undefined,
+    waitForData: id !== undefined && data.data === undefined && id !== 'new',
   };
 }
 

@@ -5,10 +5,10 @@ import db, { expo } from 'db';
 import migrations from '../../drizzle/migrations';
 import { ThemeProvider } from 'context/theme';
 import { UnitProvider } from 'context/unit';
-import { RestTimerProvider } from 'context/restTimer';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { seedData } from 'db/seed';
 import { useDrizzleStudio } from 'expo-drizzle-studio-plugin';
+import { RestTimerProvider } from 'context/restTimer';
 
 const App = () => {
   useDrizzleStudio(expo);

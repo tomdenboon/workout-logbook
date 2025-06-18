@@ -1,5 +1,5 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import { WlbScreenPage } from 'components/WlbPage';
+import { WlbScreenPage, WlbHeader } from 'components/WlbPage';
 import * as schema from 'db/schema';
 import db from 'db';
 import { and, eq, isNotNull, max, SQL, sql, sum } from 'drizzle-orm';
@@ -102,15 +102,23 @@ export default function Exercise() {
 
   return (
     <WlbScreenPage
-      title={exercise?.[0]?.name}
-      headerLeft={
-        <WlbButton variant="text" title="Back" onPress={() => router.back()} />
-      }
-      headerRight={
-        <WlbButton
-          variant="text"
-          title="Edit"
-          onPress={() => router.push(`/schema.exercises/${id}/edit`)}
+      header={
+        <WlbHeader
+          title={exercise?.[0]?.name}
+          headerLeft={
+            <WlbButton
+              color="text"
+              title="Back"
+              onPress={() => router.back()}
+            />
+          }
+          headerRight={
+            <WlbButton
+              color="text"
+              title="Edit"
+              onPress={() => router.push(`/schema.exercises/${id}/edit`)}
+            />
+          }
         />
       }
     >

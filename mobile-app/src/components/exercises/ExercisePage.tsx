@@ -13,6 +13,7 @@ import { useThemedStyleSheet } from 'context/theme';
 import useEditExerciseModal from 'components/exercises/useEditExerciseModal';
 import { router } from 'expo-router';
 import { EXERCISE_CATEGORIES } from 'const';
+import WlbInput from 'components/WlbInput';
 
 export default function ExercisePage({
   modal,
@@ -26,6 +27,7 @@ export default function ExercisePage({
   const styles = useStyles();
   const editExerciseModal = useEditExerciseModal();
   const [selectedExercises, setSelectedExercises] = useState<Exercise[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const { data: exercises } = useLiveQuery(
     db.select().from(schema.exercises).orderBy(schema.exercises.name),
   );
@@ -40,7 +42,11 @@ export default function ExercisePage({
     }
   };
 
-  const groupedExercises = exercises?.reduce((acc, exercise) => {
+  const filteredExercises = exercises?.filter((exercise) =>
+    exercise.name.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
+
+  const groupedExercises = filteredExercises?.reduce((acc, exercise) => {
     const firstLetter = (exercise.name[0] ?? '-').toUpperCase();
     if (!acc[firstLetter]) {
       acc[firstLetter] = [];
@@ -51,45 +57,64 @@ export default function ExercisePage({
 
   const editExerciseButton = (
     <WlbButton
-      variant="text"
+      variant="ghost"
       onPress={() => editExerciseModal.openModal()}
       title="New"
+    />
+  );
+
+  const searchInput = (
+    <WlbInput
+      value={searchTerm}
+      onChangeText={setSearchTerm}
+      placeholder="Search exercises..."
     />
   );
 
   const container = (children: React.ReactNode) =>
     modal ? (
       <WlbModalPage
-        title="Add exercises"
-        headerLeft={
-          <View style={{ flexDirection: 'row', gap: 8 }}>
-            <WlbButton
-              variant="secondary"
-              size="small"
-              icon="close"
-              onPress={modal.close}
-            />
-            {editExerciseButton}
-          </View>
-        }
-        headerRight={
-          <WlbButton
-            variant="text"
-            title="Add"
-            onPress={() => {
-              modal.addExercises(selectedExercises);
-              modal.close();
-            }}
+        {...modal}
+        header={
+          <WlbHeader
+            title="Add exercises"
+            headerLeft={
+              <View style={{ flexDirection: 'row', gap: 8 }}>
+                <WlbButton
+                  color="subAlt"
+                  size="small"
+                  icon="close"
+                  onPress={modal.close}
+                />
+                {editExerciseButton}
+              </View>
+            }
+            headerRight={
+              <WlbButton
+                variant="ghost"
+                title="Add"
+                onPress={() => {
+                  modal.addExercises(selectedExercises);
+                  modal.close();
+                }}
+              />
+            }
+            headerBottom={searchInput}
           />
         }
-        {...modal}
+        noContainer
       >
         {children}
       </WlbModalPage>
     ) : (
       <WlbScreenPage
-        title="Exercises"
-        headerLeft={editExerciseButton}
+        header={
+          <WlbHeader
+            title="Exercises"
+            headerLeft={editExerciseButton}
+            headerBottom={searchInput}
+          />
+        }
         noContainer
       >
         {children}

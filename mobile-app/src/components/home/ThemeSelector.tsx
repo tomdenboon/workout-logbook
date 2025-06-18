@@ -1,5 +1,4 @@
-import WlbModal from 'components/WlbModal';
-import { WlbHeader } from 'components/WlbPage';
+import { WlbModalPage, WlbHeader } from 'components/WlbPage';
 import { THEMES } from 'const';
 import { ThemeName, useTheme } from 'context/theme';
 import { setTheme } from 'db/mutation';
@@ -23,8 +22,12 @@ export default function ThemeSelector({
   });
 
   return (
-    <WlbModal visible={visible} close={() => setVisible(false)}>
-      <WlbHeader title="Theme" />
+    <WlbModalPage
+      visible={visible}
+      close={() => setVisible(false)}
+      header={<WlbHeader title="Theme" />}
+      noContainer
+    >
       <FlatList
         data={colorSortedThemes}
         renderItem={({ item }) => (
@@ -54,6 +57,6 @@ export default function ThemeSelector({
           </Pressable>
         )}
       />
-    </WlbModal>
+    </WlbModalPage>
   );
 }

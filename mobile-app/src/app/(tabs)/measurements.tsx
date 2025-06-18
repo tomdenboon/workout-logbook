@@ -3,7 +3,7 @@ import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import db from 'db';
 import * as schema from 'db/schema';
 import WlbButton from 'components/WlbButton';
-import { WlbScreenPage } from 'components/WlbPage';
+import { WlbScreenPage, WlbHeader } from 'components/WlbPage';
 import WlbModalForm from 'components/ModalForm';
 import WlbCard from 'components/WlbCard';
 import LineGraph from 'components/graphs/LineGraph';
@@ -46,12 +46,16 @@ export default function Measurements() {
 
   return (
     <WlbScreenPage
-      title="Measurements"
-      headerRight={
-        <WlbButton
-          variant="text"
-          onPress={() => setAddMeasurementModalVisible(true)}
-          title="New"
+      header={
+        <WlbHeader
+          title="Measurements"
+          headerRight={
+            <WlbButton
+              variant="ghost"
+              onPress={() => setAddMeasurementModalVisible(true)}
+              title="New"
+            />
+          }
         />
       }
     >
@@ -61,7 +65,7 @@ export default function Measurements() {
           title={measurement.name}
           titleRight={
             <WlbButton
-              variant="text"
+              variant="ghost"
               size="small"
               title="Add Point"
               onPress={() => setAddPointModalVisible(true)}

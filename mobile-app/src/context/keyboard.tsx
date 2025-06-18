@@ -6,7 +6,9 @@ export interface KeyboardData {
   exerciseGroupIndex: number;
   exerciseRowIndex: number;
   fieldIndex: number;
+  field: ExerciseField;
   onChangeText: (value: string) => void;
+  saveExerciseRow: (isLifted?: boolean) => void;
   inputRef: React.RefObject<TextInput | null>;
 }
 

@@ -1,4 +1,4 @@
-import { WlbScreenPage } from 'components/WlbPage';
+import { WlbScreenPage, WlbHeader } from 'components/WlbPage';
 import db from 'db';
 import { and, eq, isNotNull, sql } from 'drizzle-orm';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
@@ -12,9 +12,12 @@ import ThemeSelector from 'components/home/ThemeSelector';
 import WlbButton from 'components/WlbButton';
 import WlbCard from 'components/WlbCard';
 import WlbSelect from 'components/WlbSelect';
+import { Theme, useTheme } from 'context/theme';
+import { setTheme } from 'db/mutation';
 
 export default function ProfileTab() {
   const [themeModalVisible, setThemeModalVisible] = React.useState(false);
+  const { theme, ...rest } = useTheme();
   const [period, setPeriod] = useState<'3months' | '1year' | ''>('');
   const { formatValueWithUnit } = useUnit();
   const { data: graphData } = useLiveQuery(
@@ -42,22 +45,28 @@ export default function ProfileTab() {
 
   return (
     <WlbScreenPage
-      title="Home"
-      headerRight={
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <WlbButton
-            variant="text"
-            size="small"
-            icon="settings"
-            onPress={() => router.push('/settings')}
-          />
-          <WlbButton
-            variant="text"
-            size="small"
-            icon="palette"
-            onPress={() => setThemeModalVisible(true)}
-          />
-        </View>
+      header={
+        <WlbHeader
+          title="Home"
+          headerRight={
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <WlbButton
+                color="sub"
+                variant="ghost"
+                size="small"
+                icon="settings"
+                onPress={() => router.push('/settings')}
+              />
+              <WlbButton
+                color="text"
+                variant="ghost"
+                size="small"
+                icon="palette"
+                onPress={() => setThemeModalVisible(true)}
+              />
+            </View>
+          }
+        />
       }
     >
       <WlbCard

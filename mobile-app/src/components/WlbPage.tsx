@@ -53,11 +53,11 @@ export const WlbHeader = ({
 };
 
 export function WlbModalPage(
-  props: HeaderProps & ModalProps & { noContainer?: boolean },
+  props: { header: React.ReactNode } & ModalProps & { noContainer?: boolean },
 ) {
   return (
     <WlbModal {...props}>
-      <WlbHeader {...props} />
+      {props.header}
       {props.noContainer ? (
         props.children
       ) : (
@@ -69,12 +69,11 @@ export function WlbModalPage(
   );
 }
 
-export function WlbScreenPage(
-  props: HeaderProps & {
-    children: React.ReactNode;
-    noContainer?: boolean;
-  },
-) {
+export function WlbScreenPage(props: {
+  header: React.ReactNode;
+  children: React.ReactNode;
+  noContainer?: boolean;
+}) {
   const theme = useTheme();
 
   return (
@@ -84,7 +83,7 @@ export function WlbScreenPage(
         backgroundColor: theme.bg,
       }}
     >
-      <WlbHeader {...props} />
+      {props.header}
       {props.noContainer ? (
         props.children
       ) : (

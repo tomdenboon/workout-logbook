@@ -14,6 +14,7 @@ export default forwardRef<
     onPress?: () => void;
     onFocus?: () => void;
     onBlur?: () => void;
+    error?: boolean;
     showSoftInputOnFocus?: boolean;
     keyboardType?: TextInputProps['keyboardType'];
     onSelectionChange?: TextInputProps['onSelectionChange'];
@@ -36,6 +37,7 @@ export default forwardRef<
       editable = true,
       onPress,
       onLayout,
+      error,
     },
     ref,
   ) => {
@@ -59,7 +61,11 @@ export default forwardRef<
             color: theme.text,
             borderRadius: 8,
             padding: 8,
-            borderColor: focused ? theme.text : 'transparent',
+            borderColor: error
+              ? theme.error
+              : focused
+              ? theme.text
+              : 'transparent',
             fontSize: 16,
             borderWidth: 2,
             paddingVertical: 0,

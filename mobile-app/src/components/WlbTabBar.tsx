@@ -62,7 +62,6 @@ const ActiveWorkout = () => {
       }}
     >
       <WlbButton
-        variant="primary"
         title="Resume workout"
         onPress={() => {
           router.push(`/workouts/${workout.id}`);

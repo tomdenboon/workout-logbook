@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import WlbInput from './WlbInput';
 import WlbText from './WlbText';
 import WlbSelect from 'components/WlbSelect';
-import { WlbModalPage } from 'components/WlbPage';
+import { WlbModalPage, WlbHeader } from 'components/WlbPage';
 
 interface InputProps {
   type: 'text' | 'select';
@@ -38,20 +38,24 @@ export default function ModalForm(props: ModalProps) {
     <WlbModalPage
       visible={visible}
       close={close}
-      title={title}
-      headerLeft={
-        <WlbButton
-          icon="close"
-          variant="secondary"
-          size="small"
-          onPress={close}
-        />
-      }
-      headerRight={
-        <WlbButton
-          variant="text"
-          title="Save"
-          onPress={() => props.onSave(value)}
+      header={
+        <WlbHeader
+          title={title}
+          headerLeft={
+            <WlbButton
+              icon="close"
+              color="subAlt"
+              size="small"
+              onPress={close}
+            />
+          }
+          headerRight={
+            <WlbButton
+              color="text"
+              title="Save"
+              onPress={() => props.onSave(value)}
+            />
+          }
         />
       }
     >

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Alert } from 'react-native';
-import { WlbScreenPage } from 'components/WlbPage';
+import { WlbScreenPage, WlbHeader } from 'components/WlbPage';
 import WlbCard from 'components/WlbCard';
 import WlbButton from 'components/WlbButton';
 import WlbText from 'components/WlbText';
@@ -59,15 +59,23 @@ export default function SettingsTab() {
 
   return (
     <WlbScreenPage
-      title="Settings"
-      headerLeft={
-        <WlbButton variant="text" title="Back" onPress={() => router.back()} />
+      header={
+        <WlbHeader
+          title="Settings"
+          headerLeft={
+            <WlbButton
+              variant="ghost"
+              title="Back"
+              onPress={() => router.back()}
+            />
+          }
+        />
       }
     >
       <WlbCard title="Units">
         <View style={{ gap: 12 }}>
           <View style={{ gap: 8 }}>
-            <WlbText size={16} color="text">
+            <WlbText size={16} color="subAlt">
               Weight
             </WlbText>
             <WlbSelect
@@ -82,7 +90,7 @@ export default function SettingsTab() {
             />
           </View>
           <View style={{ gap: 8 }}>
-            <WlbText size={16} color="text">
+            <WlbText size={16} color="subAlt">
               Distance
             </WlbText>
             <WlbSelect
@@ -102,7 +110,7 @@ export default function SettingsTab() {
       <WlbCard title="Appearance">
         <View style={{ gap: 12 }}>
           <WlbButton
-            variant="secondary"
+            color="subAlt"
             title="Change Theme"
             icon="palette"
             onPress={() => setThemeModalVisible(true)}
@@ -116,13 +124,13 @@ export default function SettingsTab() {
       <WlbCard title="Data Management">
         <View style={{ gap: 12 }}>
           <WlbButton
-            variant="secondary"
+            color="subAlt"
             title="Add Sample Data"
             icon="add"
             onPress={handleSeedData}
           />
           <WlbButton
-            variant="error"
+            color="error"
             title="Reset All Data"
             icon="delete"
             onPress={handleResetData}

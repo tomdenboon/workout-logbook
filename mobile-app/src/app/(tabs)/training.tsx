@@ -4,7 +4,7 @@ import { router } from 'expo-router';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import WlbButton from 'components/WlbButton';
 import WlbCard from 'components/WlbCard';
-import { WlbModalPage, WlbScreenPage } from 'components/WlbPage';
+import { WlbModalPage, WlbScreenPage, WlbHeader } from 'components/WlbPage';
 import WlbText from 'components/WlbText';
 import db from 'db';
 import * as schema from 'db/schema';
@@ -29,14 +29,13 @@ export default function TrainingTab() {
   );
 
   return (
-    <WlbScreenPage title="Start workout">
+    <WlbScreenPage header={<WlbHeader title="Start workout" />}>
       <WlbButton
         onPress={() => {
           createWorkout().then((id) => {
             router.push(`/workouts/${id}`);
           });
         }}
-        variant={'primary'}
         title="Start an empty workout"
       />
       <View
@@ -52,14 +51,14 @@ export default function TrainingTab() {
             size="small"
             icon="folder"
             onPress={() => {}}
-            variant="secondary"
+            color="subAlt"
           />
           <WlbButton
             size="small"
             title="Template"
             icon="add"
             onPress={() => router.push('workouts/new')}
-            variant="secondary"
+            color="subAlt"
           />
         </View>
       </View>
@@ -73,7 +72,6 @@ export default function TrainingTab() {
               triggerComponent={({ onPress }) => (
                 <WlbButton
                   onPress={onPress}
-                  variant="primary"
                   icon="keyboard-control"
                   size="small"
                 />
@@ -103,7 +101,7 @@ export default function TrainingTab() {
         <WlbModalPage
           visible={!!selectedTemplate}
           close={() => setSelectedTemplate(undefined)}
-          title={selectedTemplate.name}
+          header={<WlbHeader title={selectedTemplate.name} />}
         >
           <WlbButton
             title="Start workout"

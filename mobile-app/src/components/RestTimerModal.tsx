@@ -1,14 +1,10 @@
 import React, { useState } from 'react';
 import { View } from 'react-native';
-import WlbModal from './WlbModal';
 import WlbText from './WlbText';
 import WlbButton from './WlbButton';
-import { useThemedStyleSheet } from 'context/theme';
-import { useSetting } from 'hooks/useSetting';
-import { setSetting } from 'db/mutation';
-import { useRestTimer } from 'context/restTimer';
 import { formatTime } from 'hooks/useTimer';
-import { WlbModalPage } from 'components/WlbPage';
+import { WlbModalPage, WlbHeader } from 'components/WlbPage';
+import { useRestTimer } from 'context/restTimer';
 
 interface RestTimerModalProps {}
 
@@ -28,19 +24,23 @@ export default function RestTimerModal({}: RestTimerModalProps) {
   return (
     <>
       <WlbButton
-        variant="secondary"
+        color="subAlt"
         icon="timer"
         onPress={() => setRestTimerModalVisible(true)}
       />
       <WlbModalPage
-        title="Rest Timer"
         visible={restTimerModalVisible}
         close={() => setRestTimerModalVisible(false)}
-        headerLeft={
-          <WlbButton
-            icon="close"
-            onPress={() => setRestTimerModalVisible(false)}
-            variant="secondary"
+        header={
+          <WlbHeader
+            title="Rest Timer"
+            headerLeft={
+              <WlbButton
+                icon="close"
+                onPress={() => setRestTimerModalVisible(false)}
+                color="subAlt"
+              />
+            }
           />
         }
       >
@@ -53,12 +53,12 @@ export default function RestTimerModal({}: RestTimerModalProps) {
 
           <View style={{ flexDirection: 'row', gap: 8 }}>
             <WlbButton
-              variant="text"
+              variant="ghost"
               title="-15s"
               onPress={() => adjustTimer(-15)}
             />
             <WlbButton
-              variant="text"
+              variant="ghost"
               title="+15s"
               onPress={() => adjustTimer(15)}
             />
@@ -66,7 +66,7 @@ export default function RestTimerModal({}: RestTimerModalProps) {
         </View>
 
         <WlbButton
-          variant={isActive ? 'error' : 'primary'}
+          color={isActive ? 'error' : 'subAlt'}
           title={isActive ? 'Cancel' : 'Start'}
           onPress={() => (isActive ? stopTimer() : startTimer())}
         />

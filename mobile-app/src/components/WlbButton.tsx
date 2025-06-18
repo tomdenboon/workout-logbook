@@ -8,7 +8,8 @@ export interface WlbButtonProps {
   icon?: keyof typeof MaterialIcons.glyphMap;
   title?: string;
   size?: 'small' | 'medium';
-  variant?: 'error' | 'primary' | 'secondary' | 'text' | 'transparent';
+  variant?: 'outlined' | 'filled' | 'ghost';
+  color?: Exclude<keyof Theme, 'bg'>;
   onPress: () => void;
   style?: StyleProp<ViewStyle>;
 }
@@ -17,28 +18,30 @@ export default function Button({
   icon,
   onPress,
   size = 'medium',
-  variant = 'primary',
+  variant = 'filled',
+  color = 'main',
   title,
   style,
 }: WlbButtonProps) {
   const theme = useTheme();
-  const styles = useButtonStyles(variant, size);
-  const textColor = {
-    primary: 'bg',
-    secondary: 'text',
-    text: 'main',
-    error: 'bg',
-    transparent: 'text',
-  }[variant] as keyof Theme;
+  const styles = useButtonStyles(variant, color, size);
 
   const textColorPressed = (pressed: boolean) => {
     if (!pressed) {
-      return textColor;
-    }
-    if (variant === 'text') {
+      if (variant === 'ghost' || variant === 'outlined') {
+        return color;
+      } else if (variant === 'filled' && color === 'subAlt') {
+        return 'text';
+      } else {
+        return 'bg';
+      }
+    } else {
+      if (variant === 'filled') {
+        return 'bg';
+      }
+
       return 'sub';
     }
-    return 'bg';
   };
 
   return (
@@ -48,8 +51,12 @@ export default function Button({
         styles.button,
         style,
         pressed &&
-          variant !== 'text' && {
+          variant === 'filled' && {
             backgroundColor: theme.sub,
+          },
+        pressed &&
+          variant === 'outlined' && {
+            borderColor: theme.sub,
           },
       ]}
     >
@@ -82,7 +89,8 @@ export default function Button({
 }
 
 const useButtonStyles = (
-  variant: 'error' | 'primary' | 'secondary' | 'text' | 'transparent',
+  variant: 'outlined' | 'filled' | 'ghost',
+  color: keyof Theme,
   size: 'small' | 'medium',
 ) =>
   useThemedStyleSheet(
@@ -91,7 +99,14 @@ const useButtonStyles = (
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        ...(variant !== 'text' && {
+        ...(variant === 'ghost' && {
+          backgroundColor: 'transparent',
+        }),
+        ...(variant === 'outlined' && {
+          borderWidth: 2,
+          borderColor: theme.subAlt,
+        }),
+        ...((variant === 'filled' || variant === 'outlined') && {
           borderRadius: 8,
           height: {
             small: 24,
@@ -101,14 +116,36 @@ const useButtonStyles = (
             small: 8,
             medium: 12,
           }[size],
-          backgroundColor: {
-            primary: theme.main,
-            secondary: theme.subAlt,
+        }),
+        ...(variant === 'outlined' && {
+          borderColor: {
+            main: theme.main,
+            sub: theme.sub,
+            subAlt: theme.subAlt,
+            bg: theme.bg,
+            text: theme.text,
             error: theme.error,
-            transparent: theme.bg,
-          }[variant],
+          }[color],
+          backgroundColor: {
+            main: theme.bg,
+            sub: theme.bg,
+            subAlt: theme.bg,
+            bg: theme.bg,
+            text: theme.bg,
+            error: theme.bg,
+          }[color],
+        }),
+        ...(variant === 'filled' && {
+          backgroundColor: {
+            error: theme.error,
+            main: theme.main,
+            sub: theme.sub,
+            subAlt: theme.subAlt,
+            bg: theme.bg,
+            text: theme.text,
+          }[color],
         }),
       },
     }),
-    [variant, size],
+    [color, size],
   );

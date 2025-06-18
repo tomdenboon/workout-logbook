@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { WlbModalPage, WlbScreenPage } from 'components/WlbPage';
+import { WlbHeader, WlbModalPage, WlbScreenPage } from 'components/WlbPage';
 import { SectionList, View, ScrollView } from 'react-native';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import db from 'db';
@@ -96,7 +96,6 @@ function WorkoutCard({
             triggerComponent={({ onPress }) => (
               <WlbButton
                 onPress={onPress}
-                variant="primary"
                 size="small"
                 icon="keyboard-control"
               />
@@ -155,34 +154,41 @@ function WorkoutCard({
       <WlbModalPage
         visible={showDetails}
         close={() => setShowDetails(false)}
-        headerLeft={
-          <WlbButton
-            variant="secondary"
-            icon="close"
-            size="small"
-            onPress={() => setShowDetails(false)}
+        header={
+          <WlbHeader
+            title={workoutDetails.name}
+            headerLeft={
+              <WlbButton
+                color="subAlt"
+                icon="close"
+                size="small"
+                onPress={() => setShowDetails(false)}
+              />
+            }
+            headerBottom={
+              <View style={{ gap: 8 }}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <WlbText color="sub">{formatDate()}</WlbText>
+                  {workoutDetails.startedAt && (
+                    <WlbTimer
+                      start={workoutDetails.startedAt}
+                      end={workoutDetails.completedAt}
+                    />
+                  )}
+                </View>
+
+                {totalVolume > 0 && (
+                  <WlbText>Total Volume: {totalVolumeFormatted}</WlbText>
+                )}
+              </View>
+            }
           />
         }
-        headerBottom={
-          <View style={{ gap: 8 }}>
-            <View
-              style={{ flexDirection: 'row', justifyContent: 'space-between' }}
-            >
-              <WlbText color="sub">{formatDate()}</WlbText>
-              {workoutDetails.startedAt && (
-                <WlbTimer
-                  start={workoutDetails.startedAt}
-                  end={workoutDetails.completedAt}
-                />
-              )}
-            </View>
-
-            {totalVolume > 0 && (
-              <WlbText>Total Volume: {totalVolumeFormatted}</WlbText>
-            )}
-          </View>
-        }
-        title={workoutDetails.name}
       >
         {workoutDetails.exerciseGroups.map((group) => (
           <View key={group.id} style={{ gap: 8 }}>
@@ -246,7 +252,7 @@ export default function History() {
   );
 
   return (
-    <WlbScreenPage title="History" noContainer>
+    <WlbScreenPage header={<WlbHeader title="History" />} noContainer>
       {groupedWorkouts.length > 0 ? (
         <SectionList
           contentContainerStyle={{ padding: 16 }}
