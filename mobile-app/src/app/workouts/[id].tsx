@@ -514,7 +514,7 @@ function WorkoutKeyboard() {
       style={{
         padding: 8,
         gap: 8,
-        borderTopWidth: 2,
+        borderTopWidth: 1,
         borderTopColor: theme.subAlt,
         backgroundColor: theme.bg,
       }}

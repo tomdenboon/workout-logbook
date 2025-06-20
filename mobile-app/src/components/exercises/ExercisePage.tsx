@@ -181,7 +181,7 @@ const useStyles = () =>
       justifyContent: 'flex-end',
       backgroundColor: theme.bg,
       borderColor: theme.subAlt,
-      borderBottomWidth: 2,
+      borderBottomWidth: 1,
     },
     selectedContainer: {
       position: 'absolute',

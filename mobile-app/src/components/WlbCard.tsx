@@ -25,7 +25,7 @@ export default function WlbCard({
           padding: 12,
           borderRadius: 10,
           borderColor: pressed && onPress ? theme.sub : theme.subAlt,
-          borderWidth: 2,
+          borderWidth: 1,
           backgroundColor: theme.bg,
         },
         style,

@@ -18,17 +18,32 @@ export default function WlbSelect<T>({
   onChange: (value: T) => void;
   options: { label: string; value: T }[];
 }) {
+  const theme = useTheme();
+
   return (
     <WlbDropdown
       triggerComponent={({ onPress }) => (
-        <WlbButton
-          color="subAlt"
-          size={size}
-          title={
-            options.find((option) => option.value === value)?.label ?? 'Select'
-          }
+        <Pressable
+          style={({ pressed }) => ({
+            backgroundColor: theme.subAlt,
+            borderRadius: 8,
+            paddingHorizontal: 8,
+            justifyContent: 'center',
+            borderWidth: 2,
+            borderColor: pressed ? theme.text : 'transparent',
+            paddingVertical: 0,
+            height: {
+              small: 24,
+              medium: 36,
+            }[size],
+          })}
           onPress={onPress}
-        />
+        >
+          <WlbText>
+            {options.find((option) => option.value === value)?.label ??
+              'Select'}
+          </WlbText>
+        </Pressable>
       )}
       options={options.map((option) => ({
         label: option.label,

@@ -39,7 +39,7 @@ export default function ThemeSelector({
               margin: 4,
               marginHorizontal: 8,
               borderRadius: 8,
-              borderWidth: 2,
+              borderWidth: 1,
               borderColor: theme === item ? THEMES[item].main : 'transparent',
               flex: 1,
             }}

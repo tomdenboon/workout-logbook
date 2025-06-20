@@ -139,9 +139,9 @@ const LineGraph = ({
           <View
             style={{
               flex: 1,
-              borderBottomWidth: 2,
+              borderBottomWidth: 1,
               borderBottomColor: theme.subAlt,
-              borderTopWidth: 2,
+              borderTopWidth: 1,
               borderTopColor: theme.subAlt,
             }}
             onLayout={handleChartLayout}

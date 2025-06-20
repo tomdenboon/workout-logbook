@@ -91,7 +91,7 @@ const WlbTabBar = ({ state, navigation }: BottomTabBarProps) => {
       edges={['bottom']}
       style={[
         {
-          borderTopWidth: 2,
+          borderTopWidth: 1,
           backgroundColor: theme.bg,
           borderTopColor: theme.subAlt,
         },

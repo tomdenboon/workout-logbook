@@ -25,7 +25,7 @@ export const WlbHeader = ({
       edges={['top']}
       style={{
         backgroundColor: theme.bg,
-        borderBottomWidth: 2,
+        borderBottomWidth: 1,
         padding: 16,
         borderBottomColor: theme.subAlt,
       }}
