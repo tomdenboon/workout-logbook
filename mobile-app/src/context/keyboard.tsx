@@ -1,22 +1,29 @@
 import { ExerciseField } from 'db/types';
-import React, { useState } from 'react';
-import { TextInput } from 'react-native';
+import { EventEmitter } from 'expo';
+import { useEffect } from 'react';
 
-export interface KeyboardData {
-  exerciseGroupIndex: number;
-  exerciseRowIndex: number;
-  fieldIndex: number;
-  field: ExerciseField;
-  onChangeText: (value: string) => void;
-  saveExerciseRow: (isLifted?: boolean) => void;
-  inputRef: React.RefObject<TextInput | null>;
-}
-
-export const KeyboardContext = React.createContext<{
-  keyboardData?: KeyboardData;
-  connectKeyboard: (data: KeyboardData) => void;
+type KeyboardEmitter = {
+  focusExerciseField: (id: string) => void;
+  focusKeyboard: (field?: ExerciseField) => void;
+  onKeyPress: (digit: string) => void;
+  onBlur: () => void;
   onNext: () => void;
-  disconnectKeyboard: () => void;
-}>({} as any);
+};
 
-export const useKeyboardContext = () => React.useContext(KeyboardContext);
+export const keyboardEmitter = new EventEmitter<KeyboardEmitter>();
+
+export const useKeyboardEvent = (
+  event: keyof KeyboardEmitter,
+  callback: KeyboardEmitter[typeof event],
+  enabled = true,
+) => {
+  useEffect(() => {
+    if (enabled) {
+      keyboardEmitter.addListener(event, callback);
+    }
+
+    return () => {
+      keyboardEmitter.removeListener(event, callback);
+    };
+  }, [event, callback, enabled]);
+};

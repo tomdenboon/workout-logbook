@@ -6,7 +6,7 @@ export { default as THEMES } from './theme';
 
 export interface CalculationType {
   label: string;
-  sqlValue: SQL;
+  sqlValue: SQL<number>;
   field: string;
   getValue: (row: ExerciseRow) => number;
 }

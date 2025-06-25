@@ -14,6 +14,7 @@ import WlbCard from 'components/WlbCard';
 import WlbSelect from 'components/WlbSelect';
 import { Theme, useTheme } from 'context/theme';
 import { setTheme } from 'db/mutation';
+import StatsCard from 'components/home/StatsCard';
 
 export default function ProfileTab() {
   const [themeModalVisible, setThemeModalVisible] = React.useState(false);
@@ -69,6 +70,7 @@ export default function ProfileTab() {
         />
       }
     >
+      <StatsCard />
       <WlbCard
         title="General"
         titleRight={

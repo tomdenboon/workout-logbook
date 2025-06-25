@@ -49,7 +49,7 @@ async function seedWorkouts() {
 
   const workouts = await fastDb
     .insert(schema.workouts)
-    .values(Array.from({ length: 1000 }, (_, i) => generateWorkout(i)))
+    .values(Array.from({ length: 300 }, (_, i) => generateWorkout(i)))
     .returning();
 
   const groups = await fastDb
