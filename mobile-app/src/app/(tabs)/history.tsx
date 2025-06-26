@@ -19,7 +19,6 @@ import { VALID_FIELDS } from 'const';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTheme } from 'context/theme';
 import { formatTime } from 'hooks/useTimer';
-import theme from 'const/theme';
 import WlbText from 'components/WlbText';
 import Calendar from 'components/Calendar';
 
@@ -31,6 +30,7 @@ const WorkoutCard = memo(function WorkoutCard({
   completedAt: number | null;
 }) {
   const [showDetails, setShowDetails] = useState(false);
+  const theme = useTheme();
   const { data: workoutDetails } = useLiveQuery(
     db.query.workouts.findFirst({
       where: eq(schema.workouts.id, workoutId),
@@ -78,14 +78,12 @@ const WorkoutCard = memo(function WorkoutCard({
 
   const totalVolumeFormatted = formatValueWithUnit(totalVolume, 'weight');
   const completedDate = new Date(workoutDetails.completedAt as number);
-  const currentYear = new Date().getFullYear();
-  const isCurrentYear = completedDate.getFullYear() === currentYear;
 
   const formatDate = () => {
     return completedDate.toLocaleTimeString('en-US', {
       weekday: 'long',
       day: 'numeric',
-      month: isCurrentYear ? undefined : 'short',
+      month: 'short',
     });
   };
 
@@ -115,7 +113,11 @@ const WorkoutCard = memo(function WorkoutCard({
             key={item.icon}
             style={{ alignItems: 'center', flexDirection: 'row', gap: 4 }}
           >
-            <MaterialCommunityIcons name={item.icon} size={20} />
+            <MaterialCommunityIcons
+              name={item.icon}
+              color={theme.text}
+              size={20}
+            />
             <WlbText>{item.value}</WlbText>
           </View>
         ))}
@@ -151,7 +153,7 @@ const WorkoutCard = memo(function WorkoutCard({
         }
       >
         <View style={{ gap: 8 }}>
-          <WlbText>{formatDate()}</WlbText>
+          <WlbText color="sub">{formatDate()}</WlbText>
           <StatsRow />
 
           <View style={{ gap: 8 }}>
@@ -187,7 +189,7 @@ const WorkoutCard = memo(function WorkoutCard({
             }
             headerBottom={
               <View style={{ gap: 8 }}>
-                <WlbText>{formatDate()}</WlbText>
+                <WlbText color="sub">{formatDate()}</WlbText>
                 <StatsRow />
               </View>
             }

@@ -16,7 +16,7 @@ export default function Calendar({
   isHighlighted,
 }: CalendarProps) {
   const theme = useTheme();
-  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [currentMonth, setCurrentMonth] = useState(selectedDate ?? new Date());
 
   const firstDayOfMonth = new Date(
     currentMonth.getFullYear(),
