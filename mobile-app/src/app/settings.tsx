@@ -8,13 +8,14 @@ import WlbSelect from 'components/WlbSelect';
 import ThemeSelector from 'components/home/ThemeSelector';
 import { seedData } from 'db/seed';
 import { router } from 'expo-router';
-import { setDistanceUnit, setWeightUnit } from 'db/mutation';
+import { setDistanceUnit, setWeightUnit, setSetting } from 'db/mutation';
 import { useUnit } from 'context/unit';
-import { ScrollView } from 'react-native-gesture-handler';
+import { useSetting } from 'hooks/useSetting';
 
 export default function SettingsTab() {
   const [themeModalVisible, setThemeModalVisible] = useState(false);
   const { weightUnit, distanceUnit } = useUnit();
+  const restTimerSound = useSetting<string>('restTimerSound', 'Default');
 
   const handleResetData = () => {
     Alert.alert(
@@ -104,6 +105,30 @@ export default function SettingsTab() {
               onChange={(value) => setDistanceUnit(value)}
             />
           </View>
+        </View>
+      </WlbCard>
+
+      <WlbCard title="Rest Timer">
+        <View style={{ gap: 12 }}>
+          <View style={{ gap: 8 }}>
+            <WlbText size={16} color="subAlt">
+              Notification Sound
+            </WlbText>
+            <WlbSelect
+              options={
+                [
+                  { label: 'None', value: 'None' },
+                  { label: 'Default', value: 'Default' },
+                ] as const
+              }
+              value={restTimerSound}
+              onChange={(value) => setSetting('restTimerSound', value)}
+            />
+          </View>
+          <WlbText size={14} color="sub">
+            Choose the sound that plays when your rest timer completes. The
+            phone will always vibrate regardless of sound setting.
+          </WlbText>
         </View>
       </WlbCard>
 

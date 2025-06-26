@@ -10,5 +10,14 @@ export function useSetting<T = string>(key: string, defaultValue: T): T {
     }),
   );
 
-  return (setting?.value as T) ?? defaultValue;
+  if (!setting?.value) {
+    return defaultValue;
+  }
+
+  if (typeof defaultValue === 'number') {
+    const numValue = Number(setting.value);
+    return (isNaN(numValue) ? defaultValue : numValue) as T;
+  }
+
+  return setting.value as T;
 }

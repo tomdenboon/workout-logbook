@@ -1,11 +1,13 @@
-import React, { useMemo, memo } from 'react';
-import { View } from 'react-native';
+import React, { useMemo, memo, useEffect, useRef } from 'react';
+import { View, Animated } from 'react-native';
 import { router } from 'expo-router';
 import WlbButton from 'components/WlbButton';
 import { WlbHeader } from 'components/WlbPage';
 import { formatTime, useTimer } from 'hooks/useTimer';
 import { deleteWorkout, finishWorkout } from 'db/mutation';
 import RestTimerModal from 'components/RestTimerModal';
+import { useRestTimer } from 'context/restTimer';
+import { useTheme } from 'context/theme';
 
 interface WorkoutHeaderProps {
   workout: ReturnType<typeof import('hooks/useWorkout').default>['workout'];
@@ -19,6 +21,21 @@ const WorkoutHeader = function WorkoutHeader({
   flush,
 }: WorkoutHeaderProps) {
   const timer = useTimer(workout.startedAt, workout.completedAt);
+  const { isActive, timeRemaining, timerDuration } = useRestTimer();
+  const theme = useTheme();
+  const anim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    if (isActive) {
+      const progress = (timerDuration - timeRemaining) / timerDuration;
+      anim.setValue(progress);
+      Animated.timing(anim, {
+        toValue: 1,
+        duration: timerDuration * 1000 * (1 - progress),
+        useNativeDriver: false,
+      }).start();
+    }
+  }, [isActive, timerDuration]);
 
   const title = useMemo(() => {
     if (type === 'active') {
@@ -60,13 +77,39 @@ const WorkoutHeader = function WorkoutHeader({
   }, [type, flush]);
 
   return (
-    <WlbHeader
-      title={title}
-      headerLeft={
-        <WlbButton onPress={() => router.back()} color="subAlt" icon="close" />
-      }
-      headerRight={headerRight}
-    />
+    <View>
+      <WlbHeader
+        title={title}
+        headerLeft={
+          <WlbButton
+            onPress={() => router.back()}
+            color="subAlt"
+            icon="close"
+          />
+        }
+        headerRight={headerRight}
+      />
+
+      {type === 'active' && isActive && (
+        <View
+          style={{
+            height: 4,
+            backgroundColor: theme.sub,
+          }}
+        >
+          <Animated.View
+            style={{
+              height: 4,
+              backgroundColor: theme.main,
+              width: anim.interpolate({
+                inputRange: [0, 1],
+                outputRange: ['0%', '100%'],
+              }),
+            }}
+          />
+        </View>
+      )}
+    </View>
   );
 };
 
