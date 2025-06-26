@@ -20,6 +20,7 @@ export default forwardRef<
     onSelectionChange?: TextInputProps['onSelectionChange'];
     onLayout?: TextInputProps['onLayout'];
     editable?: boolean;
+    multiline?: boolean;
   }
 >(
   (
@@ -38,6 +39,7 @@ export default forwardRef<
       onPress,
       onLayout,
       error,
+      multiline = false,
     },
     ref,
   ) => {
@@ -47,6 +49,7 @@ export default forwardRef<
     return (
       <TextInput
         ref={ref}
+        multiline={multiline}
         selectionColor={theme.main}
         selectionHandleColor={theme.main}
         keyboardType={keyboardType}
@@ -68,11 +71,13 @@ export default forwardRef<
               : 'transparent',
             fontSize: 16,
             borderWidth: 2,
-            paddingVertical: 0,
-            height: {
-              small: 24,
-              medium: 36,
-            }[size],
+            paddingVertical: multiline ? 8 : 0,
+            height: multiline
+              ? undefined
+              : {
+                  small: 24,
+                  medium: 36,
+                }[size],
           },
           style,
         ]}

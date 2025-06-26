@@ -43,6 +43,13 @@
       "when": 1750963856878,
       "tag": "0005_dapper_magik",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1750973189672,
+      "tag": "0006_next_doomsday",
+      "breakpoints": true
     }
   ]
 }

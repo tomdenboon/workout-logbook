@@ -32,16 +32,18 @@ export default function Workout() {
   } = useWorkout();
   const theme = useTheme();
   const [name, setName] = useState(workout.name);
+  const [note, setNote] = useState(workout.note);
 
   useEffect(() => {
     setName(workout.name);
-  }, [workout.name]);
+    setNote(workout.note);
+  }, [workout.name, workout.note]);
 
   const debouncedUpdateWorkout = useCallback(() => {
-    if (name !== workout.name) {
-      updateWorkout({ name });
+    if (name !== workout.name || note !== workout.note) {
+      updateWorkout({ name, note: note });
     }
-  }, [name, workout.name]);
+  }, [name, note, workout.name, workout.note]);
 
   useDebounce(debouncedUpdateWorkout, 600);
 
@@ -72,6 +74,12 @@ export default function Workout() {
           value={name}
           onChangeText={(value) => setName(value)}
           placeholder="Workout name"
+        />
+        <WlbInput
+          value={note || ''}
+          onChangeText={(value) => setNote(value)}
+          placeholder="Add notes..."
+          multiline
         />
         <PhotoPicker
           photo={workout.photo}

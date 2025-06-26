@@ -155,7 +155,6 @@ const WorkoutCard = memo(function WorkoutCard({
         <View style={{ gap: 8 }}>
           <WlbText color="sub">{formatDate()}</WlbText>
           <StatsRow />
-
           <View style={{ gap: 8 }}>
             {workoutDetails.exerciseGroups.map((group) => (
               <View
@@ -191,6 +190,9 @@ const WorkoutCard = memo(function WorkoutCard({
               <View style={{ gap: 8 }}>
                 <WlbText color="sub">{formatDate()}</WlbText>
                 <StatsRow />
+                {workoutDetails.note && (
+                  <WlbText color="sub">{workoutDetails.note}</WlbText>
+                )}
               </View>
             }
           />

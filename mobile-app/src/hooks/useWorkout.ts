@@ -64,6 +64,7 @@ export default function useWorkout() {
     completedAt: null,
     templateFolderId: null,
     photo: null,
+    note: null,
   });
 
   const initializeWorkout = useCallback(async () => {
@@ -75,6 +76,7 @@ export default function useWorkout() {
         completedAt: null,
         templateFolderId: null,
         photo: null,
+        note: null,
       });
       return;
     } else {
@@ -232,11 +234,20 @@ export default function useWorkout() {
   };
 
   const updateWorkout = useCallback(
-    async ({ name, photo }: { name?: string; photo?: string | null }) => {
+    async ({
+      name,
+      photo,
+      note,
+    }: {
+      name?: string;
+      photo?: string | null;
+      note?: string | null;
+    }) => {
       const newWorkout = {
         ...workout,
         name: name == undefined ? workout.name : name,
         photo: photo == undefined ? workout.photo : photo,
+        note: note == undefined ? workout.note : note,
       };
 
       if (realtime) {
