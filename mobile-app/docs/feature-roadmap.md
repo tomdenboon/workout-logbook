@@ -135,35 +135,7 @@ This roadmap outlines logical feature expansions for the Workout Logbook mobile 
 
 ## Quick Wins (Can implement immediately)
 
-### QW1: Rest Timer Sound ✅ COMPLETED
-
-**Implementation Steps**:
-
-1. ✅ Add audio notification when rest timer ends
-2. ✅ Add sound settings in Settings page
-3. ✅ Add vibration feedback
-4. ✅ Add progress bar below workout header
-
-**Implementation Details**:
-
-- Added expo-audio dependency for sound playback
-- Created sound setting with options: "None" and "Default"
-- Implemented vibration using React Native's Vibration API
-- Added progress bar to WorkoutHeader component (only visible during active workouts with running timer)
-- Sound setting is configurable in Settings page under "Rest Timer" section
-- **Audio Best Practices**: Uses local audio assets (assets/sounds/notification.mp3) instead of hardcoded strings
-- **Graceful fallback**: App works with vibration even if sound file is missing
-- **Free audio sources**: Provided documentation for Mixkit, Freesound, and other royalty-free sources
-
-### QW2: Photo Progress
-
-**Implementation Steps**:
-
-1. Add photo attachment to workouts
-2. Create photo gallery view
-3. Add before/after comparison
-
-### QW3: Workout Templates
+### QW1: Workout Templates
 
 **Implementation Steps**:
 
@@ -171,16 +143,32 @@ This roadmap outlines logical feature expansions for the Workout Logbook mobile 
 2. Create template management UI
 3. Add template duplication
 
+### QW2: Persistent Image Storage
+
+**Priority**: Critical for data integrity and user experience
+
+**Problem**: Currently workout images are being used directly from cache, which can result in data loss when cache is cleared or device storage is optimized.
+
+**Implementation Steps**:
+
+1. Create dedicated image storage directory using Expo FileSystem
+2. Implement image copying from cache to persistent storage
+3. Update image picker to save images to permanent location
+4. Add image cleanup functionality for deleted workouts
+5. Update database schema to store persistent image paths
+
 ## Implementation Guidelines
 
 ### For AI Agents:
+
+You are an expert react-native programmer, with a focus on clean and concise code.
 
 1. **Start with schema changes** - Always begin with database schema modifications
 2. **Create new components** - Build reusable components for new features
 3. **Add proper TypeScript types** - Maintain type safety throughout
 4. **Follow existing patterns** - Match the current codebase structure
 5. **Build incrementally** - Implement one feature at a time
-6. **Update documentation** - Keep this roadmap updated as features are completed, also think of logical new phases steps and quick wins if you encounter them.
+6. **Update documentation** - Keep this roadmap and feature.md updated as features are completed.
 
 ### Priority Order:
 

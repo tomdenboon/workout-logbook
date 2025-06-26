@@ -18,13 +18,26 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.tom.workout-logbook"
+      "bundleIdentifier": "com.tom.workout-logbook",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Allow $(PRODUCT_NAME) to access your camera.",
+        "NSPhotoLibraryUsageDescription": "Allow $(PRODUCT_NAME) to access your photos."
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#323437"
-      }
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS",
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS",
+        "android.permission.CAMERA"
+      ],
+      "package": "com.tom.workoutlogbook"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -32,7 +45,9 @@
     "plugins": [
       "expo-router",
       "expo-sqlite",
-      "expo-audio"
+      "expo-audio",
+      "expo-camera",
+      "expo-image-picker"
     ]
   }
 }

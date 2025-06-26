@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { router } from 'expo-router';
 import { View } from 'react-native';
 import WlbInput from 'components/WlbInput';
@@ -13,13 +13,15 @@ import WlbButton from 'components/WlbButton';
 import WorkoutHeader from 'components/workouts/WorkoutHeader';
 import ExerciseGroup from 'components/workouts/ExerciseGroup';
 import WorkoutKeyboard from 'components/workouts/WorkoutKeyboard';
+import PhotoPicker from 'components/PhotoPicker';
+import useDebounce from 'hooks/useDebounce';
 
 export default function Workout() {
   const [addExerciseModalVisible, setAddExerciseModalVisible] = useState(false);
   const {
     workout,
     type,
-    setWorkout,
+    updateWorkout,
     addExerciseRow,
     addExerciseGroups,
     deleteExerciseRow,
@@ -29,6 +31,19 @@ export default function Workout() {
     waitForData,
   } = useWorkout();
   const theme = useTheme();
+  const [name, setName] = useState(workout.name);
+
+  useEffect(() => {
+    setName(workout.name);
+  }, [workout.name]);
+
+  const debouncedUpdateWorkout = useCallback(() => {
+    if (name !== workout.name) {
+      updateWorkout({ name });
+    }
+  }, [name, workout.name]);
+
+  useDebounce(debouncedUpdateWorkout, 600);
 
   if (waitForData) {
     return (
@@ -54,9 +69,13 @@ export default function Workout() {
           <WlbTimer start={workout.startedAt} end={workout.completedAt} />
         )}
         <WlbInput
-          value={workout.name}
-          onChangeText={(value) => setWorkout({ ...workout, name: value })}
+          value={name}
+          onChangeText={(value) => setName(value)}
           placeholder="Workout name"
+        />
+        <PhotoPicker
+          photo={workout.photo}
+          onPhotoChange={(photo) => updateWorkout({ photo })}
         />
         {workout.exerciseGroups.map((exerciseGroup, index: number) => (
           <ExerciseGroup

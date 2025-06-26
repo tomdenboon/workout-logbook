@@ -21,6 +21,7 @@ export type WorkoutForm = PartialKeys<Workout, 'id'> & {
 
 function useCurrentWorkout() {
   const { id } = useLocalSearchParams();
+
   const data = useLiveQuery(
     db.query.workouts.findFirst({
       where: eq(schema.workouts.id, Number(id)),
@@ -62,6 +63,7 @@ export default function useWorkout() {
     startedAt: null,
     completedAt: null,
     templateFolderId: null,
+    photo: null,
   });
 
   const initializeWorkout = useCallback(async () => {
@@ -72,6 +74,7 @@ export default function useWorkout() {
         startedAt: null,
         completedAt: null,
         templateFolderId: null,
+        photo: null,
       });
       return;
     } else {
@@ -228,6 +231,26 @@ export default function useWorkout() {
     setWorkout({ ...workout });
   };
 
+  const updateWorkout = useCallback(
+    async ({ name, photo }: { name?: string; photo?: string | null }) => {
+      const newWorkout = {
+        ...workout,
+        name: name == undefined ? workout.name : name,
+        photo: photo == undefined ? workout.photo : photo,
+      };
+
+      if (realtime) {
+        await db
+          .update(schema.workouts)
+          .set(newWorkout)
+          .where(eq(schema.workouts.id, workout.id as number));
+      }
+
+      setWorkout({ ...newWorkout });
+    },
+    [workout, realtime],
+  );
+
   const flush = async () => {
     if (workout.id) {
       await deleteWorkout(workout.id);
@@ -264,6 +287,7 @@ export default function useWorkout() {
     deleteExerciseGroup,
     addExerciseGroups,
     updateExerciseRow,
+    updateWorkout,
     flush,
   };
 }

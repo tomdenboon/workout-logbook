@@ -3,6 +3,9 @@ PODS:
   - DoubleConversion (1.1.6)
   - EXConstants (17.1.6):
     - ExpoModulesCore
+  - EXImageLoader (5.1.0):
+    - ExpoModulesCore
+    - React-Core
   - Expo (53.0.9):
     - DoubleConversion
     - ExpoModulesCore
@@ -34,11 +37,17 @@ PODS:
     - ExpoModulesCore
   - ExpoAudio (0.4.7):
     - ExpoModulesCore
+  - ExpoCamera (16.1.9):
+    - ExpoModulesCore
+    - ZXingObjC/OneD
+    - ZXingObjC/PDF417
   - ExpoFileSystem (18.1.10):
     - ExpoModulesCore
   - ExpoFont (13.3.1):
     - ExpoModulesCore
   - ExpoHead (5.0.7):
+    - ExpoModulesCore
+  - ExpoImagePicker (16.1.4):
     - ExpoModulesCore
   - ExpoKeepAwake (14.1.4):
     - ExpoModulesCore
@@ -2026,17 +2035,25 @@ PODS:
     - Yoga
   - SocketRocket (0.7.1)
   - Yoga (0.0.0)
+  - ZXingObjC/Core (3.6.9)
+  - ZXingObjC/OneD (3.6.9):
+    - ZXingObjC/Core
+  - ZXingObjC/PDF417 (3.6.9):
+    - ZXingObjC/Core
 
 DEPENDENCIES:
   - boost (from `../node_modules/react-native/third-party-podspecs/boost.podspec`)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - EXConstants (from `../node_modules/expo-constants/ios`)
+  - EXImageLoader (from `../node_modules/expo-image-loader/ios`)
   - Expo (from `../node_modules/expo`)
   - ExpoAsset (from `../node_modules/expo-asset/ios`)
   - ExpoAudio (from `../node_modules/expo-audio/ios`)
+  - ExpoCamera (from `../node_modules/expo-camera/ios`)
   - ExpoFileSystem (from `../node_modules/expo-file-system/ios`)
   - ExpoFont (from `../node_modules/expo-font/ios`)
   - ExpoHead (from `../node_modules/expo-router/ios`)
+  - ExpoImagePicker (from `../node_modules/expo-image-picker/ios`)
   - ExpoKeepAwake (from `../node_modules/expo-keep-awake/ios`)
   - ExpoLinking (from `../node_modules/expo-linking/ios`)
   - ExpoModulesCore (from `../node_modules/expo-modules-core`)
@@ -2120,6 +2137,7 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - SocketRocket
+    - ZXingObjC
 
 EXTERNAL SOURCES:
   boost:
@@ -2128,18 +2146,24 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec"
   EXConstants:
     :path: "../node_modules/expo-constants/ios"
+  EXImageLoader:
+    :path: "../node_modules/expo-image-loader/ios"
   Expo:
     :path: "../node_modules/expo"
   ExpoAsset:
     :path: "../node_modules/expo-asset/ios"
   ExpoAudio:
     :path: "../node_modules/expo-audio/ios"
+  ExpoCamera:
+    :path: "../node_modules/expo-camera/ios"
   ExpoFileSystem:
     :path: "../node_modules/expo-file-system/ios"
   ExpoFont:
     :path: "../node_modules/expo-font/ios"
   ExpoHead:
     :path: "../node_modules/expo-router/ios"
+  ExpoImagePicker:
+    :path: "../node_modules/expo-image-picker/ios"
   ExpoKeepAwake:
     :path: "../node_modules/expo-keep-awake/ios"
   ExpoLinking:
@@ -2300,12 +2324,15 @@ SPEC CHECKSUMS:
   boost: 7e761d76ca2ce687f7cc98e698152abd03a18f90
   DoubleConversion: cb417026b2400c8f53ae97020b2be961b59470cb
   EXConstants: 9f310f44bfedba09087042756802040e464323c0
+  EXImageLoader: 4d3d3284141f1a45006cc4d0844061c182daf7ee
   Expo: a9fc723f6c8f673f0e7e036c9021772d3a1a0707
   ExpoAsset: 3bc9adb7dbbf27ae82c18ca97eb988a3ae7e73b1
   ExpoAudio: 4d3d6437ee198f9ab43e8fce9ae15e4d9ecc3051
+  ExpoCamera: 308cf0a75d73b6d1f3f8dda4212ba8e2752a6b03
   ExpoFileSystem: c36eb8155eb2381c83dda7dc210e3eec332368b6
   ExpoFont: abbb91a911eb961652c2b0a22eef801860425ed6
   ExpoHead: af044f3e9c99e7d8d21bf653b4c2f2ef53a7f082
+  ExpoImagePicker: 0963da31800c906e01c03e25d7c849f16ebf02a2
   ExpoKeepAwake: bf0811570c8da182bfb879169437d4de298376e7
   ExpoLinking: b85ff4eafeae6fc638c6cace60007ae521af0ef4
   ExpoModulesCore: 5d37821c36f3781dcd0ea9a393800c90eaa6259d
@@ -2384,6 +2411,7 @@ SPEC CHECKSUMS:
   RNScreens: 5621e3ad5a329fbd16de683344ac5af4192b40d3
   SocketRocket: d4aabe649be1e368d1318fdf28a022d714d65748
   Yoga: c758bfb934100bb4bf9cbaccb52557cee35e8bdf
+  ZXingObjC: 8898711ab495761b2dbbdec76d90164a6d7e14c5
 
 PODFILE CHECKSUM: fa0ce72b7a69c291c2e8550cda9e964040dc1a41
 

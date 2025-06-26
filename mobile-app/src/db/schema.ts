@@ -27,6 +27,7 @@ export const workouts = sqliteTable(
     templateFolderId: integer('template_folder_id').references(
       () => templateFolders.id,
     ),
+    photo: text(),
   },
   (table) => [
     index('started_at_index').on(table.startedAt),
