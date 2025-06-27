@@ -11,9 +11,11 @@ import { router } from 'expo-router';
 import { setDistanceUnit, setWeightUnit, setSetting } from 'db/mutation';
 import { useUnit } from 'context/unit';
 import { useSetting } from 'hooks/useSetting';
+import { exportWorkoutsToCSV } from 'utils/dataExport';
 
 export default function SettingsTab() {
   const [themeModalVisible, setThemeModalVisible] = useState(false);
+  const [exportingCSV, setExportingCSV] = useState(false);
   const { weightUnit, distanceUnit } = useUnit();
   const restTimerSound = useSetting<string>('restTimerSound', 'Default');
 
@@ -56,6 +58,13 @@ export default function SettingsTab() {
         },
       ],
     );
+  };
+
+  const handleExportCSV = () => {
+    setExportingCSV(true);
+    exportWorkoutsToCSV().then(() => {
+      setExportingCSV(false);
+    });
   };
 
   return (
@@ -138,6 +147,12 @@ export default function SettingsTab() {
         <View style={{ gap: 12 }}>
           <WlbButton
             color="subAlt"
+            title={exportingCSV ? 'Exporting...' : 'Export to CSV'}
+            icon="download"
+            onPress={exportingCSV ? () => {} : handleExportCSV}
+          />
+          <WlbButton
+            color="subAlt"
             title="Add Sample Data"
             icon="add"
             onPress={handleSeedData}
@@ -149,7 +164,7 @@ export default function SettingsTab() {
             onPress={handleResetData}
           />
           <WlbText size={14} color="sub">
-            Manage your workout data and reset if needed
+            Export your workout data, add sample data, or reset if needed
           </WlbText>
         </View>
       </WlbCard>

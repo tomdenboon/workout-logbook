@@ -73,7 +73,7 @@ export default function PhotoPicker({
               width: '100%',
               aspectRatio: 1,
               borderRadius: 8,
-              backgroundColor: theme.sub,
+              backgroundColor: theme.bg,
             }}
             resizeMode="cover"
           />

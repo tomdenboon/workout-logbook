@@ -6,18 +6,7 @@ This roadmap outlines logical feature expansions for the Workout Logbook mobile 
 
 ## Phase 1: Core Enhancements (1-2 months)
 
-### 1.1 Data Backup & Export
-
-**Priority**: Critical for user trust and data safety
-
-**Implementation Steps**:
-
-1. Add CSV export functionality for workout data
-2. Implement data backup to device storage
-3. Add "Export Data" button in Settings
-4. Create backup/restore confirmation dialogs
-
-### 1.2 Push Notifications
+### 1.1 Push Notifications
 
 **Priority**: Improves user engagement
 
