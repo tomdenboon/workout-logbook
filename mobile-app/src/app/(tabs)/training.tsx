@@ -78,11 +78,18 @@ export default function TrainingTab() {
               )}
               options={[
                 {
-                  label: 'Edit',
+                  icon: 'edit',
+                  label: 'Edit Template',
                   onPress: () => router.push(`/workouts/${workout.id}`),
                 },
                 {
-                  label: 'Delete',
+                  icon: 'content-copy',
+                  label: 'Duplicate Template',
+                  onPress: () => duplicateWorkout(workout.id),
+                },
+                {
+                  icon: 'delete',
+                  label: 'Delete Template',
                   onPress: () => deleteWorkout(workout.id),
                 },
               ]}

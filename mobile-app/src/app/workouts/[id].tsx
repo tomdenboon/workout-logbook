@@ -45,7 +45,7 @@ export default function Workout() {
     }
   }, [name, note, workout.name, workout.note]);
 
-  useDebounce(debouncedUpdateWorkout, 600);
+  useDebounce(debouncedUpdateWorkout, 1000);
 
   if (waitForData) {
     return (

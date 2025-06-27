@@ -31,7 +31,9 @@ export async function duplicateWorkout(id: number, start: boolean = false) {
     .insert(schema.workouts)
     .values({
       ...workout,
+      name: start ? workout.name : `${workout.name} (Copy)`,
       startedAt: start ? Date.now() : undefined,
+      completedAt: undefined,
       id: undefined,
     })
     .returning();

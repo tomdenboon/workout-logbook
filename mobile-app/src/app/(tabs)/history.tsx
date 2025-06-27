@@ -7,7 +7,7 @@ import WlbCard from 'components/WlbCard';
 import { desc, isNotNull, eq, and, gte, lte } from 'drizzle-orm';
 import * as schema from 'db/schema';
 import WlbDropdown from 'components/WlbDropdown';
-import { deleteWorkout } from 'db/mutation';
+import { deleteWorkout, duplicateWorkout } from 'db/mutation';
 import { router } from 'expo-router';
 import WlbButton from 'components/WlbButton';
 import { ExerciseCategory, ExerciseRow } from 'db/types';
@@ -139,11 +139,18 @@ const WorkoutCard = memo(function WorkoutCard({
             )}
             options={[
               {
-                label: 'Edit',
+                icon: 'edit',
+                label: 'Edit Workout',
                 onPress: () => router.push(`/workouts/${workoutId}`),
               },
               {
-                label: 'Delete',
+                icon: 'content-copy',
+                label: 'Save as Template',
+                onPress: () => duplicateWorkout(workoutId),
+              },
+              {
+                icon: 'delete',
+                label: 'Delete Workout',
                 onPress: () => deleteWorkout(workoutId),
               },
             ]}
