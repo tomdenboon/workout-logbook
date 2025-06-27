@@ -245,9 +245,9 @@ export default function useWorkout() {
     }) => {
       const newWorkout = {
         ...workout,
-        name: name == undefined ? workout.name : name,
-        photo: photo == undefined ? workout.photo : photo,
-        note: note == undefined ? workout.note : note,
+        name: name === undefined ? workout.name : name,
+        photo: photo === undefined ? workout.photo : photo,
+        note: note === undefined ? workout.note : note,
       };
 
       if (realtime) {

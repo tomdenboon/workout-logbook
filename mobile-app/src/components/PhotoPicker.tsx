@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 import { View, Image, Alert, Pressable } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import WlbButton from './WlbButton';
-import { WlbModalPage, WlbHeader } from './WlbPage';
-import WlbText from './WlbText';
 import { useTheme } from 'context/theme';
 import WlbModal from 'components/WlbModal';
+import { saveWorkoutImage } from 'utils/imageStorage';
 
 interface PhotoPickerProps {
   photo: string | null;
@@ -36,13 +35,6 @@ export default function PhotoPicker({
     return true;
   };
 
-  const options: ImagePicker.ImagePickerOptions = {
-    mediaTypes: ['images'],
-    allowsEditing: true,
-    aspect: [4, 3],
-    quality: 0.8,
-  };
-
   const launchImagePicker = async (
     imagePickerFunction: (
       options: ImagePicker.ImagePickerOptions,
@@ -51,11 +43,18 @@ export default function PhotoPicker({
     const hasPermissions = await requestPermissions();
     if (!hasPermissions) return;
 
-    const result = await imagePickerFunction(options);
+    const result = await imagePickerFunction({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 0.8,
+    });
 
     if (!result.canceled && result.assets[0]) {
       setModalVisible(false);
-      onPhotoChange(result.assets[0].uri);
+      saveWorkoutImage(result.assets[0].uri).then((path) => {
+        onPhotoChange(path);
+      });
     }
   };
 

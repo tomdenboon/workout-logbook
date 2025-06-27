@@ -50,20 +50,22 @@ export default function ProfileTab() {
         <WlbHeader
           title="Home"
           headerRight={
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <WlbButton
-                color="sub"
-                variant="ghost"
-                size="small"
-                icon="settings"
-                onPress={() => router.push('/settings')}
-              />
+            <View
+              style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}
+            >
               <WlbButton
                 color="text"
                 variant="ghost"
                 size="small"
                 icon="palette"
                 onPress={() => setThemeModalVisible(true)}
+              />
+              <WlbButton
+                color="text"
+                variant="ghost"
+                size="small"
+                icon="settings"
+                onPress={() => router.push('/settings')}
               />
             </View>
           }

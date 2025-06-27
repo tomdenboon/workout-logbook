@@ -76,9 +76,7 @@ export default function SettingsTab() {
       <WlbCard title="Units">
         <View style={{ gap: 12 }}>
           <View style={{ gap: 8 }}>
-            <WlbText size={16} color="subAlt">
-              Weight
-            </WlbText>
+            <WlbText color="sub">Weight</WlbText>
             <WlbSelect
               options={
                 [
@@ -91,9 +89,7 @@ export default function SettingsTab() {
             />
           </View>
           <View style={{ gap: 8 }}>
-            <WlbText size={16} color="subAlt">
-              Distance
-            </WlbText>
+            <WlbText color="sub">Distance</WlbText>
             <WlbSelect
               options={
                 [
@@ -109,26 +105,18 @@ export default function SettingsTab() {
       </WlbCard>
 
       <WlbCard title="Rest Timer">
-        <View style={{ gap: 12 }}>
-          <View style={{ gap: 8 }}>
-            <WlbText size={16} color="subAlt">
-              Notification Sound
-            </WlbText>
-            <WlbSelect
-              options={
-                [
-                  { label: 'None', value: 'None' },
-                  { label: 'Default', value: 'Default' },
-                ] as const
-              }
-              value={restTimerSound}
-              onChange={(value) => setSetting('restTimerSound', value)}
-            />
-          </View>
-          <WlbText size={14} color="sub">
-            Choose the sound that plays when your rest timer completes. The
-            phone will always vibrate regardless of sound setting.
-          </WlbText>
+        <View style={{ gap: 8 }}>
+          <WlbText color="sub">Notification Sound</WlbText>
+          <WlbSelect
+            options={
+              [
+                { label: 'None', value: 'None' },
+                { label: 'Default', value: 'Default' },
+              ] as const
+            }
+            value={restTimerSound}
+            onChange={(value) => setSetting('restTimerSound', value)}
+          />
         </View>
       </WlbCard>
 

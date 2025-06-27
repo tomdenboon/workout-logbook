@@ -60,9 +60,10 @@ const ActiveWorkout = () => {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        backgroundColor: theme.subAlt,
         padding: 16,
         gap: 12,
+        borderBottomWidth: 1,
+        borderBottomColor: theme.subAlt,
       }}
     >
       <MaterialCommunityIcons name="clock" size={28} color={theme.main} />

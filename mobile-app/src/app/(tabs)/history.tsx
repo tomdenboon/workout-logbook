@@ -6,12 +6,10 @@ import db from 'db';
 import WlbCard from 'components/WlbCard';
 import { desc, isNotNull, eq, and, gte, lte } from 'drizzle-orm';
 import * as schema from 'db/schema';
-import groupBy from 'utils/groupBy';
 import WlbDropdown from 'components/WlbDropdown';
 import { deleteWorkout } from 'db/mutation';
 import { router } from 'expo-router';
 import WlbButton from 'components/WlbButton';
-import WlbTimer from 'components/WlbTimer';
 import { ExerciseCategory, ExerciseRow } from 'db/types';
 import { useUnit } from 'context/unit';
 import { usePRCalculations } from 'hooks/usePRCalculations';
@@ -227,9 +225,27 @@ const WorkoutCard = memo(function WorkoutCard({
                         }}
                       >
                         {rowPRs.map((pr) => (
-                          <WlbText key={pr.badgeType} size={14}>
-                            🏆 {pr.badgeType}
-                          </WlbText>
+                          <View
+                            key={pr.badgeType}
+                            style={{
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                              gap: 2,
+                              borderWidth: 1,
+                              borderColor: theme.main,
+                              borderRadius: 8,
+                              paddingHorizontal: 4,
+                            }}
+                          >
+                            <MaterialCommunityIcons
+                              name="trophy"
+                              color={theme.main}
+                              size={14}
+                            />
+                            <WlbText key={pr.badgeType} size={14} color="main">
+                              {pr.badgeType}
+                            </WlbText>
+                          </View>
                         ))}
                       </View>
                     )}

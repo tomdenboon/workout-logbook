@@ -17,18 +17,7 @@ This roadmap outlines logical feature expansions for the Workout Logbook mobile 
 3. Add "Export Data" button in Settings
 4. Create backup/restore confirmation dialogs
 
-### 1.2 Workout Notes
-
-**Priority**: High value, simple implementation
-
-**Implementation Steps**:
-
-1. Add notes field to workout schema
-2. Create notes input component
-3. Add notes to workout form
-4. Display notes in workout history
-
-### 1.3 Push Notifications
+### 1.2 Push Notifications
 
 **Priority**: Improves user engagement
 
@@ -168,7 +157,8 @@ You are an expert react-native programmer, with a focus on clean and concise cod
 3. **Add proper TypeScript types** - Maintain type safety throughout
 4. **Follow existing patterns** - Match the current codebase structure
 5. **Build incrementally** - Implement one feature at a time
-6. **Update documentation** - Keep this roadmap and feature.md updated as features are completed.
+6. **Update roadmap** - Keep this roadmap updated as features are completed.
+7. **No documentation** - Do not add comments and docs to your written code.
 
 ### Priority Order:
 
