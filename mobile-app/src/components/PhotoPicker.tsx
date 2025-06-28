@@ -87,7 +87,7 @@ export default function PhotoPicker({
       )}
 
       <WlbModal visible={modalVisible} close={() => setModalVisible(false)}>
-        <View style={{ gap: 16, padding: 16 }}>
+        <View style={{ gap: 12, padding: 12 }}>
           <WlbButton
             title="Take Photo"
             onPress={() => launchImagePicker(ImagePicker.launchCameraAsync)}

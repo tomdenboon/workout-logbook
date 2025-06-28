@@ -44,13 +44,13 @@ export default function WlbDropdown({
             <SafeAreaView style={styles.menu}>
               <View
                 style={{
-                  margin: 16,
+                  margin: 12,
                   borderRadius: 8,
                   gap: 2,
                   overflow: 'hidden',
                 }}
               >
-                {options.map((option, index) => (
+                {options.map((option) => (
                   <Pressable
                     key={option.label}
                     onPress={() => {
@@ -59,7 +59,7 @@ export default function WlbDropdown({
                     }}
                     style={({ pressed }) => [
                       {
-                        padding: 16,
+                        padding: 12,
                         backgroundColor: pressed ? theme.sub : theme.subAlt,
                         flexDirection: 'row',
                         justifyContent: 'space-between',

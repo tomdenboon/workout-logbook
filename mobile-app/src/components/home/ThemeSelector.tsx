@@ -1,3 +1,4 @@
+import WlbButton from 'components/WlbButton';
 import { WlbModalPage, WlbHeader } from 'components/WlbPage';
 import { THEMES } from 'const';
 import { ThemeName, useTheme } from 'context/theme';
@@ -30,16 +31,17 @@ export default function ThemeSelector({
     >
       <FlatList
         data={colorSortedThemes}
+        contentContainerStyle={{ gap: 8, padding: 12 }}
         renderItem={({ item }) => (
           <Pressable
             onPress={() => setTheme(item)}
             style={{
               backgroundColor: THEMES[item].bg,
-              padding: 12,
-              margin: 4,
-              marginHorizontal: 8,
               borderRadius: 8,
               borderWidth: 1,
+              height: 36,
+              justifyContent: 'center',
+              alignItems: 'center',
               borderColor: theme === item ? THEMES[item].main : 'transparent',
               flex: 1,
             }}

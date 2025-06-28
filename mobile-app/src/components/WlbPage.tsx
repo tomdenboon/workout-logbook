@@ -26,7 +26,7 @@ export const WlbHeader = ({
       style={{
         backgroundColor: theme.bg,
         borderBottomWidth: 1,
-        padding: 16,
+        padding: 12,
         borderBottomColor: theme.subAlt,
       }}
     >
@@ -47,7 +47,7 @@ export const WlbHeader = ({
           <View style={{ position: 'absolute', right: 0 }}>{headerRight}</View>
         )}
       </View>
-      {headerBottom && <View style={{ paddingTop: 16 }}>{headerBottom}</View>}
+      {headerBottom && <View style={{ paddingTop: 12 }}>{headerBottom}</View>}
     </SafeAreaView>
   );
 };
@@ -61,7 +61,7 @@ export function WlbModalPage(
       {props.noContainer ? (
         props.children
       ) : (
-        <ScrollView contentContainerStyle={{ padding: 16, gap: 16 }}>
+        <ScrollView contentContainerStyle={{ padding: 12, gap: 12 }}>
           {props.children}
         </ScrollView>
       )}
@@ -87,7 +87,7 @@ export function WlbScreenPage(props: {
       {props.noContainer ? (
         props.children
       ) : (
-        <ScrollView contentContainerStyle={{ padding: 16, gap: 16 }}>
+        <ScrollView contentContainerStyle={{ padding: 12, gap: 12 }}>
           {props.children}
         </ScrollView>
       )}

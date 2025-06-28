@@ -19,6 +19,11 @@ import { useTheme } from 'context/theme';
 import { formatTime } from 'hooks/useTimer';
 import WlbText from 'components/WlbText';
 import Calendar from 'components/Calendar';
+import WlbStatCard from 'components/WlbStatCard';
+import {
+  calculateCurrentWeekStreak,
+  calculateRestDays,
+} from 'utils/streakCalculations';
 
 const WorkoutCard = memo(function WorkoutCard({
   workoutId,
@@ -269,6 +274,7 @@ const WorkoutCard = memo(function WorkoutCard({
 
 export default function History() {
   const [selectedDate, setSelectedDate] = useState<Date>();
+  const theme = useTheme();
   const workouts = useLiveQuery(
     db.query.workouts.findMany({
       where: isNotNull(schema.workouts.completedAt),
@@ -323,17 +329,31 @@ export default function History() {
     >
       <SectionList
         keyExtractor={(item) => item.id.toString()}
-        contentContainerStyle={{ padding: 16 }}
+        contentContainerStyle={{ padding: 12 }}
         ListHeaderComponent={() => (
-          <Calendar
-            onDateSelect={(date) => setSelectedDate(date)}
-            selectedDate={selectedDate}
-            isHighlighted={(date) => workoutDates.has(date.toDateString())}
-          />
+          <View style={{ gap: 12 }}>
+            <View style={{ flexDirection: 'row', gap: 12 }}>
+              <WlbStatCard
+                icon="fire"
+                value={calculateCurrentWeekStreak(filteredWorkouts)}
+                label="Week Streak"
+              />
+              <WlbStatCard
+                icon="moon-waning-crescent"
+                value={calculateRestDays(filteredWorkouts)}
+                label="Rest Days"
+              />
+            </View>
+            <Calendar
+              onDateSelect={(date) => setSelectedDate(date)}
+              selectedDate={selectedDate}
+              isHighlighted={(date) => workoutDates.has(date.toDateString())}
+            />
+          </View>
         )}
         sections={[{ data: filteredWorkouts }]}
-        SectionSeparatorComponent={() => <View style={{ height: 16 }} />}
-        ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
+        SectionSeparatorComponent={() => <View style={{ height: 12 }} />}
+        ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
         renderItem={({ item }) => (
           <WorkoutCard
             key={item.id}
@@ -343,7 +363,7 @@ export default function History() {
         )}
         stickySectionHeadersEnabled={false}
         ListEmptyComponent={() => (
-          <View style={{ padding: 16, alignItems: 'center', gap: 16 }}>
+          <View style={{ padding: 12, alignItems: 'center', gap: 12 }}>
             <WlbText>
               {selectedDate
                 ? `No workouts completed on ${formatSelectedDate(

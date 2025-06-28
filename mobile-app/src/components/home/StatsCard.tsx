@@ -9,9 +9,10 @@ import WlbText from 'components/WlbText';
 import { useUnit } from 'context/unit';
 import { formatTime } from 'hooks/useTimer';
 import { CALCULATION_TYPES } from 'const';
+import WlbStatCard from 'components/WlbStatCard';
 
 export default function StatsCard() {
-  const { formatValueWithUnit } = useUnit();
+  const { convertToDisplayUnit, weightUnit } = useUnit();
 
   const { data: totalWorkouts } = useLiveQuery(
     db
@@ -46,33 +47,21 @@ export default function StatsCard() {
   );
 
   return (
-    <WlbCard title="Lifetime stats">
-      <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-        {[
-          {
-            label: 'Workouts',
-            value: totalWorkouts?.[0]?.count?.toString() || '0',
-          },
-          {
-            label: 'Time',
-            value: formatTime(totalWorkouts?.[0]?.milliseconds ?? 0, 'digital'),
-          },
-          {
-            label: 'Lifted',
-            value: formatValueWithUnit(
-              totalWeight?.[0]?.totalWeight ?? 0,
-              'weight',
-            ),
-          },
-        ].map(({ label, value }) => (
-          <View key={label} style={{ alignItems: 'center', flex: 1 }}>
-            <WlbText size={14} color="sub">
-              {label}
-            </WlbText>
-            <WlbText fontWeight="bold">{value}</WlbText>
-          </View>
-        ))}
-      </View>
-    </WlbCard>
+    <View
+      style={{ flexDirection: 'row', justifyContent: 'space-around', gap: 8 }}
+    >
+      <WlbStatCard value={totalWorkouts?.[0]?.count} label="Workouts" />
+      <WlbStatCard
+        value={formatTime(totalWorkouts?.[0]?.milliseconds, 'digital')}
+        label="Time"
+      />
+      <WlbStatCard
+        value={convertToDisplayUnit(
+          totalWeight?.[0]?.totalWeight ?? 0,
+          'weight',
+        )}
+        label={`Lifted (${weightUnit})`}
+      />
+    </View>
   );
 }

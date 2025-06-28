@@ -10,7 +10,7 @@ export default function WlbCard({
   style,
   onPress,
 }: {
-  title: string;
+  title?: string;
   titleRight?: React.ReactNode;
   children: React.ReactNode;
   onPress?: () => void;
@@ -32,16 +32,18 @@ export default function WlbCard({
       ]}
       onPress={onPress}
     >
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          paddingBottom: 12,
-        }}
-      >
-        <WlbText fontWeight="bold">{title}</WlbText>
-        {titleRight && titleRight}
-      </View>
+      {title && (
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            paddingBottom: 12,
+          }}
+        >
+          <WlbText fontWeight="bold">{title}</WlbText>
+          {titleRight && titleRight}
+        </View>
+      )}
       {children}
     </Pressable>
   );
