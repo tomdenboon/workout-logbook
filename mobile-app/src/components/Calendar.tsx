@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { View, TouchableOpacity } from 'react-native';
 import WlbText from './WlbText';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTheme } from 'context/theme';
+import WlbIcon from 'components/WlbIcon';
 
 interface CalendarProps {
   onDateSelect?: (date: Date) => void;
@@ -79,19 +79,11 @@ export default function Calendar({
         }}
       >
         <TouchableOpacity onPress={() => navigateMonth(-1)}>
-          <MaterialCommunityIcons
-            name="chevron-left"
-            size={24}
-            color={theme.text}
-          />
+          <WlbIcon name="chevron-left" size={24} />
         </TouchableOpacity>
         <WlbText fontWeight="bold">{formatMonthYear(currentMonth)}</WlbText>
         <TouchableOpacity onPress={() => navigateMonth(1)}>
-          <MaterialCommunityIcons
-            name="chevron-right"
-            size={24}
-            color={theme.text}
-          />
+          <WlbIcon name="chevron-right" size={24} />
         </TouchableOpacity>
       </View>
 

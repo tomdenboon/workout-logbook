@@ -14,8 +14,6 @@ import { ExerciseCategory, ExerciseRow } from 'db/types';
 import { useUnit } from 'context/unit';
 import { usePRCalculations } from 'hooks/usePRCalculations';
 import { VALID_FIELDS } from 'const';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useTheme } from 'context/theme';
 import { formatTime } from 'hooks/useTimer';
 import WlbText from 'components/WlbText';
 import Calendar from 'components/Calendar';
@@ -24,6 +22,8 @@ import {
   calculateCurrentWeekStreak,
   calculateRestDays,
 } from 'utils/streakCalculations';
+import WlbIcon from 'components/WlbIcon';
+import { useTheme } from 'context/theme';
 
 const WorkoutCard = memo(function WorkoutCard({
   workoutId,
@@ -116,11 +116,7 @@ const WorkoutCard = memo(function WorkoutCard({
             key={item.icon}
             style={{ alignItems: 'center', flexDirection: 'row', gap: 4 }}
           >
-            <MaterialCommunityIcons
-              name={item.icon}
-              color={theme.text}
-              size={20}
-            />
+            <WlbIcon name={item.icon} size={20} />
             <WlbText>{item.value}</WlbText>
           </View>
         ))}
@@ -249,11 +245,7 @@ const WorkoutCard = memo(function WorkoutCard({
                               paddingHorizontal: 4,
                             }}
                           >
-                            <MaterialCommunityIcons
-                              name="trophy"
-                              color={theme.main}
-                              size={14}
-                            />
+                            <WlbIcon name="trophy" color="main" size={14} />
                             <WlbText key={pr.badgeType} size={14} color="main">
                               {pr.badgeType}
                             </WlbText>
@@ -274,7 +266,6 @@ const WorkoutCard = memo(function WorkoutCard({
 
 export default function History() {
   const [selectedDate, setSelectedDate] = useState<Date>();
-  const theme = useTheme();
   const workouts = useLiveQuery(
     db.query.workouts.findMany({
       where: isNotNull(schema.workouts.completedAt),

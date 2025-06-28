@@ -4,13 +4,13 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { useTheme } from 'context/theme';
 import WlbText from './WlbText';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import db from 'db';
 import { workouts } from 'db/schema';
 import { and, isNotNull, isNull } from 'drizzle-orm';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import WlbButton from 'components/WlbButton';
 import { router } from 'expo-router';
+import WlbIcon, { WlbIconName } from 'components/WlbIcon';
 
 type RouteInfo = {
   icon: string;
@@ -66,7 +66,7 @@ const ActiveWorkout = () => {
         borderBottomColor: theme.subAlt,
       }}
     >
-      <MaterialCommunityIcons name="clock" size={28} color={theme.main} />
+      <WlbIcon name="clock" size={28} color="main" />
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <WlbText size={14} fontWeight="bold" color="main">
           Active workout in progress
@@ -114,10 +114,10 @@ const WlbTabBar = ({ state, navigation }: BottomTabBarProps) => {
               onPress={() => navigation.navigate(route.name)}
               style={styles.tab}
             >
-              <MaterialCommunityIcons
-                name={icon as any}
+              <WlbIcon
+                name={icon as WlbIconName}
                 size={24}
-                color={isFocused ? theme.main : theme.sub}
+                color={isFocused ? 'main' : 'sub'}
               />
               <WlbText size={12} color={isFocused ? 'main' : 'sub'}>
                 {label}
