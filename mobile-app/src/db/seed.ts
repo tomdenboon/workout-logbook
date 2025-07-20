@@ -1,3 +1,4 @@
+import { toDateKey } from 'utils/date';
 import * as schema from './schema';
 import db, { fastDb } from 'db';
 
@@ -120,11 +121,17 @@ export async function seedMeasurements() {
 
   await fastDb.insert(schema.measurementPoints).values(
     measurements.flatMap((measurement) =>
-      Array.from({ length: randomInt(20, 50) }, () => ({
-        measurementId: measurement.id,
-        date: randomDate(new Date('2020-01-01'), new Date()).getTime(),
-        value: randomInt(50, 100),
-      })),
+      Array.from({ length: 200 }, (_, i) => {
+        const date = new Date();
+        date.setDate(date.getDate() - i * 7);
+
+        return {
+          measurementId: measurement.id,
+          date: date.getTime(),
+          dateKey: toDateKey(date),
+          value: randomInt(50, 100),
+        };
+      }),
     ),
   );
 }

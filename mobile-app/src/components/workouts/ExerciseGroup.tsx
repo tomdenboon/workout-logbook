@@ -9,6 +9,10 @@ import { useTheme } from 'context/theme';
 import { useUnit } from 'context/unit';
 import { WorkoutForm } from 'hooks/useWorkout';
 import ExerciseRow from 'components/workouts/ExerciseRow';
+import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
+import db from 'db';
+import * as schema from 'db/schema';
+import { and, asc, desc, eq, isNotNull } from 'drizzle-orm';
 
 interface ExerciseGroupProps {
   workoutType: ReturnType<typeof import('hooks/useWorkout').default>['type'];
@@ -40,7 +44,35 @@ const ExerciseGroup = function ExerciseGroup({
   isLastGroup,
 }: ExerciseGroupProps) {
   const theme = useTheme();
-  const { weightUnit } = useUnit();
+  const { data: lastCompletedExerciseGroup } = useLiveQuery(
+    db
+      .select({ id: schema.exerciseGroups.id })
+      .from(schema.exerciseGroups)
+      .innerJoin(
+        schema.workouts,
+        eq(schema.exerciseGroups.workoutId, schema.workouts.id),
+      )
+      .where(
+        and(
+          eq(schema.exerciseGroups.exerciseId, exerciseGroup.exercise.id),
+          isNotNull(schema.workouts.completedAt),
+        ),
+      )
+      .orderBy(desc(schema.workouts.completedAt))
+      .limit(1),
+  );
+  const lastCompletedExerciseGroupIndex = lastCompletedExerciseGroup?.[0]?.id;
+  const previousExerciseGroup = useLiveQuery(
+    db.query.exerciseGroups.findFirst({
+      where: eq(schema.exerciseGroups.id, lastCompletedExerciseGroupIndex),
+      with: {
+        exerciseRows: true,
+      },
+    }),
+    [lastCompletedExerciseGroupIndex],
+  );
+
+  const { weightUnit, distanceUnit } = useUnit();
 
   return (
     <View style={{ gap: 12 }}>
@@ -74,24 +106,33 @@ const ExerciseGroup = function ExerciseGroup({
       </View>
 
       <View style={{ flexDirection: 'row', gap: 8 }}>
-        <View style={{ width: 34, alignItems: 'center' }}>
-          <WlbText fontWeight="700">Set</WlbText>
+        <View style={{ width: 32, alignItems: 'center' }}>
+          <WlbText fontWeight="500">Set</WlbText>
+        </View>
+        <View style={{ flex: 2, alignItems: 'center' }}>
+          <WlbText fontWeight="500">Previous</WlbText>
         </View>
         {VALID_FIELDS[exerciseGroup.exercise.type].map((field) => (
           <View style={{ flex: 1, alignItems: 'center' }} key={field}>
-            <WlbText fontWeight="700">
-              {field === 'weight' ? weightUnit : field}
+            <WlbText fontWeight="500">
+              {field === 'weight' && weightUnit}
+              {field === 'distance' && distanceUnit}
+              {field !== 'weight' && field !== 'distance' && field}
             </WlbText>
           </View>
         ))}
-        <View style={{ width: 36, alignItems: 'center' }}>
+        <View style={{ width: 32, alignItems: 'center' }}>
           <MaterialIcons name="check" size={20} color={theme.text} />
         </View>
       </View>
+
       {exerciseGroup.exerciseRows.map(
         (exerciseRow, exerciseRowIndex: number) => (
           <ExerciseRow
             key={exerciseRow.id}
+            previousExerciseRow={
+              previousExerciseGroup?.data?.exerciseRows?.[exerciseRowIndex]
+            }
             exerciseType={exerciseGroup.exercise.type}
             exerciseRow={exerciseRow}
             exerciseGroupIndex={exerciseGroupIndex}

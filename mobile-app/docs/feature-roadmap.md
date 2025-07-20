@@ -8,20 +8,6 @@ This roadmap outlines logical feature expansions for the Workout Logbook mobile 
 
 ## Phase 1: Core Enhancements (1-2 months)
 
-### 1.1 Workout Streaks ⭐ HIGHEST PRIORITY
-
-**Status**: Not implemented  
-**Priority**: Immediate user engagement boost  
-**Effort**: 1-2 weeks
-
-**Implementation Steps**:
-
-1. Add streak calculation utility functions
-2. Update `StatsCard` component to show current and longest streaks
-3. Add streak badges/milestones (7, 30, 100 days)
-4. Create streak celebration animations
-5. Add streak tracking to home dashboard
-
 **Database Changes**: None needed - uses existing workout completion dates
 
 ### 1.2 Template Folders

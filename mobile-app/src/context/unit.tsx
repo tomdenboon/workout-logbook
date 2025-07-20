@@ -1,4 +1,4 @@
-import React, { createContext, useContext, ReactNode } from 'react';
+import React, { createContext, useContext, ReactNode, useMemo } from 'react';
 import { useSetting } from 'hooks/useSetting';
 import { formatTime } from 'hooks/useTimer';
 
@@ -38,7 +38,7 @@ export function UnitProvider({ children }: UnitProviderProps) {
       return `${parseFloat(displayValue.toFixed(1))} ${distanceUnit}`;
     }
     if (field === 'time') {
-      return formatTime(displayValue, 'pretty');
+      return formatTime(displayValue, 'digital');
     }
     if (field === 'reps') {
       return `${displayValue.toString()} reps`;
@@ -68,13 +68,16 @@ export function UnitProvider({ children }: UnitProviderProps) {
     return value;
   };
 
-  const value: UnitContextType = {
-    formatValueWithUnit,
-    convertToDisplayUnit,
-    convertToStorageUnit,
-    weightUnit,
-    distanceUnit,
-  };
+  const value: UnitContextType = useMemo(
+    () => ({
+      formatValueWithUnit,
+      convertToDisplayUnit,
+      convertToStorageUnit,
+      weightUnit,
+      distanceUnit,
+    }),
+    [weightUnit, distanceUnit],
+  );
 
   return <UnitContext.Provider value={value}>{children}</UnitContext.Provider>;
 }

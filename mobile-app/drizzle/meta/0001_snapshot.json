@@ -1,8 +1,8 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "68a8f448-b434-483c-a021-f00b6249daeb",
-  "prevId": "3a0c83e5-ef41-46d1-bc38-85f4907fb9bb",
+  "id": "38b5d220-cc2e-46c7-8385-4d0b564ec4b5",
+  "prevId": "d5d0359a-b517-46fe-8b5f-8ca89bfb533a",
   "tables": {
     "exercise_groups": {
       "name": "exercise_groups",
@@ -29,7 +29,22 @@
           "autoincrement": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "exercise_id_index": {
+          "name": "exercise_id_index",
+          "columns": [
+            "exercise_id"
+          ],
+          "isUnique": false
+        },
+        "workout_id_index": {
+          "name": "workout_id_index",
+          "columns": [
+            "workout_id"
+          ],
+          "isUnique": false
+        }
+      },
       "foreignKeys": {
         "exercise_groups_exercise_id_exercises_id_fk": {
           "name": "exercise_groups_exercise_id_exercises_id_fk",
@@ -122,7 +137,15 @@
           "autoincrement": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "exercise_group_id_index": {
+          "name": "exercise_group_id_index",
+          "columns": [
+            "exercise_group_id"
+          ],
+          "isUnique": false
+        }
+      },
       "foreignKeys": {
         "exercise_rows_exercise_group_id_exercise_groups_id_fk": {
           "name": "exercise_rows_exercise_group_id_exercise_groups_id_fk",
@@ -190,16 +213,16 @@
           "notNull": true,
           "autoincrement": false
         },
-        "name": {
-          "name": "name",
-          "type": "text",
+        "date": {
+          "name": "date",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "date": {
-          "name": "date",
-          "type": "integer",
+        "date_key": {
+          "name": "date_key",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -212,7 +235,16 @@
           "autoincrement": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "measurement_points_measurement_id_date_key_unique": {
+          "name": "measurement_points_measurement_id_date_key_unique",
+          "columns": [
+            "measurement_id",
+            "date_key"
+          ],
+          "isUnique": true
+        }
+      },
       "foreignKeys": {
         "measurement_points_measurement_id_measurements_id_fk": {
           "name": "measurement_points_measurement_id_measurements_id_fk",
@@ -251,6 +283,45 @@
         }
       },
       "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "settings": {
+      "name": "settings",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "key": {
+          "name": "key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "value": {
+          "name": "value",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "settings_key_unique": {
+          "name": "settings_key_unique",
+          "columns": [
+            "key"
+          ],
+          "isUnique": true
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
@@ -317,9 +388,38 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
+        },
+        "photo": {
+          "name": "photo",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "note": {
+          "name": "note",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "started_at_index": {
+          "name": "started_at_index",
+          "columns": [
+            "started_at"
+          ],
+          "isUnique": false
+        },
+        "completed_at_index": {
+          "name": "completed_at_index",
+          "columns": [
+            "completed_at"
+          ],
+          "isUnique": false
+        }
+      },
       "foreignKeys": {
         "workouts_template_folder_id_template_folders_id_fk": {
           "name": "workouts_template_folder_id_template_folders_id_fk",

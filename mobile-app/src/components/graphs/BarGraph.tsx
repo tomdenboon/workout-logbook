@@ -21,8 +21,6 @@ import { runOnJS } from 'react-native-reanimated';
 import useMeasureLayout from 'components/graphs/useMeasureLayout';
 import {
   ChartDataPoint,
-  Period,
-  filterDataByPeriod,
   calculateMinMaxValues,
   generateTickerPoints,
   formatDateLabel,
@@ -31,14 +29,12 @@ import {
 interface LineGraphI {
   data: ChartDataPoint[];
   containerHeight?: number;
-  period?: Period;
   valueFormatter?: (value: number) => string;
 }
 
 const LineGraph = ({
   data = [],
   containerHeight = 180,
-  period,
   valueFormatter = (value) => value.toFixed(1),
 }: LineGraphI) => {
   const theme = useTheme();
@@ -55,15 +51,11 @@ const LineGraph = ({
 
   const isMeasured = width > 0 && height > 0;
 
-  const filteredData = useMemo(() => {
-    return filterDataByPeriod(data, period);
-  }, [data, period]);
-
   const { minValue, maxValue } = useMemo(() => {
-    return calculateMinMaxValues(filteredData);
-  }, [filteredData]);
+    return calculateMinMaxValues(data);
+  }, [data]);
 
-  const barWidth = width / filteredData.length;
+  const barWidth = width / data.length;
   const points = useMemo(() => {
     const getX = (index: number) => {
       return index * barWidth;
@@ -72,13 +64,13 @@ const LineGraph = ({
     const getY = (value: number) =>
       ((value - minValue) / (maxValue - minValue)) * height;
 
-    return filteredData.map((p, i) => ({
+    return data.map((p, i) => ({
       x: getX(i),
       y: getY(p.value),
       date: p.date,
       value: p.value,
     }));
-  }, [filteredData, width, height, minValue, maxValue]);
+  }, [data, width, height, minValue, maxValue]);
 
   const tickerPoints = useMemo(() => {
     return generateTickerPoints(points, width);

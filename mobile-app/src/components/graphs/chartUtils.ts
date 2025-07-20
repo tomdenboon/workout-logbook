@@ -3,31 +3,6 @@ export interface ChartDataPoint {
   value: number;
 }
 
-export type Period = '3months' | '1year' | '';
-
-export const filterDataByPeriod = (
-  data: ChartDataPoint[],
-  period?: Period,
-): ChartDataPoint[] => {
-  if (!period) return data;
-
-  const now = Date.now();
-  let cutoffDate: number;
-
-  switch (period) {
-    case '3months':
-      cutoffDate = now - 3 * 30 * 24 * 60 * 60 * 1000; // 3 months ago
-      break;
-    case '1year':
-      cutoffDate = now - 365 * 24 * 60 * 60 * 1000; // 1 year ago
-      break;
-    default:
-      return data;
-  }
-
-  return data.filter((item) => item.date >= cutoffDate);
-};
-
 export const calculateMinMaxValues = (data: ChartDataPoint[]) => {
   if (data.length === 0) {
     return { minValue: 0, maxValue: 10 };

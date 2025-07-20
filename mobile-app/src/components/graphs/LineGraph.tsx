@@ -14,7 +14,6 @@ import { runOnJS } from 'react-native-reanimated';
 import useMeasureLayout from 'components/graphs/useMeasureLayout';
 import {
   ChartDataPoint,
-  Period,
   calculateMinMaxValues,
   generateTickerPoints,
   formatDateLabel,
@@ -24,13 +23,11 @@ interface LineGraphI {
   data: ChartDataPoint[];
   valueFormatter?: (value: number) => string;
   containerHeight?: number;
-  period?: Period;
 }
 
 const LineGraph = ({
   data = [],
   containerHeight = 180,
-  period = '3months',
   valueFormatter = (value) => value.toFixed(1),
 }: LineGraphI) => {
   const theme = useTheme();
@@ -49,6 +46,10 @@ const LineGraph = ({
 
   const { minValue, maxValue } = useMemo(() => {
     return calculateMinMaxValues(data);
+  }, [data]);
+
+  useEffect(() => {
+    setSelectedPoint(null);
   }, [data]);
 
   const points = useMemo(() => {
@@ -106,15 +107,15 @@ const LineGraph = ({
     <View
       style={{
         height: containerHeight,
-        paddingBottom: 16,
+        marginBottom: 12,
       }}
     >
       <View style={{ flex: 1, flexDirection: 'row', gap: 4, paddingRight: 8 }}>
         <View
           style={{
+            marginBottom: 4,
             justifyContent: 'space-between',
             alignItems: 'flex-end',
-            marginVertical: -6,
           }}
           onLayout={handleYAxisLayout}
         >
@@ -216,7 +217,7 @@ const LineGraph = ({
             style={{
               position: 'absolute',
               left: yAxisWidth + point.x - 26,
-              bottom: -8,
+              bottom: -16,
               width: 60,
               alignItems: 'center',
             }}

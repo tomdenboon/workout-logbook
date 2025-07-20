@@ -24,8 +24,8 @@ export async function exportWorkoutsToCSV(): Promise<void> {
         return {
           title: workout.name,
           workout_note: workout.note || '',
-          started_at: formatDateForCSV(new Date(workout.startedAt!)),
-          completed_at: formatDateForCSV(new Date(workout.completedAt!)),
+          started_at: new Date(workout.startedAt!).toISOString(),
+          completed_at: new Date(workout.completedAt!).toISOString(),
           description: workout.note || '',
           exercise_title: exerciseGroup.exercise.name,
           set_index: setIndex,
@@ -73,8 +73,6 @@ export async function exportWorkoutsToCSV(): Promise<void> {
     ),
   ].join('\n');
 
-  console.log(csvContent);
-
   const fileUri = FileSystem.documentDirectory + 'workout_data.csv';
 
   await FileSystem.writeAsStringAsync(fileUri, csvContent, {
@@ -87,8 +85,4 @@ export async function exportWorkoutsToCSV(): Promise<void> {
       dialogTitle: 'Export Workout Data',
     });
   }
-}
-
-function formatDateForCSV(date: Date): string {
-  return date.toISOString();
 }

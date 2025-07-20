@@ -6,7 +6,7 @@ import React, {
   useState,
   memo,
 } from 'react';
-import { TextInput } from 'react-native';
+import { TextInput, View } from 'react-native';
 import WlbInput from 'components/WlbInput';
 import { keyboardEmitter, useKeyboardEvent } from 'context/keyboard';
 import { useUnit } from 'context/unit';
@@ -90,6 +90,12 @@ function ExerciseRowField({
     end: 0,
   });
   const [inputValue, setInputValue] = useState(toInputFormat(value));
+
+  useEffect(() => {
+    if (value !== toStorageValue(inputValue)) {
+      setInputValue(toInputFormat(value));
+    }
+  }, [value]);
 
   const save = useCallback(
     (v: string) => {
@@ -221,7 +227,10 @@ function ExerciseRowField({
       ref={inputRef}
       error={error && inputValue === ''}
       size="small"
-      style={{ flex: 1, textAlign: 'center' }}
+      style={{
+        width: '100%',
+        textAlign: 'center',
+      }}
       value={inputValue}
       showSoftInputOnFocus={false}
       onChangeText={(value) => {

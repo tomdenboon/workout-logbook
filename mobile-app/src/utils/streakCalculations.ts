@@ -1,4 +1,5 @@
 import { Workout } from 'db/types';
+import { toDateKey } from 'utils/date';
 
 export function calculateCurrentWeekStreak(workouts: Workout[]): number {
   if (!workouts.length) return 0;
@@ -8,7 +9,7 @@ export function calculateCurrentWeekStreak(workouts: Workout[]): number {
     const day = d.getDay();
     const diff = d.getDate() - day + (day === 0 ? -6 : 1);
     d.setDate(diff);
-    return d.toISOString().split('T')[0];
+    return toDateKey(d);
   };
 
   const mondaySet = new Set(
@@ -30,7 +31,7 @@ export function calculateCurrentWeekStreak(workouts: Workout[]): number {
     streak++;
     const prevDate = new Date(currentWeek);
     prevDate.setDate(prevDate.getDate() - 7);
-    currentWeek = prevDate.toISOString().split('T')[0];
+    currentWeek = toDateKey(prevDate);
   }
 
   return streak;

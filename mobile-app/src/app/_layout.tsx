@@ -38,6 +38,10 @@ const App = () => {
                 options={{ headerShown: false }}
               />
               <Stack.Screen name="settings" options={{ headerShown: false }} />
+              <Stack.Screen
+                name="measurements"
+                options={{ headerShown: false }}
+              />
             </Stack>
           </GestureHandlerRootView>
         </RestTimerProvider>

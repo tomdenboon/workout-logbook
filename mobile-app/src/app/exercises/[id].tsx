@@ -6,20 +6,19 @@ import { and, eq, isNotNull, max, SQL, sql, sum } from 'drizzle-orm';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import WlbButton from 'components/WlbButton';
 import LineGraph from 'components/graphs/LineGraph';
-import WlbCard from 'components/WlbCard';
 import { useUnit } from 'context/unit';
 import { AggregationFields, CALCULATION_TYPES } from 'const';
-import { filterDataByPeriod } from 'components/graphs/chartUtils';
-import { ScrollView } from 'react-native';
+import GraphCard from 'components/graphs/GraphCard';
 
 const getAggregation = (
   aggregationType: AggregationFields,
   type: 'sum' | 'max',
 ) => {
-  const { label, field, sqlValue } = CALCULATION_TYPES[aggregationType];
+  const { field, sqlValue, label } = CALCULATION_TYPES[aggregationType];
   return {
-    label: `${type === 'sum' ? 'Total' : 'Max'} ${label}`,
+    id: type + aggregationType,
     field,
+    label: (type === 'sum' ? 'Total' : 'Best') + ' ' + label,
     aggregation: type === 'sum' ? sum(sqlValue) : max(sqlValue),
   };
 };
@@ -36,25 +35,38 @@ const exerciseTypeToAggregations = {
   distance: [getAggregation('distance', 'sum')],
 };
 
-function ExerciseGraph({
-  id,
-  label,
-  aggregation,
-  field,
-}: {
-  id: string;
-  label: string;
-  aggregation: SQL<string | null>;
-  field: string;
-}) {
+export default function Exercise() {
+  const { id } = useLocalSearchParams<{ id: string }>();
+
+  const { data: exercise } = useLiveQuery(
+    db.query.exercises.findFirst({
+      where: (exercises, { eq }) => eq(exercises.id, Number(id)),
+    }),
+  );
+
+  const aggregations = exercise
+    ? exerciseTypeToAggregations[exercise.type]
+    : [];
   const { formatValueWithUnit } = useUnit();
+
+  const aaaa = aggregations.reduce<Record<string, SQL<string | null>>>(
+    (prev, curr) => {
+      const { id, aggregation } = curr;
+
+      return {
+        ...prev,
+        [id]: aggregation,
+      };
+    },
+    {},
+  );
 
   const { data: graphData } = useLiveQuery(
     db
       .select({
         id: schema.workouts.id,
         completedAt: schema.workouts.completedAt,
-        value: aggregation,
+        ...aaaa,
       })
       .from(schema.workouts)
       .leftJoin(
@@ -72,39 +84,14 @@ function ExerciseGraph({
           eq(schema.exerciseGroups.exerciseId, Number(id)),
         ),
       ),
-  );
-
-  return (
-    <WlbCard title={label}>
-      <LineGraph
-        valueFormatter={(value) => formatValueWithUnit(value, field)}
-        data={filterDataByPeriod(
-          graphData?.map((e) => ({
-            date: e.completedAt ?? 0,
-            value: Number(e.value ?? 0),
-          })),
-          '3months',
-        )}
-      />
-    </WlbCard>
-  );
-}
-
-export default function Exercise() {
-  const { id } = useLocalSearchParams<{ id: string }>();
-
-  const { data: exercise } = useLiveQuery(
-    db
-      .select()
-      .from(schema.exercises)
-      .where(eq(schema.exercises.id, Number(id))),
+    [id, exercise],
   );
 
   return (
     <WlbScreenPage
       header={
         <WlbHeader
-          title={exercise?.[0]?.name}
+          title={exercise?.name ?? ''}
           headerLeft={
             <WlbButton
               color="text"
@@ -122,9 +109,20 @@ export default function Exercise() {
         />
       }
     >
-      {exerciseTypeToAggregations[exercise?.[0]?.type]?.map((e) => (
-        <ExerciseGraph key={e.label} id={id} {...e} />
-      ))}
+      {exercise && (
+        <GraphCard
+          data={aggregations.map((e) => ({
+            label: e.label,
+            value: e.id,
+            valueFormatter: (value) => formatValueWithUnit(value, e.field),
+            data: graphData?.map((d) => ({
+              date: d.completedAt ?? 0,
+              value: Number(d[e.id as keyof typeof d] ?? 0),
+            })),
+          }))}
+          GraphComponent={LineGraph}
+        />
+      )}
     </WlbScreenPage>
   );
 }

@@ -45,3 +45,6 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     </ThemeContext.Provider>
   );
 };
+
+const defaultLightTheme: ThemeName = 'rose_pine_dawn';
+const defaultDarkTheme: ThemeName = 'serika_dark';

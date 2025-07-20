@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "3a0c83e5-ef41-46d1-bc38-85f4907fb9bb",
+  "id": "d5d0359a-b517-46fe-8b5f-8ca89bfb533a",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "exercise_groups": {
@@ -29,7 +29,22 @@
           "autoincrement": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "exercise_id_index": {
+          "name": "exercise_id_index",
+          "columns": [
+            "exercise_id"
+          ],
+          "isUnique": false
+        },
+        "workout_id_index": {
+          "name": "workout_id_index",
+          "columns": [
+            "workout_id"
+          ],
+          "isUnique": false
+        }
+      },
       "foreignKeys": {
         "exercise_groups_exercise_id_exercises_id_fk": {
           "name": "exercise_groups_exercise_id_exercises_id_fk",
@@ -88,41 +103,49 @@
         },
         "reps": {
           "name": "reps",
-          "type": "integer",
+          "type": "real",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "weight": {
           "name": "weight",
-          "type": "integer",
+          "type": "real",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "time": {
           "name": "time",
-          "type": "integer",
+          "type": "real",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "distance": {
           "name": "distance",
-          "type": "integer",
+          "type": "real",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "rpe": {
           "name": "rpe",
-          "type": "integer",
+          "type": "real",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "exercise_group_id_index": {
+          "name": "exercise_group_id_index",
+          "columns": [
+            "exercise_group_id"
+          ],
+          "isUnique": false
+        }
+      },
       "foreignKeys": {
         "exercise_rows_exercise_group_id_exercise_groups_id_fk": {
           "name": "exercise_rows_exercise_group_id_exercise_groups_id_fk",
@@ -173,6 +196,160 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
+    "measurement_points": {
+      "name": "measurement_points",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "measurement_id": {
+          "name": "measurement_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "date": {
+          "name": "date",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "date_key": {
+          "name": "date_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "value": {
+          "name": "value",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "measurement_points_date_key_unique": {
+          "name": "measurement_points_date_key_unique",
+          "columns": [
+            "date_key"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "measurement_points_measurement_id_measurements_id_fk": {
+          "name": "measurement_points_measurement_id_measurements_id_fk",
+          "tableFrom": "measurement_points",
+          "tableTo": "measurements",
+          "columnsFrom": [
+            "measurement_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "measurements": {
+      "name": "measurements",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "settings": {
+      "name": "settings",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "key": {
+          "name": "key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "value": {
+          "name": "value",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "settings_key_unique": {
+          "name": "settings_key_unique",
+          "columns": [
+            "key"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "template_folders": {
+      "name": "template_folders",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
     "workouts": {
       "name": "workouts",
       "columns": {
@@ -203,10 +380,60 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
+        },
+        "template_folder_id": {
+          "name": "template_folder_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "photo": {
+          "name": "photo",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "note": {
+          "name": "note",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
         }
       },
-      "indexes": {},
-      "foreignKeys": {},
+      "indexes": {
+        "started_at_index": {
+          "name": "started_at_index",
+          "columns": [
+            "started_at"
+          ],
+          "isUnique": false
+        },
+        "completed_at_index": {
+          "name": "completed_at_index",
+          "columns": [
+            "completed_at"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "workouts_template_folder_id_template_folders_id_fk": {
+          "name": "workouts_template_folder_id_template_folders_id_fk",
+          "tableFrom": "workouts",
+          "tableTo": "template_folders",
+          "columnsFrom": [
+            "template_folder_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "checkConstraints": {}

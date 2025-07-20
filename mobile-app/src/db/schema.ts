@@ -5,6 +5,7 @@ import {
   sqliteTable,
   text,
   index,
+  unique,
 } from 'drizzle-orm/sqlite-core';
 
 export const exercises = sqliteTable('exercises', {
@@ -121,14 +122,19 @@ export const measurementsRelations = relations(measurements, ({ many }) => ({
   measurementPoints: many(measurementPoints),
 }));
 
-export const measurementPoints = sqliteTable('measurement_points', {
-  id: integer().primaryKey({ autoIncrement: true }),
-  measurementId: integer('measurement_id')
-    .notNull()
-    .references(() => measurements.id, { onDelete: 'cascade' }),
-  date: integer('date').notNull(),
-  value: real().notNull(),
-});
+export const measurementPoints = sqliteTable(
+  'measurement_points',
+  {
+    id: integer().primaryKey({ autoIncrement: true }),
+    measurementId: integer('measurement_id')
+      .notNull()
+      .references(() => measurements.id, { onDelete: 'cascade' }),
+    date: integer('date').notNull(),
+    dateKey: text('date_key').notNull(),
+    value: real().notNull(),
+  },
+  (table) => [unique().on(table.measurementId, table.dateKey)],
+);
 
 export const measurementPointsRelations = relations(
   measurementPoints,

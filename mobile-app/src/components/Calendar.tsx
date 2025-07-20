@@ -3,6 +3,7 @@ import { View, TouchableOpacity } from 'react-native';
 import WlbText from './WlbText';
 import { useTheme } from 'context/theme';
 import WlbIcon from 'components/WlbIcon';
+import { isSameDay } from 'utils/date';
 
 interface CalendarProps {
   onDateSelect?: (date: Date) => void;
@@ -51,13 +52,8 @@ export default function Calendar({
     });
   };
 
-  const isToday = (date: Date) => {
-    const today = new Date();
-    return date.toDateString() === today.toDateString();
-  };
-
   const isSelected = (date: Date) => {
-    return selectedDate && date.toDateString() === selectedDate.toDateString();
+    return selectedDate && isSameDay(date, selectedDate);
   };
 
   return (
@@ -118,7 +114,7 @@ export default function Calendar({
                 date.setDate(startDate.getDate() + dayOfWeek + week * 7);
 
                 const dayNumber = date.getDate();
-                const isTodayDate = isToday(date);
+                const isTodayDate = isSameDay(date, new Date());
                 const isSelectedDate = isSelected(date);
                 const hasHighlightOnDate = isHighlighted?.(date) ?? false;
 

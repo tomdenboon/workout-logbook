@@ -5,50 +5,15 @@
     {
       "idx": 0,
       "version": "6",
-      "when": 1740263089470,
-      "tag": "0000_plain_trauma",
+      "when": 1752837282197,
+      "tag": "0000_dashing_firestar",
       "breakpoints": true
     },
     {
       "idx": 1,
       "version": "6",
-      "when": 1740602866946,
-      "tag": "0001_wooden_phantom_reporter",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "6",
-      "when": 1741726932034,
-      "tag": "0002_broad_molecule_man",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "6",
-      "when": 1741727525664,
-      "tag": "0003_mixed_inhumans",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "6",
-      "when": 1748794979972,
-      "tag": "0004_volatile_ser_duncan",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "6",
-      "when": 1750963856878,
-      "tag": "0005_dapper_magik",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "6",
-      "when": 1750973189672,
-      "tag": "0006_next_doomsday",
+      "when": 1752839952982,
+      "tag": "0001_careful_stature",
       "breakpoints": true
     }
   ]

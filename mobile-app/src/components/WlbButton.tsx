@@ -64,7 +64,7 @@ export default function Button({
         return (
           <>
             {icon && (
-              <WlbText fontWeight={'700'} color={textColorPressed(pressed)}>
+              <WlbText fontWeight={'500'} color={textColorPressed(pressed)}>
                 <MaterialIcons
                   name={icon}
                   size={
@@ -77,7 +77,7 @@ export default function Button({
               </WlbText>
             )}
             {title && (
-              <WlbText color={textColorPressed(pressed)} fontWeight={'700'}>
+              <WlbText color={textColorPressed(pressed)} fontWeight={'500'}>
                 {title}
               </WlbText>
             )}

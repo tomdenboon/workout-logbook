@@ -76,5 +76,5 @@ export const VALID_FIELDS: Record<ExerciseCategory, ExerciseField[]> = {
   reps: ['reps'],
   weighted: ['weight', 'reps'],
   duration: ['time'],
-  distance: ['time', 'distance'],
+  distance: ['distance', 'time'],
 };

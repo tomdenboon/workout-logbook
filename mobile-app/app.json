@@ -47,7 +47,8 @@
       "expo-sqlite",
       "expo-audio",
       "expo-camera",
-      "expo-image-picker"
+      "expo-image-picker",
+      "expo-build-properties"
     ]
   }
 }
