@@ -129,7 +129,7 @@ const ExerciseGroup = function ExerciseGroup({
       {exerciseGroup.exerciseRows.map(
         (exerciseRow, exerciseRowIndex: number) => (
           <ExerciseRow
-            key={exerciseRow.id}
+            key={exerciseRowIndex}
             previousExerciseRow={
               previousExerciseGroup?.data?.exerciseRows?.[exerciseRowIndex]
             }

@@ -212,12 +212,11 @@ CREATE TABLE goals (
 
 **Immediate (1-2 weeks each)**:
 
-1. Workout Streaks
-2. Template Folders
-3. Exercise Instructions
-4. Recent Workouts Quick Actions
+1. Template Folders
+2. Exercise Instructions
+3. Recent Workouts Quick Actions
 
-**Short-term (3-4 weeks each)**: 5. Goal Setting System 6. Push Notifications 7. Advanced Workout Types
+**Short-term (3-4 weeks each)**: 4. Goal Setting System 5. Push Notifications 6. Advanced Workout Types
 
 ## Implementation Guidelines
 

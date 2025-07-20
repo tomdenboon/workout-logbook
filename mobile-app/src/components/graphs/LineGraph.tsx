@@ -1,10 +1,4 @@
-import React, {
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { View } from 'react-native';
 import { useTheme } from 'context/theme';
 import { Canvas, Line, vec, Points, Circle } from '@shopify/react-native-skia';
@@ -54,6 +48,9 @@ const LineGraph = ({
 
   const points = useMemo(() => {
     const getX = (index: number) => {
+      if (data.length === 1) {
+        return width / 2;
+      }
       return 4 + (index / (data.length - 1)) * (width - 8);
     };
 
