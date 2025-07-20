@@ -1,11 +1,11 @@
 import { Pressable, StyleProp, ViewStyle } from 'react-native';
 import { Theme, useTheme, useThemedStyleSheet } from '../context/theme';
-import { MaterialIcons } from '@expo/vector-icons';
 import React from 'react';
 import WlbText from './WlbText';
+import WlbIcon, { WlbIconName } from 'components/WlbIcon';
 
 export interface WlbButtonProps {
-  icon?: keyof typeof MaterialIcons.glyphMap;
+  icon?: WlbIconName;
   title?: string;
   size?: 'small' | 'medium';
   variant?: 'outlined' | 'filled' | 'ghost';
@@ -64,17 +64,16 @@ export default function Button({
         return (
           <>
             {icon && (
-              <WlbText fontWeight={'500'} color={textColorPressed(pressed)}>
-                <MaterialIcons
-                  name={icon}
-                  size={
-                    {
-                      small: 20,
-                      medium: 28,
-                    }[size]
-                  }
-                />
-              </WlbText>
+              <WlbIcon
+                name={icon}
+                color={textColorPressed(pressed)}
+                size={
+                  {
+                    small: 20,
+                    medium: 28,
+                  }[size]
+                }
+              />
             )}
             {title && (
               <WlbText color={textColorPressed(pressed)} fontWeight={'500'}>

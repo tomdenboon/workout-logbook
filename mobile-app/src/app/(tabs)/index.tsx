@@ -66,7 +66,7 @@ export default function ProfileTab() {
                 color="text"
                 variant="ghost"
                 size="small"
-                icon="settings"
+                icon="cog"
                 onPress={() => router.push('/settings')}
               />
             </View>
@@ -76,6 +76,7 @@ export default function ProfileTab() {
     >
       <StatsCard />
       <GraphCard
+        title="General"
         data={[
           {
             label: 'Reps',

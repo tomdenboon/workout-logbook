@@ -3,7 +3,10 @@ export interface ChartDataPoint {
   value: number;
 }
 
-export const calculateMinMaxValues = (data: ChartDataPoint[]) => {
+export const calculateMinMaxValues = (
+  data: ChartDataPoint[],
+  fromZero = false,
+) => {
   if (data.length === 0) {
     return { minValue: 0, maxValue: 10 };
   }
@@ -13,6 +16,10 @@ export const calculateMinMaxValues = (data: ChartDataPoint[]) => {
 
   min = Math.floor(min / 10) * 10;
   max = Math.ceil(max / 10) * 10;
+
+  if (fromZero) {
+    min = 0;
+  }
 
   return { minValue: min, maxValue: max };
 };

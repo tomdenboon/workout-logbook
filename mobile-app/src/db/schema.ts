@@ -151,3 +151,8 @@ export const settings = sqliteTable('settings', {
   key: text().notNull().unique(),
   value: text().notNull(),
 });
+
+export const progressPhotos = sqliteTable('progress_photos', {
+  id: integer().primaryKey({ autoIncrement: true }),
+  photo: text().notNull(),
+});

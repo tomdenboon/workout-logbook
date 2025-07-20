@@ -1,4 +1,15 @@
-export default function groupBy<T>(array: T[], groupBy: (item: T) => string) {
+export function toMap<T, U>(
+  array: T[],
+  toEntry: (t: T) => [string | number, U],
+) {
+  return Object.fromEntries(array.map(toEntry));
+}
+
+export function filterMap<T, U>(array: T[], f: (t: T) => U | undefined) {
+  return array.map(f).filter(Boolean) as U[];
+}
+
+export function groupBy<T>(array: T[], groupBy: (item: T) => string) {
   return array.reduce<
     {
       title: string;

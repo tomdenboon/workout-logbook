@@ -8,11 +8,45 @@ import WlbModalForm from 'components/ModalForm';
 import AddMeasurementModal from 'components/AddMeasurementModal';
 import WlbCard from 'components/WlbCard';
 import LineGraph from 'components/graphs/LineGraph';
-import { View, FlatList, Pressable } from 'react-native';
+import { View, FlatList, Pressable, Image } from 'react-native';
 import WlbText from 'components/WlbText';
 import { useTheme } from 'context/theme';
 import GraphCard from 'components/graphs/GraphCard';
 import { router } from 'expo-router';
+import WlbEmptyState from 'components/WlbEmptyState';
+
+function ProgressPhotoCard(props: { addProgressPhoto: () => void }) {
+  const { data: progressPhotos } = useLiveQuery(
+    db.query.progressPhotos.findMany(),
+  );
+
+  return (
+    <WlbCard title="Progress pictures">
+      {progressPhotos?.length === 0 && (
+        <View style={{ height: 160, width: 120 }}>
+          <WlbEmptyState
+            icon="camera"
+            onPress={props.addProgressPhoto}
+            description="Add photo"
+          />
+        </View>
+      )}
+      {progressPhotos?.map((photo) => (
+        <View key={photo.id} style={{ height: 100, width: 100 }}>
+          <Image
+            source={{ uri: photo.photo }}
+            style={{
+              width: '100%',
+              aspectRatio: 1,
+              borderRadius: 8,
+            }}
+            resizeMode="cover"
+          />
+        </View>
+      ))}
+    </WlbCard>
+  );
+}
 
 export default function Measurements() {
   const theme = useTheme();
@@ -89,16 +123,12 @@ export default function Measurements() {
         />
       }
     >
-      <WlbCard title="Progress pictures">
-        <View style={{ flexDirection: 'row', gap: 12 }}>
-          <WlbText color="sub" size={14}>
-            Progress photos will appear here when you add measurements
-          </WlbText>
-        </View>
-      </WlbCard>
-
+      <ProgressPhotoCard
+        addProgressPhoto={() => setAddPointModalVisible(true)}
+      />
       {measurements && measurements.length > 0 && (
         <GraphCard
+          title="Measurements"
           data={measurements.map((measurement) => ({
             label: measurement.name,
             value: measurement.id.toString(),

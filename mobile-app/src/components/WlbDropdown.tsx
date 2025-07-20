@@ -1,5 +1,4 @@
 import WlbText from 'components/WlbText';
-import { MaterialIcons } from '@expo/vector-icons';
 import { useTheme, useThemedStyleSheet } from 'context/theme';
 import React, { useState, ReactNode } from 'react';
 import {
@@ -9,6 +8,8 @@ import {
   SafeAreaView,
   Pressable,
 } from 'react-native';
+import WlbIcon, { WlbIconName } from 'components/WlbIcon';
+import { name } from 'drizzle-orm';
 
 interface DropdownMenuProps {
   triggerComponent: (props: { onPress: () => void }) => ReactNode;
@@ -16,7 +17,7 @@ interface DropdownMenuProps {
     label: string;
     onPress: () => void;
     highlighted?: boolean;
-    icon?: keyof typeof MaterialIcons.glyphMap;
+    icon?: WlbIconName;
   }[];
 }
 
@@ -76,10 +77,9 @@ export default function WlbDropdown({
                           }}
                         >
                           {option.icon && (
-                            <MaterialIcons
+                            <WlbIcon
                               name={option.icon}
-                              size={24}
-                              color={pressed ? theme.bg : theme.text}
+                              color={pressed ? 'bg' : 'text'}
                             />
                           )}
                           <WlbText color={pressed ? 'bg' : 'text'}>
@@ -87,10 +87,9 @@ export default function WlbDropdown({
                           </WlbText>
                         </View>
                         {option.highlighted && (
-                          <MaterialIcons
+                          <WlbIcon
                             name="check"
-                            size={24}
-                            color={pressed ? theme.bg : theme.text}
+                            color={pressed ? 'bg' : 'text'}
                           />
                         )}
                       </>

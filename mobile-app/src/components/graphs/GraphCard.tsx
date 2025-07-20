@@ -30,10 +30,12 @@ const filterDataByPeriod = (
 };
 
 export default function GraphCard({
+  title,
   data,
   GraphComponent,
   children,
 }: {
+  title: string;
   data: {
     value: string;
     label: string;
@@ -61,7 +63,7 @@ export default function GraphCard({
   return (
     <>
       <WlbCard
-        title={selectedData.label}
+        title={title}
         titleRight={
           <WlbButtonGroup
             options={

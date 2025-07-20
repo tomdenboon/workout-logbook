@@ -32,15 +32,16 @@ const LineGraph = ({
     value: number;
   } | null>(null);
 
-  const { width, height, handleLayout: handleChartLayout } = useMeasureLayout();
+  const {
+    width,
+    height,
+    isMeasured,
+    handleLayout: handleChartLayout,
+  } = useMeasureLayout();
   const { width: yAxisWidth, handleLayout: handleYAxisLayout } =
     useMeasureLayout();
 
-  const isMeasured = width > 0 && height > 0;
-
-  const { minValue, maxValue } = useMemo(() => {
-    return calculateMinMaxValues(data);
-  }, [data]);
+  const { minValue, maxValue } = calculateMinMaxValues(data);
 
   useEffect(() => {
     setSelectedPoint(null);

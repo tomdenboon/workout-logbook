@@ -1,6 +1,6 @@
 import React, { useState, memo } from 'react';
 import { WlbHeader, WlbModalPage, WlbScreenPage } from 'components/WlbPage';
-import { SectionList, View, ScrollView } from 'react-native';
+import { SectionList, View, ScrollView, FlatList } from 'react-native';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import db from 'db';
 import WlbCard from 'components/WlbCard';
@@ -24,6 +24,7 @@ import {
 } from 'utils/streakCalculations';
 import WlbIcon from 'components/WlbIcon';
 import { useTheme } from 'context/theme';
+import WlbEmptyState from 'components/WlbEmptyState';
 
 const WorkoutCard = memo(function WorkoutCard({
   workoutId,
@@ -135,12 +136,12 @@ const WorkoutCard = memo(function WorkoutCard({
               <WlbButton
                 onPress={onPress}
                 size="small"
-                icon="keyboard-control"
+                icon="dots-horizontal"
               />
             )}
             options={[
               {
-                icon: 'edit',
+                icon: 'pencil',
                 label: 'Edit Workout',
                 onPress: () => router.push(`/workouts/${workoutId}`),
               },
@@ -297,7 +298,14 @@ export default function History() {
 
   const headerTitle = selectedDate
     ? formatSelectedDate(selectedDate)
-    : 'Workouts';
+    : 'History';
+
+  const renderEmpty = () => (
+    <WlbEmptyState
+      onPress={() => router.push('/workout')}
+      description="Add a workout to get started"
+    />
+  );
 
   return (
     <WlbScreenPage
@@ -318,11 +326,12 @@ export default function History() {
       }
       noContainer
     >
-      <SectionList
+      <FlatList
+        data={filteredWorkouts}
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={{ padding: 12 }}
         ListHeaderComponent={() => (
-          <View style={{ gap: 12 }}>
+          <View style={{ gap: 12, paddingBottom: 12 }}>
             <View style={{ flexDirection: 'row', gap: 12 }}>
               <WlbStatCard
                 icon="fire"
@@ -342,8 +351,6 @@ export default function History() {
             />
           </View>
         )}
-        sections={[{ data: filteredWorkouts }]}
-        SectionSeparatorComponent={() => <View style={{ height: 12 }} />}
         ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
         renderItem={({ item }) => (
           <WorkoutCard
@@ -352,22 +359,7 @@ export default function History() {
             completedAt={item.completedAt}
           />
         )}
-        stickySectionHeadersEnabled={false}
-        ListEmptyComponent={() => (
-          <View style={{ padding: 12, alignItems: 'center', gap: 12 }}>
-            <WlbText>
-              {selectedDate
-                ? `No workouts completed on ${formatSelectedDate(
-                    selectedDate,
-                  )}.`
-                : "You haven't completed any workouts yet."}
-            </WlbText>
-            <WlbButton
-              title="Add Workout"
-              onPress={() => router.push('/workouts')}
-            />
-          </View>
-        )}
+        ListEmptyComponent={renderEmpty}
       />
     </WlbScreenPage>
   );

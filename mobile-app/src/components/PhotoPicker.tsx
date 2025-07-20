@@ -5,6 +5,7 @@ import WlbButton from './WlbButton';
 import { useTheme } from 'context/theme';
 import WlbModal from 'components/WlbModal';
 import { saveWorkoutImage } from 'utils/imageStorage';
+import WlbEmptyState from 'components/WlbEmptyState';
 
 interface PhotoPickerProps {
   photo: string | null;
@@ -79,10 +80,10 @@ export default function PhotoPicker({
           />
         </Pressable>
       ) : (
-        <WlbButton
-          title="Add Photo"
+        <WlbEmptyState
+          icon="camera"
+          description="Add photo"
           onPress={() => setModalVisible(true)}
-          variant="ghost"
         />
       )}
 

@@ -52,7 +52,7 @@ const LineGraph = ({
   const isMeasured = width > 0 && height > 0;
 
   const { minValue, maxValue } = useMemo(() => {
-    return calculateMinMaxValues(data);
+    return calculateMinMaxValues(data, true);
   }, [data]);
 
   const barWidth = width / data.length;

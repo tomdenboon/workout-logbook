@@ -13,6 +13,7 @@ import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import db from 'db';
 import * as schema from 'db/schema';
 import { and, asc, desc, eq, isNotNull } from 'drizzle-orm';
+import WlbIcon from 'components/WlbIcon';
 
 interface ExerciseGroupProps {
   workoutType: ReturnType<typeof import('hooks/useWorkout').default>['type'];
@@ -88,12 +89,12 @@ const ExerciseGroup = function ExerciseGroup({
             <WlbButton
               onPress={onPress}
               color="main"
-              icon="keyboard-control"
+              icon="dots-horizontal"
               size="small"
             />
           )}
           options={[
-            { label: 'Edit', onPress: () => {}, icon: 'edit' },
+            { label: 'Edit', onPress: () => {}, icon: 'pencil' },
             {
               label: 'Delete',
               onPress: () => {
@@ -122,7 +123,7 @@ const ExerciseGroup = function ExerciseGroup({
           </View>
         ))}
         <View style={{ width: 32, alignItems: 'center' }}>
-          <MaterialIcons name="check" size={20} color={theme.text} />
+          <WlbIcon name="check" size={20} />
         </View>
       </View>
 

@@ -13,7 +13,7 @@ import { router } from 'expo-router';
 import WlbIcon, { WlbIconName } from 'components/WlbIcon';
 
 type RouteInfo = {
-  icon: string;
+  icon: WlbIconName;
   label: string;
 };
 
@@ -23,16 +23,16 @@ type RouteMap = {
 
 const routeMap: RouteMap = {
   index: {
-    icon: 'home',
-    label: 'Home',
+    icon: 'view-dashboard',
+    label: 'Dash',
   },
   history: {
     icon: 'calendar',
     label: 'History',
   },
-  training: {
+  workout: {
     icon: 'dumbbell',
-    label: 'Workouts',
+    label: 'Workout',
   },
   exercises: {
     icon: 'clipboard-list',

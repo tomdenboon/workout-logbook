@@ -2,13 +2,17 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { WlbScreenPage, WlbHeader } from 'components/WlbPage';
 import * as schema from 'db/schema';
 import db from 'db';
-import { and, eq, isNotNull, max, SQL, sql, sum } from 'drizzle-orm';
+import { and, desc, eq, isNotNull, max, SQL, sql, sum } from 'drizzle-orm';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import WlbButton from 'components/WlbButton';
 import LineGraph from 'components/graphs/LineGraph';
 import { useUnit } from 'context/unit';
 import { AggregationFields, CALCULATION_TYPES } from 'const';
 import GraphCard from 'components/graphs/GraphCard';
+import WlbText from 'components/WlbText';
+import { toMap } from 'utils/array';
+import WlbCard from 'components/WlbCard';
+import { FlatList, View } from 'react-native';
 
 const getAggregation = (
   aggregationType: AggregationFields,
@@ -44,29 +48,37 @@ export default function Exercise() {
     }),
   );
 
+  const { data: workouts } = useLiveQuery(
+    db.query.workouts.findMany({
+      where: isNotNull(schema.workouts.completedAt),
+      orderBy: desc(schema.workouts.completedAt),
+      with: {
+        exerciseGroups: {
+          where: eq(schema.exerciseGroups.exerciseId, Number(id)),
+          with: {
+            exercise: true,
+            exerciseRows: true,
+          },
+        },
+      },
+    }),
+  );
+
+  console.log(
+    workouts.map((w) => w.exerciseGroups.map((e) => e.exercise.name)),
+  );
+
   const aggregations = exercise
     ? exerciseTypeToAggregations[exercise.type]
     : [];
   const { formatValueWithUnit } = useUnit();
-
-  const aaaa = aggregations.reduce<Record<string, SQL<string | null>>>(
-    (prev, curr) => {
-      const { id, aggregation } = curr;
-
-      return {
-        ...prev,
-        [id]: aggregation,
-      };
-    },
-    {},
-  );
 
   const { data: graphData } = useLiveQuery(
     db
       .select({
         id: schema.workouts.id,
         completedAt: schema.workouts.completedAt,
-        ...aaaa,
+        ...toMap(aggregations, (a) => [a.id, a.aggregation]),
       })
       .from(schema.workouts)
       .leftJoin(
@@ -111,6 +123,7 @@ export default function Exercise() {
     >
       {exercise && (
         <GraphCard
+          title={exercise.name}
           data={aggregations.map((e) => ({
             label: e.label,
             value: e.id,
@@ -123,6 +136,19 @@ export default function Exercise() {
           GraphComponent={LineGraph}
         />
       )}
+
+      <FlatList
+        data={workouts.filter((w) => w.exerciseGroups.length)}
+        contentContainerStyle={{ gap: 12 }}
+        scrollEnabled={false}
+        renderItem={({ item }) => (
+          <WlbCard key={item.id} title={item.name}>
+            {item.exerciseGroups.map((e) => (
+              <WlbText key={e.id}>{e.exercise.name}</WlbText>
+            ))}
+          </WlbCard>
+        )}
+      />
     </WlbScreenPage>
   );
 }

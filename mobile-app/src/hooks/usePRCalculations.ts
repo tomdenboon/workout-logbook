@@ -9,6 +9,7 @@ import {
 } from 'utils/prCalculations';
 import { ExerciseGroupFull } from 'db/types';
 import { CALCULATION_TYPES } from 'const';
+import { toMap } from 'utils/array';
 
 interface UsePRCalculationsResult {
   prs: PR[];
@@ -25,12 +26,10 @@ export function usePRCalculations(
       .select({
         exerciseId: schema.exerciseGroups.exerciseId,
         exerciseType: schema.exercises.type,
-        ...Object.values(CALCULATION_TYPES).reduce<
-          Record<string, SQL<string | null>>
-        >((acc, type) => {
-          acc[type.label] = max(type.sqlValue);
-          return acc;
-        }, {}),
+        ...toMap(Object.values(CALCULATION_TYPES), (t) => [
+          t.label,
+          max(t.sqlValue),
+        ]),
       })
       .from(schema.workouts)
       .leftJoin(

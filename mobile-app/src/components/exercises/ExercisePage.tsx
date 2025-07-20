@@ -14,6 +14,7 @@ import useEditExerciseModal from 'components/exercises/useEditExerciseModal';
 import { router } from 'expo-router';
 import { EXERCISE_CATEGORIES } from 'const';
 import WlbInput from 'components/WlbInput';
+import { groupBy } from 'utils/array';
 
 export default function ExercisePage({
   modal,
@@ -42,18 +43,12 @@ export default function ExercisePage({
     }
   };
 
-  const filteredExercises = exercises?.filter((exercise) =>
-    exercise.name.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
+  const filteredExercises =
+    exercises?.filter((exercise) =>
+      exercise.name.toLowerCase().includes(searchTerm.toLowerCase()),
+    ) ?? [];
 
-  const groupedExercises = filteredExercises?.reduce((acc, exercise) => {
-    const firstLetter = (exercise.name[0] ?? '-').toUpperCase();
-    if (!acc[firstLetter]) {
-      acc[firstLetter] = [];
-    }
-    acc[firstLetter].push(exercise);
-    return acc;
-  }, {} as Record<string, Exercise[]>);
+  const groupedExercises = groupBy(filteredExercises, (e) => e.name[0] ?? '-');
 
   const editExerciseButton = (
     <WlbButton
@@ -124,7 +119,7 @@ export default function ExercisePage({
   return container(
     <ScrollView>
       <ModalForm {...editExerciseModal} />
-      {Object.entries(groupedExercises ?? {}).map(([letter, exercises]) => (
+      {groupedExercises.map(({ title: letter, data: exercises }) => (
         <View key={letter}>
           <View style={styles.itemContainer}>
             <WlbText size={14} color="sub">

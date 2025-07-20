@@ -12,8 +12,9 @@ import { isNull } from 'drizzle-orm';
 import WlbDropdown from 'components/WlbDropdown';
 import { createWorkout, deleteWorkout, duplicateWorkout } from 'db/mutation';
 import { Workout } from 'db/types';
+import WlbEmptyState from 'components/WlbEmptyState';
 
-export default function TrainingTab() {
+export default function WorkoutTab() {
   const [selectedTemplate, setSelectedTemplate] = useState<Workout>();
   const { data: workouts } = useLiveQuery(
     db.query.workouts.findMany({
@@ -29,7 +30,7 @@ export default function TrainingTab() {
   );
 
   return (
-    <WlbScreenPage header={<WlbHeader title="Start workout" />}>
+    <WlbScreenPage header={<WlbHeader title="Workout" />}>
       <WlbButton
         onPress={() => {
           createWorkout().then((id) => {
@@ -56,13 +57,19 @@ export default function TrainingTab() {
           <WlbButton
             size="small"
             title="Template"
-            icon="add"
+            icon="plus"
             onPress={() => router.push('workouts/new')}
             color="subAlt"
           />
         </View>
       </View>
 
+      {workouts?.length === 0 && (
+        <WlbEmptyState
+          onPress={() => router.push('workouts/new')}
+          description="Add a template"
+        />
+      )}
       {workouts?.map((workout) => (
         <WlbCard
           key={workout.id}
@@ -72,13 +79,13 @@ export default function TrainingTab() {
               triggerComponent={({ onPress }) => (
                 <WlbButton
                   onPress={onPress}
-                  icon="keyboard-control"
+                  icon="dots-vertical"
                   size="small"
                 />
               )}
               options={[
                 {
-                  icon: 'edit',
+                  icon: 'pencil',
                   label: 'Edit Template',
                   onPress: () => router.push(`/workouts/${workout.id}`),
                 },

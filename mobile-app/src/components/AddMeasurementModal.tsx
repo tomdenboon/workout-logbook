@@ -11,6 +11,7 @@ import db from 'db';
 import * as schema from 'db/schema';
 import { eq } from 'drizzle-orm';
 import { toDateKey } from 'utils/date';
+import { filterMap, toMap } from 'utils/array';
 
 type MeasurementForm = Record<
   number,
@@ -47,16 +48,13 @@ export default function AddMeasurementModal({
 
   const initialEntries = useMemo(
     () =>
-      measurements.reduce<MeasurementForm>((acc, measurement) => {
-        const exactCurrentDay = getExactCurrentDayPoint(measurement);
-        if (exactCurrentDay) {
-          acc[measurement.id] = {
-            id: exactCurrentDay.id,
-            value: formatMeasurementValue(exactCurrentDay.value),
-          };
-        }
-        return acc;
-      }, {}),
+      toMap(filterMap(measurements, getExactCurrentDayPoint), (m) => [
+        m.measurementId,
+        {
+          id: m.id,
+          value: formatMeasurementValue(m.value),
+        },
+      ]),
     [measurements],
   );
 

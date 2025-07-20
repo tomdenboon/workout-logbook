@@ -20,5 +20,14 @@ export default function useMeasureLayout() {
     });
   };
 
-  return { width, height, x, y, px, py, handleLayout };
+  return {
+    width,
+    height,
+    x,
+    y,
+    px,
+    py,
+    handleLayout,
+    isMeasured: width > 0 && height > 0,
+  };
 }
