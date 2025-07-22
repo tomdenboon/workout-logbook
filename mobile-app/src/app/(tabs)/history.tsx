@@ -113,7 +113,10 @@ const WorkoutCard = memo(function WorkoutCard({
               {
                 icon: 'content-copy',
                 label: 'Save as Template',
-                onPress: () => duplicateWorkout(workoutId),
+                onPress: () =>
+                  duplicateWorkout(workoutId).then(() => {
+                    router.push('/workout');
+                  }),
               },
               {
                 icon: 'delete',
@@ -209,12 +212,12 @@ export default function History() {
             <View style={{ flexDirection: 'row', gap: 12 }}>
               <WlbStatCard
                 icon="fire"
-                value={calculateCurrentWeekStreak(filteredWorkouts)}
+                value={calculateCurrentWeekStreak(workouts?.data)}
                 label="Week Streak"
               />
               <WlbStatCard
                 icon="moon-waning-crescent"
-                value={calculateRestDays(filteredWorkouts)}
+                value={calculateRestDays(workouts?.data)}
                 label="Rest Days"
               />
             </View>
@@ -233,7 +236,9 @@ export default function History() {
                 />
               </WlbSection>
             ) : (
-              <WlbSection title="Workout history (300)" />
+              <WlbSection
+                title={`Workout history (${workouts?.data?.length})`}
+              />
             )}
           </View>
         )}

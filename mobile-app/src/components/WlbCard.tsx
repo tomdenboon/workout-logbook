@@ -23,6 +23,7 @@ export default function WlbCard({
       style={({ pressed }) => [
         {
           padding: 12,
+          gap: 12,
           borderRadius: 10,
           borderColor: pressed && onPress ? theme.sub : theme.subAlt,
           borderWidth: 1,
@@ -32,12 +33,11 @@ export default function WlbCard({
       ]}
       onPress={onPress}
     >
-      {title && (
+      {(title || titleRight) && (
         <View
           style={{
             flexDirection: 'row',
             justifyContent: 'space-between',
-            paddingBottom: 12,
           }}
         >
           <WlbText fontWeight="bold">{title}</WlbText>

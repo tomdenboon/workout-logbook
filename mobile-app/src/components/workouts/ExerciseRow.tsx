@@ -13,6 +13,7 @@ import ExerciseRowField from 'components/workouts/ExerciseRowField';
 import { keyboardEmitter } from 'context/keyboard';
 import WlbText from 'components/WlbText';
 import { useUnit } from 'context/unit';
+import { useValidation } from 'hooks/useEmptyValidation';
 
 interface ExerciseRowProps {
   workoutType: ReturnType<typeof import('hooks/useWorkout').default>['type'];
@@ -44,7 +45,7 @@ const ExerciseRow = function ExerciseRow({
   previousExerciseRow,
 }: ExerciseRowProps) {
   const fields = VALID_FIELDS[exerciseType];
-  const [errorFields, setErrorFields] = useState<ExerciseField[]>([]);
+  const { validate: v, hasError } = useValidation(exerciseRow, fields);
   const { formatValueWithUnit } = useUnit();
 
   function exerciseRowToText(
@@ -81,22 +82,12 @@ const ExerciseRow = function ExerciseRow({
         isLifted: finalIsLifted,
       };
 
-      const emptyFields = fields.filter((field) => !newRow[field]);
-
-      if (emptyFields.length > 0) {
-        newRow.isLifted = false;
-        if (validate) {
-          setErrorFields(emptyFields);
-          return;
-        }
-      }
-
+      const valid = v({ noErrors: !validate });
+      if (!valid) newRow.isLifted = false;
+      if (!valid && validate) return;
       updateExerciseRow(exerciseGroupIndex, exerciseRowIndex, {
         ...newRow,
       });
-      if (finalIsLifted) {
-        setErrorFields([]);
-      }
     },
     [exerciseRow, exerciseGroupIndex, exerciseRowIndex, fields],
   );
@@ -156,7 +147,7 @@ const ExerciseRow = function ExerciseRow({
             isLastGroup={isLastGroup}
             isLastField={fieldIndex === fields.length - 1}
             field={field}
-            error={errorFields.includes(field)}
+            error={hasError(field)}
             value={exerciseRow[field]}
             saveExerciseRow={saveExerciseRow}
           />

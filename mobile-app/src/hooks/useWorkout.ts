@@ -251,8 +251,7 @@ export default function useWorkout() {
       };
 
       if (realtime) {
-        await db
-          .update(schema.workouts)
+        db.update(schema.workouts)
           .set(newWorkout)
           .where(eq(schema.workouts.id, workout.id as number));
       }

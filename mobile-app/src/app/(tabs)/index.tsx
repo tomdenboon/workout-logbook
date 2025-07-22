@@ -49,23 +49,23 @@ export default function ProfileTab() {
               style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}
             >
               <WlbButton
-                color="text"
-                variant="ghost"
                 size="small"
+                variant="ghost"
+                color="text"
                 icon="palette"
                 onPress={() => setThemeModalVisible(true)}
               />
               <WlbButton
-                color="text"
-                variant="ghost"
                 size="small"
+                variant="ghost"
+                color="text"
                 icon="scale"
                 onPress={() => router.push('/measurements')}
               />
               <WlbButton
-                color="text"
-                variant="ghost"
                 size="small"
+                variant="ghost"
+                color="text"
                 icon="cog"
                 onPress={() => router.push('/settings')}
               />

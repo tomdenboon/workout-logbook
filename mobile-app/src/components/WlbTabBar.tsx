@@ -11,6 +11,7 @@ import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import WlbButton from 'components/WlbButton';
 import { router } from 'expo-router';
 import WlbIcon, { WlbIconName } from 'components/WlbIcon';
+import { getActiveWorkout } from 'db/mutation';
 
 type RouteInfo = {
   icon: WlbIconName;
@@ -46,11 +47,7 @@ const routeMap: RouteMap = {
 
 const ActiveWorkout = () => {
   const theme = useTheme();
-  const { data: workout } = useLiveQuery(
-    db.query.workouts.findFirst({
-      where: and(isNotNull(workouts.startedAt), isNull(workouts.completedAt)),
-    }),
-  );
+  const { data: workout } = useLiveQuery(getActiveWorkout());
 
   if (!workout) return null;
 

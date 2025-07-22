@@ -38,7 +38,7 @@ const WorkoutKeyboard = function WorkoutKeyboard() {
           <WlbButton
             color="subAlt"
             size="small"
-            icon="line-weight"
+            icon="format-line-weight"
             style={{ flex: 1, height: 40 }}
             onPress={() => keyboardEmitter.emit('onNext')}
           />

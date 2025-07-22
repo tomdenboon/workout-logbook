@@ -225,7 +225,7 @@ function ExerciseRowField({
     <WlbInput
       key={field}
       ref={inputRef}
-      error={error && inputValue === ''}
+      error={error}
       size="small"
       style={{
         width: '100%',

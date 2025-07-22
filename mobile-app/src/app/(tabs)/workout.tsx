@@ -4,19 +4,25 @@ import { router } from 'expo-router';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import WlbButton from 'components/WlbButton';
 import WlbCard from 'components/WlbCard';
-import { WlbModalPage, WlbScreenPage, WlbHeader } from 'components/WlbPage';
+import { WlbScreenPage, WlbHeader } from 'components/WlbPage';
 import WlbText from 'components/WlbText';
 import db from 'db';
 import * as schema from 'db/schema';
 import { isNull } from 'drizzle-orm';
 import WlbDropdown from 'components/WlbDropdown';
-import { createWorkout, deleteWorkout, duplicateWorkout } from 'db/mutation';
-import { Workout } from 'db/types';
+import {
+  createWorkout,
+  deleteWorkout,
+  duplicateWorkout,
+  getActiveWorkout,
+} from 'db/mutation';
 import WlbEmptyState from 'components/WlbEmptyState';
 import WlbSection from 'components/WlbSection';
+import ActiveWorkoutModal from 'components/ActiveWorkoutModal';
 
 export default function WorkoutTab() {
-  const [selectedTemplate, setSelectedTemplate] = useState<Workout>();
+  const [pendingAction, setPendingAction] = useState<(() => void) | null>(null);
+
   const { data: workouts } = useLiveQuery(
     db.query.workouts.findMany({
       where: isNull(schema.workouts.startedAt),
@@ -30,13 +36,25 @@ export default function WorkoutTab() {
     }),
   );
 
+  const handleStartWorkout = async (
+    startAction: () => Promise<number | undefined>,
+  ) => {
+    const activeWorkout = await getActiveWorkout();
+    const executeAction = () =>
+      startAction().then((id) => id && router.push(`/workouts/${id}`));
+
+    if (activeWorkout) {
+      setPendingAction(() => executeAction);
+    } else {
+      executeAction();
+    }
+  };
+
   return (
     <WlbScreenPage header={<WlbHeader title="Workout" />}>
       <WlbButton
         onPress={() => {
-          createWorkout().then((id) => {
-            router.push(`/workouts/${id}`);
-          });
+          handleStartWorkout(createWorkout);
         }}
         title="Start an empty workout"
       />
@@ -70,7 +88,7 @@ export default function WorkoutTab() {
               triggerComponent={({ onPress }) => (
                 <WlbButton
                   onPress={onPress}
-                  icon="dots-vertical"
+                  icon="dots-horizontal"
                   size="small"
                 />
               )}
@@ -93,35 +111,28 @@ export default function WorkoutTab() {
               ]}
             />
           }
-          onPress={() => setSelectedTemplate(workout)}
+          onPress={() =>
+            handleStartWorkout(() => duplicateWorkout(workout.id, true))
+          }
         >
-          <WlbText>
-            {workout.exerciseGroups
-              .map((exerciseGroups) => exerciseGroups.exercise.name)
-              .join(', ')}
-          </WlbText>
+          {workout.exerciseGroups.length > 0 ? (
+            <WlbText>
+              {workout.exerciseGroups
+                .map((exerciseGroups) => exerciseGroups.exercise.name)
+                .join(', ')}
+            </WlbText>
+          ) : (
+            <WlbText>No exercises</WlbText>
+          )}
         </WlbCard>
       ))}
-      {selectedTemplate && (
-        <WlbModalPage
-          visible={!!selectedTemplate}
-          close={() => setSelectedTemplate(undefined)}
-          header={<WlbHeader title={selectedTemplate.name} />}
-        >
-          <WlbButton
-            title="Start workout"
-            onPress={() => {
-              duplicateWorkout(selectedTemplate.id, true).then((id) => {
-                if (!id) {
-                  return;
-                }
 
-                setSelectedTemplate(undefined);
-                router.push(`/workouts/${id}`);
-              });
-            }}
-          />
-        </WlbModalPage>
+      {pendingAction && (
+        <ActiveWorkoutModal
+          visible={!!pendingAction}
+          close={() => setPendingAction(null)}
+          onConfirm={pendingAction}
+        />
       )}
     </WlbScreenPage>
   );

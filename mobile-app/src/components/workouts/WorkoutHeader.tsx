@@ -4,7 +4,7 @@ import { router } from 'expo-router';
 import WlbButton from 'components/WlbButton';
 import { WlbHeader } from 'components/WlbPage';
 import { formatTime, useTimer } from 'hooks/useTimer';
-import { deleteWorkout, finishWorkout } from 'db/mutation';
+import { finishWorkout } from 'db/mutation';
 import RestTimerModal from 'components/RestTimerModal';
 import { useRestTimer } from 'context/restTimer';
 import { useTheme } from 'context/theme';
@@ -12,13 +12,13 @@ import { useTheme } from 'context/theme';
 interface WorkoutHeaderProps {
   workout: ReturnType<typeof import('hooks/useWorkout').default>['workout'];
   type: ReturnType<typeof import('hooks/useWorkout').default>['type'];
-  flush: ReturnType<typeof import('hooks/useWorkout').default>['flush'];
+  onSave: () => void;
 }
 
 const WorkoutHeader = function WorkoutHeader({
   workout,
   type,
-  flush,
+  onSave,
 }: WorkoutHeaderProps) {
   const timer = useTimer(workout.startedAt, workout.completedAt);
   const { isActive, timeRemaining, timerDuration } = useRestTimer();
@@ -53,28 +53,13 @@ const WorkoutHeader = function WorkoutHeader({
       return (
         <View style={{ flexDirection: 'row', gap: 8 }}>
           <RestTimerModal />
-          <WlbButton
-            title="Finish"
-            onPress={() =>
-              finishWorkout(workout.id as number).then(() => {
-                router.dismissTo('/history');
-              })
-            }
-          />
+          <WlbButton title="Finish" onPress={onSave} />
         </View>
       );
     }
 
-    return (
-      <WlbButton
-        title="Save"
-        onPress={() => {
-          flush();
-          router.back();
-        }}
-      />
-    );
-  }, [type, flush]);
+    return <WlbButton title="Save" onPress={onSave} />;
+  }, [type, onSave]);
 
   return (
     <View>

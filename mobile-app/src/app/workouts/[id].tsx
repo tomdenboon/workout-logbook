@@ -5,7 +5,7 @@ import WlbInput from 'components/WlbInput';
 import { WlbScreenPage } from 'components/WlbPage';
 import useWorkout from 'hooks/useWorkout';
 import WlbText from 'components/WlbText';
-import { deleteWorkout } from 'db/mutation';
+import { deleteWorkout, finishWorkout } from 'db/mutation';
 import { useTheme } from 'context/theme';
 import WlbTimer from 'components/WlbTimer';
 import ExercisePage from 'components/exercises/ExercisePage';
@@ -14,7 +14,7 @@ import WorkoutHeader from 'components/workouts/WorkoutHeader';
 import ExerciseGroup from 'components/workouts/ExerciseGroup';
 import WorkoutKeyboard from 'components/workouts/WorkoutKeyboard';
 import PhotoPicker from 'components/PhotoPicker';
-import useDebounce from 'hooks/useDebounce';
+import { useValidation } from 'hooks/useEmptyValidation';
 
 export default function Workout() {
   const [addExerciseModalVisible, setAddExerciseModalVisible] = useState(false);
@@ -31,21 +31,7 @@ export default function Workout() {
     waitForData,
   } = useWorkout();
   const theme = useTheme();
-  const [name, setName] = useState(workout.name);
-  const [note, setNote] = useState(workout.note);
-
-  useEffect(() => {
-    setName(workout.name);
-    setNote(workout.note);
-  }, [workout.name, workout.note]);
-
-  const debouncedUpdateWorkout = useCallback(() => {
-    if (name !== workout.name || note !== workout.note) {
-      updateWorkout({ name, note: note });
-    }
-  }, [name, note, workout.name, workout.note]);
-
-  useDebounce(debouncedUpdateWorkout, 1000);
+  const { validate, hasError } = useValidation(workout, ['name']);
 
   if (waitForData) {
     return (
@@ -65,19 +51,36 @@ export default function Workout() {
   return (
     <>
       <WlbScreenPage
-        header={<WorkoutHeader workout={workout} type={type} flush={flush} />}
+        header={
+          <WorkoutHeader
+            workout={workout}
+            type={type}
+            onSave={() => {
+              const valid = validate();
+              if (!valid) return;
+              if (type === 'active') {
+                finishWorkout(workout.id as number).then(() =>
+                  router.dismissTo('/history'),
+                );
+              } else {
+                flush().then(() => router.back());
+              }
+            }}
+          />
+        }
       >
         {type === 'completed' && (
           <WlbTimer start={workout.startedAt} end={workout.completedAt} />
         )}
         <WlbInput
-          value={name}
-          onChangeText={(value) => setName(value)}
+          value={workout.name}
+          error={hasError('name')}
+          onChangeText={(value) => updateWorkout({ name: value })}
           placeholder="Workout name"
         />
         <WlbInput
-          value={note || ''}
-          onChangeText={(value) => setNote(value)}
+          value={workout.note || ''}
+          onChangeText={(value) => updateWorkout({ note: value })}
           placeholder="Add notes..."
           multiline
         />

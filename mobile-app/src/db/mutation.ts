@@ -82,6 +82,15 @@ export async function finishWorkout(id: number) {
     .where(eq(schema.workouts.id, id));
 }
 
+export function getActiveWorkout() {
+  return db.query.workouts.findFirst({
+    where: and(
+      isNull(schema.workouts.completedAt),
+      isNotNull(schema.workouts.startedAt),
+    ),
+  });
+}
+
 async function deleteActiveWorkout() {
   await db
     .delete(schema.workouts)
