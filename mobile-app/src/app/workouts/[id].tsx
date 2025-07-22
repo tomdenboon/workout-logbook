@@ -82,6 +82,7 @@ export default function Workout() {
           multiline
         />
         <PhotoPicker
+          type="workout"
           photo={workout.photo}
           onPhotoChange={(photo) => updateWorkout({ photo })}
         />

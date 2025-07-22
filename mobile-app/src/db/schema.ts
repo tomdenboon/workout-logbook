@@ -155,4 +155,6 @@ export const settings = sqliteTable('settings', {
 export const progressPhotos = sqliteTable('progress_photos', {
   id: integer().primaryKey({ autoIncrement: true }),
   photo: text().notNull(),
+  date: integer('date').notNull(),
+  dateKey: text('date_key').notNull(),
 });

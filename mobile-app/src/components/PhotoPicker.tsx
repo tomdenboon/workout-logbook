@@ -4,17 +4,19 @@ import * as ImagePicker from 'expo-image-picker';
 import WlbButton from './WlbButton';
 import { useTheme } from 'context/theme';
 import WlbModal from 'components/WlbModal';
-import { saveWorkoutImage } from 'utils/imageStorage';
+import { saveImage } from 'utils/imageStorage';
 import WlbEmptyState from 'components/WlbEmptyState';
 
 interface PhotoPickerProps {
   photo: string | null;
   onPhotoChange: (photo: string | null) => void;
+  type: 'workout' | 'progress';
 }
 
 export default function PhotoPicker({
   photo,
   onPhotoChange,
+  type,
 }: PhotoPickerProps) {
   const [modalVisible, setModalVisible] = useState(false);
   const theme = useTheme();
@@ -35,6 +37,7 @@ export default function PhotoPicker({
     }
     return true;
   };
+  console.log(photo);
 
   const launchImagePicker = async (
     imagePickerFunction: (
@@ -53,7 +56,7 @@ export default function PhotoPicker({
 
     if (!result.canceled && result.assets[0]) {
       setModalVisible(false);
-      saveWorkoutImage(result.assets[0].uri).then((path) => {
+      saveImage(result.assets[0].uri, type).then((path) => {
         onPhotoChange(path);
       });
     }

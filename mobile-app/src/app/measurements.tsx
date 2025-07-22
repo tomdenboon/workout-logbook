@@ -14,24 +14,27 @@ import { useTheme } from 'context/theme';
 import GraphCard from 'components/graphs/GraphCard';
 import { router } from 'expo-router';
 import WlbEmptyState from 'components/WlbEmptyState';
+import { asc } from 'drizzle-orm';
+import { ProgressPhoto } from 'db/types';
 
-function ProgressPhotoCard(props: { addProgressPhoto: () => void }) {
-  const { data: progressPhotos } = useLiveQuery(
-    db.query.progressPhotos.findMany(),
-  );
+function ProgressPhotoCard(props: {
+  addProgressPhoto: () => void;
+  progressPhotos: ProgressPhoto[];
+}) {
+  const { progressPhotos, addProgressPhoto } = props;
 
   return (
     <WlbCard title="Progress pictures">
-      {progressPhotos?.length === 0 && (
+      {progressPhotos.length === 0 && (
         <View style={{ height: 160, width: 120 }}>
           <WlbEmptyState
             icon="camera"
-            onPress={props.addProgressPhoto}
+            onPress={addProgressPhoto}
             description="Add photo"
           />
         </View>
       )}
-      {progressPhotos?.map((photo) => (
+      {progressPhotos.map((photo) => (
         <View key={photo.id} style={{ height: 100, width: 100 }}>
           <Image
             source={{ uri: photo.photo }}
@@ -63,6 +66,11 @@ export default function Measurements() {
           ],
         },
       },
+    }),
+  );
+  const { data: progressPhotos } = useLiveQuery(
+    db.query.progressPhotos.findMany({
+      orderBy: [asc(schema.progressPhotos.date)],
     }),
   );
 
@@ -125,6 +133,7 @@ export default function Measurements() {
     >
       <ProgressPhotoCard
         addProgressPhoto={() => setAddPointModalVisible(true)}
+        progressPhotos={progressPhotos || []}
       />
       {measurements && measurements.length > 0 && (
         <GraphCard
@@ -174,6 +183,7 @@ export default function Measurements() {
         visible={addPointModalVisible}
         close={() => setAddPointModalVisible(false)}
         measurements={measurements || []}
+        photos={progressPhotos || []}
       />
     </WlbScreenPage>
   );

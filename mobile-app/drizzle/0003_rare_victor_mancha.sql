@@ -1,0 +1,1 @@
+ALTER TABLE `progress_photos` ADD `date_key` text NOT NULL;

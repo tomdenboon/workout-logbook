@@ -1,10 +1,10 @@
 import React, { useState, memo } from 'react';
-import { WlbHeader, WlbModalPage, WlbScreenPage } from 'components/WlbPage';
-import { SectionList, View, ScrollView, FlatList } from 'react-native';
+import { WlbHeader, WlbScreenPage } from 'components/WlbPage';
+import { View, FlatList } from 'react-native';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import db from 'db';
 import WlbCard from 'components/WlbCard';
-import { desc, isNotNull, eq, and, gte, lte } from 'drizzle-orm';
+import { desc, isNotNull, eq } from 'drizzle-orm';
 import * as schema from 'db/schema';
 import WlbDropdown from 'components/WlbDropdown';
 import { deleteWorkout, duplicateWorkout } from 'db/mutation';
@@ -14,7 +14,6 @@ import { ExerciseCategory, ExerciseRow } from 'db/types';
 import { useUnit } from 'context/unit';
 import { usePRCalculations } from 'hooks/usePRCalculations';
 import { VALID_FIELDS } from 'const';
-import { formatTime } from 'hooks/useTimer';
 import WlbText from 'components/WlbText';
 import Calendar from 'components/Calendar';
 import WlbStatCard from 'components/WlbStatCard';
@@ -23,8 +22,10 @@ import {
   calculateRestDays,
 } from 'utils/streakCalculations';
 import WlbIcon from 'components/WlbIcon';
-import { useTheme } from 'context/theme';
 import WlbEmptyState from 'components/WlbEmptyState';
+import WorkoutDetailsModal from 'components/workouts/WorkoutDetailsModal';
+import WorkoutStatsRow from 'components/workouts/WorkoutStatsRow';
+import WlbSection from 'components/WlbSection';
 
 const WorkoutCard = memo(function WorkoutCard({
   workoutId,
@@ -34,7 +35,6 @@ const WorkoutCard = memo(function WorkoutCard({
   completedAt: number | null;
 }) {
   const [showDetails, setShowDetails] = useState(false);
-  const theme = useTheme();
   const { data: workoutDetails } = useLiveQuery(
     db.query.workouts.findFirst({
       where: eq(schema.workouts.id, workoutId),
@@ -80,7 +80,6 @@ const WorkoutCard = memo(function WorkoutCard({
     );
   }
 
-  const totalVolumeFormatted = formatValueWithUnit(totalVolume, 'weight');
   const completedDate = new Date(workoutDetails.completedAt as number);
 
   const formatDate = () => {
@@ -89,40 +88,6 @@ const WorkoutCard = memo(function WorkoutCard({
       day: 'numeric',
       month: 'short',
     });
-  };
-
-  const StatsRow = () => {
-    const items = [
-      {
-        icon: 'clock-outline',
-        value: formatTime(
-          (workoutDetails.completedAt ?? 0) - (workoutDetails.startedAt ?? 0),
-          'digital',
-        ),
-      },
-      {
-        icon: 'weight',
-        value: totalVolume > 0 ? totalVolumeFormatted : '0',
-      },
-      {
-        icon: 'trophy',
-        value: prs.length,
-      },
-    ] as const;
-
-    return (
-      <View style={{ flexDirection: 'row', gap: 20 }}>
-        {items.map((item) => (
-          <View
-            key={item.icon}
-            style={{ alignItems: 'center', flexDirection: 'row', gap: 4 }}
-          >
-            <WlbIcon name={item.icon} size={20} />
-            <WlbText>{item.value}</WlbText>
-          </View>
-        ))}
-      </View>
-    );
   };
 
   return (
@@ -161,7 +126,12 @@ const WorkoutCard = memo(function WorkoutCard({
       >
         <View style={{ gap: 8 }}>
           <WlbText color="sub">{formatDate()}</WlbText>
-          <StatsRow />
+          <WorkoutStatsRow
+            startedAt={workoutDetails.startedAt}
+            completedAt={workoutDetails.completedAt}
+            totalVolume={totalVolume}
+            prCount={prs.length}
+          />
           <View style={{ gap: 8 }}>
             {workoutDetails.exerciseGroups.map((group) => (
               <View
@@ -179,88 +149,13 @@ const WorkoutCard = memo(function WorkoutCard({
         </View>
       </WlbCard>
 
-      <WlbModalPage
+      <WorkoutDetailsModal
         visible={showDetails}
-        close={() => setShowDetails(false)}
-        header={
-          <WlbHeader
-            title={workoutDetails.name}
-            headerLeft={
-              <WlbButton
-                color="subAlt"
-                icon="close"
-                size="small"
-                onPress={() => setShowDetails(false)}
-              />
-            }
-            headerBottom={
-              <View style={{ gap: 8 }}>
-                <WlbText color="sub">{formatDate()}</WlbText>
-                <StatsRow />
-                {workoutDetails.note && (
-                  <WlbText color="sub">{workoutDetails.note}</WlbText>
-                )}
-              </View>
-            }
-          />
-        }
-      >
-        {workoutDetails.exerciseGroups.map((group) => (
-          <View key={group.id} style={{ gap: 8 }}>
-            <WlbText fontWeight="bold">{group.exercise.name}</WlbText>
-            <View style={{ gap: 4 }}>
-              {group.exerciseRows.map((row, index) => {
-                const rowPRs = prs.filter((pr) => pr.exerciseRowId === row.id);
-                return (
-                  <View key={row.id} style={{ gap: 4 }}>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                      }}
-                    >
-                      <WlbText color="sub">Set {index + 1}</WlbText>
-                      <WlbText>
-                        {exerciseRowToText(group.exercise.type, row)}
-                      </WlbText>
-                    </View>
-                    {rowPRs.length > 0 && (
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          flexWrap: 'wrap',
-                          gap: 8,
-                          justifyContent: 'flex-end',
-                        }}
-                      >
-                        {rowPRs.map((pr) => (
-                          <View
-                            key={pr.badgeType}
-                            style={{
-                              flexDirection: 'row',
-                              alignItems: 'center',
-                              gap: 2,
-                              borderWidth: 1,
-                              borderColor: theme.main,
-                              borderRadius: 8,
-                              paddingHorizontal: 4,
-                            }}
-                          >
-                            <WlbIcon name="trophy" color="main" size={14} />
-                            <WlbText key={pr.badgeType} size={14} color="main">
-                              {pr.badgeType}
-                            </WlbText>
-                          </View>
-                        ))}
-                      </View>
-                    )}
-                  </View>
-                );
-              })}
-            </View>
-          </View>
-        ))}
-      </WlbModalPage>
+        onClose={() => setShowDetails(false)}
+        workoutDetails={workoutDetails}
+        prs={prs}
+        totalVolume={totalVolume}
+      />
     </>
   );
 });
@@ -296,10 +191,6 @@ export default function History() {
       : true,
   );
 
-  const headerTitle = selectedDate
-    ? formatSelectedDate(selectedDate)
-    : 'History';
-
   const renderEmpty = () => (
     <WlbEmptyState
       onPress={() => router.push('/workout')}
@@ -311,7 +202,7 @@ export default function History() {
     <WlbScreenPage
       header={
         <WlbHeader
-          title={headerTitle}
+          title={'History'}
           headerRight={
             selectedDate && (
               <WlbButton
@@ -349,6 +240,18 @@ export default function History() {
               selectedDate={selectedDate}
               isHighlighted={(date) => workoutDates.has(date.toDateString())}
             />
+            {selectedDate ? (
+              <WlbSection title={formatSelectedDate(selectedDate)}>
+                <WlbButton
+                  title="Clear"
+                  size="small"
+                  variant="ghost"
+                  onPress={() => setSelectedDate(undefined)}
+                />
+              </WlbSection>
+            ) : (
+              <WlbSection title="Workout history (300)" />
+            )}
           </View>
         )}
         ItemSeparatorComponent={() => <View style={{ height: 12 }} />}

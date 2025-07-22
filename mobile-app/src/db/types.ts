@@ -9,9 +9,14 @@ export type Measurement = InferSelectModel<typeof schema.measurements>;
 export type MeasurementPoint = InferSelectModel<
   typeof schema.measurementPoints
 >;
+export type ProgressPhoto = InferSelectModel<typeof schema.progressPhotos>;
 
 export type ExerciseCategory = Exercise['type'];
 export type ExerciseField = 'reps' | 'weight' | 'time' | 'distance';
+
+export type WorkoutFull = Workout & {
+  exerciseGroups: ExerciseGroupFull[];
+};
 
 export type MeasurementFull = Measurement & {
   measurementPoints: MeasurementPoint[];

@@ -6,7 +6,7 @@ import WlbText from 'components/WlbText';
 import WlbInput from 'components/WlbInput';
 import PhotoPicker from 'components/PhotoPicker';
 import { useTheme } from 'context/theme';
-import { MeasurementFull } from 'db/types';
+import { MeasurementFull, ProgressPhoto } from 'db/types';
 import db from 'db';
 import * as schema from 'db/schema';
 import { eq } from 'drizzle-orm';
@@ -29,22 +29,27 @@ interface AddMeasurementModalProps {
   visible: boolean;
   close: () => void;
   measurements: MeasurementFull[];
+  photos: ProgressPhoto[];
 }
 
 export default function AddMeasurementModal({
   visible,
   close,
   measurements,
+  photos,
 }: AddMeasurementModalProps) {
   const theme = useTheme();
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [photo, setPhoto] = useState<string | null>(null);
 
   const getExactCurrentDayPoint = (measurement: MeasurementFull) => {
     return measurement.measurementPoints.find(
       (point) => point.dateKey === toDateKey(selectedDate),
     );
   };
+
+  const initialPhoto = useMemo(() => {
+    return photos.find((p) => p.dateKey === toDateKey(selectedDate));
+  }, [photos, selectedDate]);
 
   const initialEntries = useMemo(
     () =>
@@ -58,13 +63,16 @@ export default function AddMeasurementModal({
     [measurements],
   );
 
+  const [photo, setPhoto] = useState<string | null>(
+    initialPhoto?.photo || null,
+  );
   const [measurementEntries, setMeasurementEntries] =
     useState<MeasurementForm>(initialEntries);
 
   useEffect(() => {
     if (visible) {
       setSelectedDate(new Date());
-      setPhoto(null);
+      setPhoto(initialPhoto?.photo || null);
       setMeasurementEntries(initialEntries);
     }
   }, [visible, initialEntries]);
@@ -80,28 +88,29 @@ export default function AddMeasurementModal({
   };
 
   const handleSave = async () => {
+    const date = selectedDate.getTime();
+    const dateKey = toDateKey(selectedDate);
+
     const entries = Object.entries(measurementEntries).map(
       ([measurementId, value]) => ({
         measurementId: parseInt(measurementId),
         id: value.id,
-        date: selectedDate.getTime(),
-        dateKey: toDateKey(selectedDate),
+        date,
+        dateKey,
         value: value.value.trim() ? parseFloat(value.value) : undefined,
       }),
     );
 
     entries.forEach(async (entry) => {
-      if (entry.id && !entry.value) {
+      if (entry.id) {
         await db
           .delete(schema.measurementPoints)
           .where(eq(schema.measurementPoints.id, entry.id));
-      } else if (entry.id) {
-        await db
-          .update(schema.measurementPoints)
-          .set({ value: entry.value, date: entry.date })
-          .where(eq(schema.measurementPoints.id, entry.id));
-      } else if (entry.value) {
+      }
+
+      if (entry.value) {
         await db.insert(schema.measurementPoints).values({
+          id: entry.id,
           measurementId: entry.measurementId,
           date: entry.date,
           dateKey: entry.dateKey,
@@ -109,6 +118,21 @@ export default function AddMeasurementModal({
         });
       }
     });
+
+    if (initialPhoto) {
+      await db
+        .delete(schema.progressPhotos)
+        .where(eq(schema.progressPhotos.id, initialPhoto.id));
+    }
+
+    if (photo) {
+      await db.insert(schema.progressPhotos).values({
+        id: initialPhoto?.id,
+        date,
+        dateKey,
+        photo,
+      });
+    }
 
     close();
   };
@@ -152,7 +176,7 @@ export default function AddMeasurementModal({
           <WlbText size={16} fontWeight="bold">
             Progress Photos
           </WlbText>
-          <PhotoPicker photo={photo} onPhotoChange={setPhoto} />
+          <PhotoPicker type="progress" photo={photo} onPhotoChange={setPhoto} />
         </View>
 
         <View style={{ gap: 8 }}>

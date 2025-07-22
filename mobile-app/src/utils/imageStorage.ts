@@ -1,6 +1,7 @@
 import * as FileSystem from 'expo-file-system';
 
 const WORKOUT_IMAGES_DIR = `${FileSystem.documentDirectory}workout-images/`;
+const PROGRESS_PHOTOS_DIR = `${FileSystem.documentDirectory}progress-photos/`;
 
 async function ensureDirExists(dir: string) {
   const dirInfo = await FileSystem.getInfoAsync(dir);
@@ -11,8 +12,12 @@ async function ensureDirExists(dir: string) {
   }
 }
 
-export async function saveWorkoutImage(imageUri: string): Promise<string> {
-  await ensureDirExists(WORKOUT_IMAGES_DIR);
+export async function saveImage(
+  imageUri: string,
+  type: 'workout' | 'progress',
+): Promise<string> {
+  const dir = type === 'workout' ? WORKOUT_IMAGES_DIR : PROGRESS_PHOTOS_DIR;
+  await ensureDirExists(dir);
 
   const timestamp = Date.now();
   const fileExtension = imageUri.split('.').pop() || 'jpg';

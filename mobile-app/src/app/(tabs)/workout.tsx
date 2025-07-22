@@ -13,6 +13,7 @@ import WlbDropdown from 'components/WlbDropdown';
 import { createWorkout, deleteWorkout, duplicateWorkout } from 'db/mutation';
 import { Workout } from 'db/types';
 import WlbEmptyState from 'components/WlbEmptyState';
+import WlbSection from 'components/WlbSection';
 
 export default function WorkoutTab() {
   const [selectedTemplate, setSelectedTemplate] = useState<Workout>();
@@ -39,31 +40,21 @@ export default function WorkoutTab() {
         }}
         title="Start an empty workout"
       />
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'flex-end',
-        }}
-      >
-        <WlbText>Templates</WlbText>
-        <View style={{ flexDirection: 'row', gap: 8 }}>
-          <WlbButton
-            size="small"
-            icon="folder"
-            onPress={() => {}}
-            color="subAlt"
-          />
-          <WlbButton
-            size="small"
-            title="Template"
-            icon="plus"
-            onPress={() => router.push('workouts/new')}
-            color="subAlt"
-          />
-        </View>
-      </View>
-
+      <WlbSection title="Templates">
+        <WlbButton
+          size="small"
+          icon="folder"
+          onPress={() => {}}
+          color="subAlt"
+        />
+        <WlbButton
+          size="small"
+          title="Template"
+          icon="plus"
+          onPress={() => router.push('workouts/new')}
+          color="subAlt"
+        />
+      </WlbSection>
       {workouts?.length === 0 && (
         <WlbEmptyState
           onPress={() => router.push('workouts/new')}
