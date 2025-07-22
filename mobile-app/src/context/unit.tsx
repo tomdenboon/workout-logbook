@@ -5,6 +5,8 @@ import { formatTime } from 'hooks/useTimer';
 interface UnitContextType {
   weightUnit: 'kg' | 'lbs';
   distanceUnit: 'km' | 'mi';
+  measurementUnit: 'cm' | 'in';
+  fieldToSuffix: (field: string) => string;
   formatValueWithUnit: (value: number, field: string) => string;
   convertToDisplayUnit: (value: number, field: string) => number;
   convertToStorageUnit: (value: number, field: string) => number;
@@ -27,22 +29,43 @@ interface UnitProviderProps {
 export function UnitProvider({ children }: UnitProviderProps) {
   const weightUnit = useSetting<'kg' | 'lbs'>('weightUnit', 'kg');
   const distanceUnit = useSetting<'km' | 'mi'>('distanceUnit', 'km');
+  const measurementUnit = useSetting<'cm' | 'in'>('measurementUnit', 'cm');
+
+  const fieldToSuffix = (field: string) => {
+    if (field === 'weight') {
+      return weightUnit;
+    }
+    if (field === 'distance') {
+      return distanceUnit;
+    }
+    if (field === 'measurement') {
+      return measurementUnit;
+    }
+    if (field === 'percentage') {
+      return '%';
+    }
+    if (field === 'reps') {
+      return 'reps';
+    }
+
+    return '';
+  };
 
   const formatValueWithUnit = (value: number, field?: string) => {
     const displayValue = convertToDisplayUnit(value, field);
 
-    if (field === 'weight') {
-      return `${parseFloat(displayValue.toFixed(1))} ${weightUnit}`;
-    }
-    if (field === 'distance') {
-      return `${parseFloat(displayValue.toFixed(1))} ${distanceUnit}`;
+    if (
+      field &&
+      ['weight', 'distance', 'measurement', 'reps', 'percentage'].includes(
+        field,
+      )
+    ) {
+      return `${parseFloat(displayValue.toFixed(1))} ${fieldToSuffix(field)}`;
     }
     if (field === 'time') {
       return formatTime(displayValue, 'digital');
     }
-    if (field === 'reps') {
-      return `${displayValue.toString()} reps`;
-    }
+
     return displayValue.toString();
   };
 
@@ -52,6 +75,9 @@ export function UnitProvider({ children }: UnitProviderProps) {
     }
     if (field === 'distance' && distanceUnit === 'mi') {
       return value * 0.621371;
+    }
+    if (field === 'measurement' && measurementUnit === 'in') {
+      return value * 2.54;
     }
 
     return value;
@@ -64,6 +90,9 @@ export function UnitProvider({ children }: UnitProviderProps) {
     if (field === 'distance' && distanceUnit === 'mi') {
       return value / 0.621371;
     }
+    if (field === 'measurement' && measurementUnit === 'in') {
+      return value / 2.54;
+    }
 
     return value;
   };
@@ -73,10 +102,12 @@ export function UnitProvider({ children }: UnitProviderProps) {
       formatValueWithUnit,
       convertToDisplayUnit,
       convertToStorageUnit,
+      fieldToSuffix,
       weightUnit,
       distanceUnit,
+      measurementUnit,
     }),
-    [weightUnit, distanceUnit],
+    [weightUnit, distanceUnit, measurementUnit],
   );
 
   return <UnitContext.Provider value={value}>{children}</UnitContext.Provider>;

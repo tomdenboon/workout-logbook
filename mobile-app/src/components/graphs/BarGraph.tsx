@@ -55,6 +55,10 @@ const LineGraph = ({
     return calculateMinMaxValues(data, true);
   }, [data]);
 
+  useEffect(() => {
+    setSelectedPoint(null);
+  }, [data]);
+
   const barWidth = width / data.length;
   const points = useMemo(() => {
     const getX = (index: number) => {
@@ -108,17 +112,16 @@ const LineGraph = ({
   return (
     <View
       style={{
-        paddingBottom: 16,
         height: containerHeight,
+        marginBottom: 12,
       }}
     >
-      <View style={{ flex: 1, flexDirection: 'row' }}>
+      <View style={{ flex: 1, flexDirection: 'row', gap: 4, paddingRight: 8 }}>
         <View
           style={{
-            justifyContent: 'space-between',
             alignItems: 'flex-end',
-            paddingRight: 4,
-            marginVertical: -6,
+            marginBottom: 4,
+            justifyContent: 'space-between',
           }}
           onLayout={handleYAxisLayout}
         >
@@ -166,8 +169,8 @@ const LineGraph = ({
         <View
           style={{
             position: 'absolute',
-            left: yAxisWidth + selectedPoint.x - 100,
-            bottom: selectedPoint.y + 20,
+            left: yAxisWidth + selectedPoint.x - 96,
+            bottom: selectedPoint.y + 4,
             width: 200 + barWidth,
             alignItems: 'center',
           }}
@@ -178,6 +181,7 @@ const LineGraph = ({
               paddingHorizontal: 4,
               paddingVertical: 2,
               borderRadius: 4,
+              alignItems: 'center',
             }}
           >
             <WlbText size={12}>{valueFormatter(selectedPoint.value)}</WlbText>
@@ -192,8 +196,8 @@ const LineGraph = ({
             key={i}
             style={{
               position: 'absolute',
-              left: yAxisWidth + point.x - 100,
-              bottom: 0,
+              left: yAxisWidth + point.x - 96,
+              bottom: -16,
               width: 200 + barWidth,
               alignItems: 'center',
             }}

@@ -187,7 +187,7 @@ const LineGraph = ({
           style={{
             position: 'absolute',
             left: yAxisWidth + selectedPoint.x - 96,
-            top: selectedPoint.y - 24,
+            top: selectedPoint.y - 40,
             width: 200,
             alignItems: 'center',
           }}
@@ -198,10 +198,11 @@ const LineGraph = ({
               paddingHorizontal: 4,
               paddingVertical: 2,
               borderRadius: 4,
+              alignItems: 'center',
             }}
           >
+            <WlbText size={12}>{valueFormatter(selectedPoint.value)}</WlbText>
             <WlbText size={12}>
-              {valueFormatter(selectedPoint.value)},{' '}
               {formatDateLabel(selectedPoint.date, true)}
             </WlbText>
           </View>
@@ -214,9 +215,9 @@ const LineGraph = ({
             key={i}
             style={{
               position: 'absolute',
-              left: yAxisWidth + point.x - 26,
+              left: yAxisWidth + point.x - 96,
               bottom: -16,
-              width: 60,
+              width: 200,
               alignItems: 'center',
             }}
           >

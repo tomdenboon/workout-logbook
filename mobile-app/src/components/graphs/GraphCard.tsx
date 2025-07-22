@@ -46,7 +46,10 @@ export default function GraphCard({
     data: ChartDataPoint[];
     valueFormatter?: (value: number) => string;
   }>;
-  children?: (data: ChartDataPoint[]) => React.ReactNode;
+  children?: (
+    data: ChartDataPoint[],
+    valueFormatter?: (value: number) => string,
+  ) => React.ReactNode;
 }) {
   const [period, setPeriod] = useState<Period>('3months');
   const [selectedGraph, setSelectedGraph] = useState<string>();
@@ -96,7 +99,7 @@ export default function GraphCard({
           />
         </View>
       </WlbCard>
-      {children?.(filteredData)}
+      {children?.(filteredData, selectedData.valueFormatter)}
     </>
   );
 }

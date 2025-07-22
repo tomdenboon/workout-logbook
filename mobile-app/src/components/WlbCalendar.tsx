@@ -11,7 +11,7 @@ interface CalendarProps {
   isHighlighted?: (date: Date) => boolean;
 }
 
-export default function Calendar({
+export default function WlbCalendar({
   onDateSelect,
   selectedDate,
   isHighlighted,
@@ -117,6 +117,15 @@ export default function Calendar({
                 const isTodayDate = isSameDay(date, new Date());
                 const isSelectedDate = isSelected(date);
                 const hasHighlightOnDate = isHighlighted?.(date) ?? false;
+                const isSameMonth =
+                  currentMonth.getFullYear() === date.getFullYear() &&
+                  currentMonth.getMonth() === date.getMonth();
+
+                if (!isSameMonth) {
+                  return (
+                    <View key={dayOfWeek + '-' + week} style={{ flex: 1 }} />
+                  );
+                }
 
                 return (
                   <TouchableOpacity

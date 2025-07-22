@@ -15,7 +15,6 @@ import { useUnit } from 'context/unit';
 import { usePRCalculations } from 'hooks/usePRCalculations';
 import { VALID_FIELDS } from 'const';
 import WlbText from 'components/WlbText';
-import Calendar from 'components/Calendar';
 import WlbStatCard from 'components/WlbStatCard';
 import {
   calculateCurrentWeekStreak,
@@ -26,6 +25,7 @@ import WlbEmptyState from 'components/WlbEmptyState';
 import WorkoutDetailsModal from 'components/workouts/WorkoutDetailsModal';
 import WorkoutStatsRow from 'components/workouts/WorkoutStatsRow';
 import WlbSection from 'components/WlbSection';
+import WlbCalendar from 'components/WlbCalendar';
 
 const WorkoutCard = memo(function WorkoutCard({
   workoutId,
@@ -199,24 +199,7 @@ export default function History() {
   );
 
   return (
-    <WlbScreenPage
-      header={
-        <WlbHeader
-          title={'History'}
-          headerRight={
-            selectedDate && (
-              <WlbButton
-                title="Clear"
-                size="small"
-                variant="ghost"
-                onPress={() => setSelectedDate(undefined)}
-              />
-            )
-          }
-        />
-      }
-      noContainer
-    >
+    <WlbScreenPage header={<WlbHeader title={'History'} />} noContainer>
       <FlatList
         data={filteredWorkouts}
         keyExtractor={(item) => item.id.toString()}
@@ -235,7 +218,7 @@ export default function History() {
                 label="Rest Days"
               />
             </View>
-            <Calendar
+            <WlbCalendar
               onDateSelect={(date) => setSelectedDate(date)}
               selectedDate={selectedDate}
               isHighlighted={(date) => workoutDates.has(date.toDateString())}

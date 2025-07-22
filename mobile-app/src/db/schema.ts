@@ -116,6 +116,7 @@ export const templateFoldersRelations = relations(
 export const measurements = sqliteTable('measurements', {
   id: integer().primaryKey({ autoIncrement: true }),
   name: text().notNull(),
+  field: text().notNull(),
 });
 
 export const measurementsRelations = relations(measurements, ({ many }) => ({

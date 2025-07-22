@@ -12,6 +12,8 @@ import * as schema from 'db/schema';
 import { eq } from 'drizzle-orm';
 import { toDateKey } from 'utils/date';
 import { filterMap, toMap } from 'utils/array';
+import WlbDateTimePicker from 'components/WlbDatePicker';
+import { useUnit } from 'context/unit';
 
 type MeasurementForm = Record<
   number,
@@ -22,24 +24,24 @@ type MeasurementForm = Record<
 >;
 
 const formatMeasurementValue = (value: number) => {
-  return value.toFixed(1);
+  return parseFloat(value.toFixed(2)).toString();
 };
 
 interface AddMeasurementModalProps {
-  visible: boolean;
+  date: Date | null;
   close: () => void;
   measurements: MeasurementFull[];
   photos: ProgressPhoto[];
 }
 
 export default function AddMeasurementModal({
-  visible,
+  date,
   close,
   measurements,
   photos,
 }: AddMeasurementModalProps) {
-  const theme = useTheme();
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(date || new Date());
+  const { fieldToSuffix } = useUnit();
 
   const getExactCurrentDayPoint = (measurement: MeasurementFull) => {
     return measurement.measurementPoints.find(
@@ -60,7 +62,7 @@ export default function AddMeasurementModal({
           value: formatMeasurementValue(m.value),
         },
       ]),
-    [measurements],
+    [measurements, selectedDate],
   );
 
   const [photo, setPhoto] = useState<string | null>(
@@ -70,12 +72,17 @@ export default function AddMeasurementModal({
     useState<MeasurementForm>(initialEntries);
 
   useEffect(() => {
-    if (visible) {
-      setSelectedDate(new Date());
+    if (date) {
+      setSelectedDate(date);
       setPhoto(initialPhoto?.photo || null);
       setMeasurementEntries(initialEntries);
     }
-  }, [visible, initialEntries]);
+  }, [date]);
+
+  useEffect(() => {
+    setMeasurementEntries(initialEntries);
+    setPhoto(initialPhoto?.photo || null);
+  }, [initialEntries, initialPhoto]);
 
   const updateMeasurementEntry = (measurementId: number, value: string) => {
     setMeasurementEntries((prev) => ({
@@ -137,17 +144,9 @@ export default function AddMeasurementModal({
     close();
   };
 
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-  };
   return (
     <WlbModalPage
-      visible={visible}
+      visible={!!date}
       close={close}
       header={
         <WlbHeader
@@ -183,24 +182,10 @@ export default function AddMeasurementModal({
           <WlbText size={16} fontWeight="bold">
             Date
           </WlbText>
-          <View
-            style={{
-              backgroundColor: theme.subAlt,
-              padding: 12,
-              borderRadius: 8,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}
-          >
-            <WlbText>{formatDate(selectedDate)}</WlbText>
-            <WlbButton
-              title="Today"
-              size="small"
-              variant="ghost"
-              onPress={() => setSelectedDate(new Date())}
-            />
-          </View>
+          <WlbDateTimePicker
+            value={selectedDate}
+            onChange={(date) => date && setSelectedDate(date)}
+          />
         </View>
 
         <View style={{ gap: 8 }}>
@@ -223,7 +208,9 @@ export default function AddMeasurementModal({
                   justifyContent: 'space-between',
                 }}
               >
-                <WlbText>{measurement.name}</WlbText>
+                <WlbText>
+                  {measurement.name} ({fieldToSuffix(measurement.field)})
+                </WlbText>
                 <WlbInput
                   style={{ width: 80, textAlign: 'center' }}
                   value={measurementEntries[measurement.id]?.value || ''}

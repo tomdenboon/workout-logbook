@@ -116,7 +116,12 @@ function randomFloat(min: number, max: number) {
 export async function seedMeasurements() {
   const measurements = await fastDb
     .insert(schema.measurements)
-    .values([{ name: 'Weight' }, { name: 'Body Fat' }, { name: 'Muscle Mass' }])
+    .values([
+      { name: 'Weight', field: 'weight' },
+      { name: 'Body Fat', field: 'percentage' },
+      { name: 'Muscle Mass', field: 'weight' },
+      { name: 'Height', field: 'measurement' },
+    ])
     .returning();
 
   await fastDb.insert(schema.measurementPoints).values(

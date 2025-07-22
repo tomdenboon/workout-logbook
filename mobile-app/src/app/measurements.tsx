@@ -8,7 +8,13 @@ import WlbModalForm from 'components/ModalForm';
 import AddMeasurementModal from 'components/AddMeasurementModal';
 import WlbCard from 'components/WlbCard';
 import LineGraph from 'components/graphs/LineGraph';
-import { View, FlatList, Pressable, Image } from 'react-native';
+import {
+  View,
+  FlatList,
+  Pressable,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
 import WlbText from 'components/WlbText';
 import { useTheme } from 'context/theme';
 import GraphCard from 'components/graphs/GraphCard';
@@ -16,6 +22,7 @@ import { router } from 'expo-router';
 import WlbEmptyState from 'components/WlbEmptyState';
 import { asc } from 'drizzle-orm';
 import { ProgressPhoto } from 'db/types';
+import { useUnit } from 'context/unit';
 
 function ProgressPhotoCard(props: {
   addProgressPhoto: () => void;
@@ -53,9 +60,8 @@ function ProgressPhotoCard(props: {
 
 export default function Measurements() {
   const theme = useTheme();
-  const [addMeasurementModalVisible, setAddMeasurementModalVisible] =
-    useState(false);
-  const [addPointModalVisible, setAddPointModalVisible] = useState(false);
+  const [addDate, setAddDate] = useState<Date | null>(null);
+  const { formatValueWithUnit } = useUnit();
 
   const { data: measurements } = useLiveQuery(
     db.query.measurements.findMany({
@@ -74,11 +80,6 @@ export default function Measurements() {
     }),
   );
 
-  const addMeasurement = async (value: { name: string }) => {
-    await db.insert(schema.measurements).values({ name: value.name });
-    setAddMeasurementModalVisible(false);
-  };
-
   const formatDate = (timestamp: number) => {
     return new Date(timestamp).toLocaleDateString('en-US', {
       month: 'short',
@@ -86,28 +87,6 @@ export default function Measurements() {
       year: 'numeric',
     });
   };
-
-  const formatValue = (value: number) => {
-    return value.toFixed(1);
-  };
-
-  const renderMeasurementPoint = ({
-    item,
-  }: {
-    item: { date: number; value: number };
-  }) => (
-    <Pressable
-      style={{
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-      }}
-      onPress={() => setAddPointModalVisible(true)}
-    >
-      <WlbText color="sub">{formatDate(item.date)}</WlbText>
-      <WlbText>{formatValue(item.value)}</WlbText>
-    </Pressable>
-  );
 
   return (
     <WlbScreenPage
@@ -124,7 +103,7 @@ export default function Measurements() {
           headerRight={
             <WlbButton
               variant="ghost"
-              onPress={() => setAddPointModalVisible(true)}
+              onPress={() => setAddDate(new Date())}
               title="Add"
             />
           }
@@ -132,7 +111,7 @@ export default function Measurements() {
       }
     >
       <ProgressPhotoCard
-        addProgressPhoto={() => setAddPointModalVisible(true)}
+        addProgressPhoto={() => setAddDate(new Date())}
         progressPhotos={progressPhotos || []}
       />
       {measurements && measurements.length > 0 && (
@@ -141,6 +120,8 @@ export default function Measurements() {
           data={measurements.map((measurement) => ({
             label: measurement.name,
             value: measurement.id.toString(),
+            valueFormatter: (value: number) =>
+              formatValueWithUnit(value, measurement.field),
             data: measurement.measurementPoints.map((point) => ({
               date: point.date,
               value: point.value,
@@ -148,18 +129,32 @@ export default function Measurements() {
           }))}
           GraphComponent={LineGraph}
         >
-          {(data) => (
+          {(data, valueFormatter) => (
             <WlbCard title="History">
               <FlatList
                 data={data.toReversed()}
-                renderItem={renderMeasurementPoint}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      paddingVertical: 12,
+                    }}
+                    onPress={() => setAddDate(new Date(item.date))}
+                  >
+                    <WlbText>{formatDate(item.date)}</WlbText>
+                    <WlbText>
+                      {valueFormatter?.(item.value) || item.value}
+                    </WlbText>
+                  </TouchableOpacity>
+                )}
                 keyExtractor={(item) => item.date.toString()}
                 scrollEnabled={false}
                 ItemSeparatorComponent={() => (
                   <View
                     style={{
                       height: 1,
-                      marginVertical: 7,
                       backgroundColor: theme.subAlt,
                     }}
                   />
@@ -170,18 +165,9 @@ export default function Measurements() {
         </GraphCard>
       )}
 
-      <WlbModalForm
-        visible={addMeasurementModalVisible}
-        close={() => setAddMeasurementModalVisible(false)}
-        title="Add Measurement"
-        init={{ name: '' }}
-        inputs={[{ type: 'text', key: 'name', label: 'Measurement Name' }]}
-        onSave={addMeasurement}
-      />
-
       <AddMeasurementModal
-        visible={addPointModalVisible}
-        close={() => setAddPointModalVisible(false)}
+        date={addDate}
+        close={() => setAddDate(null)}
         measurements={measurements || []}
         photos={progressPhotos || []}
       />

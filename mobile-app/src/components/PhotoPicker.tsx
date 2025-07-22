@@ -37,7 +37,6 @@ export default function PhotoPicker({
     }
     return true;
   };
-  console.log(photo);
 
   const launchImagePicker = async (
     imagePickerFunction: (

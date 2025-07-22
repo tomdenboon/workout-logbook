@@ -1,0 +1,1 @@
+ALTER TABLE `measurements` ADD `field` text NOT NULL;
