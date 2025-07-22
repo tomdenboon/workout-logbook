@@ -139,14 +139,14 @@ export default function Exercise() {
           title={exercise?.name ?? ''}
           headerLeft={
             <WlbButton
-              color="text"
+              variant="ghost"
               title="Back"
               onPress={() => router.back()}
             />
           }
           headerRight={
             <WlbButton
-              color="text"
+              variant="ghost"
               title="Edit"
               onPress={() => router.push(`/schema.exercises/${id}/edit`)}
             />

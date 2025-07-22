@@ -146,5 +146,5 @@ const useButtonStyles = (
         }),
       },
     }),
-    [color, size],
+    [color, size, variant],
   );
