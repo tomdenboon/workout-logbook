@@ -1,4 +1,4 @@
-import React, { useCallback, useState, memo } from 'react';
+import React, { useCallback, useState, memo, useMemo } from 'react';
 import { View } from 'react-native';
 import WlbButton from 'components/WlbButton';
 import WlbDropdown from 'components/WlbDropdown';
@@ -44,8 +44,8 @@ const ExerciseRow = function ExerciseRow({
   workoutType,
   previousExerciseRow,
 }: ExerciseRowProps) {
-  const fields = VALID_FIELDS[exerciseType];
-  const { validate: v, hasError } = useValidation(exerciseRow, fields);
+  const fields = useMemo(() => VALID_FIELDS[exerciseType], [exerciseType]);
+  const { validate, hasError } = useValidation(exerciseRow, fields);
   const { formatValueWithUnit } = useUnit();
 
   function exerciseRowToText(
@@ -66,7 +66,7 @@ const ExerciseRow = function ExerciseRow({
   const saveExerciseRow = useCallback(
     ({
       isLifted,
-      validate = false,
+      validate: shouldValidate = false,
       exerciseRowValues = {},
     }: {
       isLifted?: boolean;
@@ -82,14 +82,13 @@ const ExerciseRow = function ExerciseRow({
         isLifted: finalIsLifted,
       };
 
-      const valid = v({ noErrors: !validate });
-      if (!valid) newRow.isLifted = false;
-      if (!valid && validate) return;
-      updateExerciseRow(exerciseGroupIndex, exerciseRowIndex, {
-        ...newRow,
-      });
+      const isValid = validate({ noErrors: !shouldValidate });
+      if (!isValid) newRow.isLifted = false;
+      if (!isValid && shouldValidate) return;
+
+      updateExerciseRow(exerciseGroupIndex, exerciseRowIndex, newRow);
     },
-    [exerciseRow, exerciseGroupIndex, exerciseRowIndex, fields],
+    [exerciseRow, exerciseGroupIndex, exerciseRowIndex, validate],
   );
 
   return (

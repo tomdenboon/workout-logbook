@@ -88,7 +88,7 @@ export default function WlbCalendar({
           flexDirection: 'row',
         }}
       >
-        {['Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'].map((day) => (
+        {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => (
           <View
             key={day}
             style={{

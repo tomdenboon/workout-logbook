@@ -1,12 +1,8 @@
 import React from 'react';
-import { View, TouchableOpacity, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { View, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { useTheme } from 'context/theme';
 import WlbText from './WlbText';
-import db from 'db';
-import { workouts } from 'db/schema';
-import { and, isNotNull, isNull } from 'drizzle-orm';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import WlbButton from 'components/WlbButton';
 import { router } from 'expo-router';
@@ -86,7 +82,6 @@ const WlbTabBar = ({ state, navigation }: BottomTabBarProps) => {
 
   return (
     <SafeAreaView
-      edges={['bottom']}
       style={[
         {
           borderTopWidth: 1,
@@ -132,7 +127,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 8,
+    paddingTop: 12,
   },
 });
 

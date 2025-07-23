@@ -90,6 +90,7 @@ export default function Measurements() {
 
   return (
     <WlbScreenPage
+      noContainer
       header={
         <WlbHeader
           title="Measurements"
@@ -110,61 +111,59 @@ export default function Measurements() {
         />
       }
     >
-      <ProgressPhotoCard
-        addProgressPhoto={() => setAddDate(new Date())}
-        progressPhotos={progressPhotos || []}
-      />
-      {measurements && measurements.length > 0 && (
-        <GraphCard
-          title="Measurements"
-          data={measurements.map((measurement) => ({
-            label: measurement.name,
-            value: measurement.id.toString(),
-            valueFormatter: (value: number) =>
-              formatValueWithUnit(value, measurement.field),
-            data: measurement.measurementPoints.map((point) => ({
-              date: point.date,
-              value: point.value,
-            })),
-          }))}
-          GraphComponent={LineGraph}
-        >
-          {(data, valueFormatter) => (
-            <WlbCard title="History">
-              <FlatList
-                data={data.toReversed()}
-                renderItem={({ item }) => (
-                  <TouchableOpacity
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      paddingVertical: 12,
-                    }}
-                    onPress={() => setAddDate(new Date(item.date))}
-                  >
-                    <WlbText>{formatDate(item.date)}</WlbText>
-                    <WlbText>
-                      {valueFormatter?.(item.value) || item.value}
-                    </WlbText>
-                  </TouchableOpacity>
-                )}
-                keyExtractor={(item) => item.date.toString()}
-                scrollEnabled={false}
-                ItemSeparatorComponent={() => (
-                  <View
-                    style={{
-                      height: 1,
-                      backgroundColor: theme.subAlt,
-                    }}
-                  />
-                )}
-              />
-            </WlbCard>
-          )}
-        </GraphCard>
-      )}
-
+      <View style={{ flex: 1, gap: 12, padding: 12 }}>
+        <ProgressPhotoCard
+          addProgressPhoto={() => setAddDate(new Date())}
+          progressPhotos={progressPhotos || []}
+        />
+        {measurements && measurements.length > 0 && (
+          <GraphCard
+            style={{ flex: 1 }}
+            title="Measurements"
+            data={measurements.map((measurement) => ({
+              label: measurement.name,
+              value: measurement.id.toString(),
+              valueFormatter: (value: number) =>
+                formatValueWithUnit(value, measurement.field),
+              data: measurement.measurementPoints.map((point) => ({
+                date: point.date,
+                value: point.value,
+              })),
+            }))}
+            GraphComponent={LineGraph}
+          >
+            {(data, valueFormatter) => (
+              <View style={{ flex: 1 }}>
+                <FlatList
+                  data={data.toReversed()}
+                  showsVerticalScrollIndicator={false}
+                  ItemSeparatorComponent={() => (
+                    <View
+                      style={{ height: 1, backgroundColor: theme.subAlt }}
+                    />
+                  )}
+                  renderItem={({ item }) => (
+                    <TouchableOpacity
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        paddingVertical: 12,
+                      }}
+                      onPress={() => setAddDate(new Date(item.date))}
+                    >
+                      <WlbText>{formatDate(item.date)}</WlbText>
+                      <WlbText>
+                        {valueFormatter?.(item.value) || item.value}
+                      </WlbText>
+                    </TouchableOpacity>
+                  )}
+                />
+              </View>
+            )}
+          </GraphCard>
+        )}
+      </View>
       <AddMeasurementModal
         date={addDate}
         close={() => setAddDate(null)}

@@ -6,22 +6,28 @@ import { useState } from 'react';
 import toOptions from 'utils/toOptions';
 import { EXERCISE_CATEGORIES } from 'const';
 
+type ExerciseForm = {
+  id?: number;
+  name: string;
+  type: keyof typeof EXERCISE_CATEGORIES;
+};
+
 export default function useEditExerciseModal() {
   const [visible, setVisible] = useState(false);
-  const [selectedExercise, setSelectedExercise] = useState<Exercise>();
+  const [selectedExercise, setSelectedExercise] = useState<ExerciseForm>();
 
   const close = () => {
     setVisible(false);
     setSelectedExercise(undefined);
   };
 
-  const openModal = (exercise?: Exercise) => {
+  const openModal = (exercise?: ExerciseForm) => {
     setVisible(true);
     setSelectedExercise(exercise);
   };
 
   const onSave = async (value: any) => {
-    if (selectedExercise) {
+    if (selectedExercise?.id) {
       await db
         .update(schema.exercises)
         .set({
@@ -45,7 +51,12 @@ export default function useEditExerciseModal() {
       type: selectedExercise?.type ?? 'reps',
     },
     inputs: [
-      { type: 'text' as const, key: 'name', label: 'Name' },
+      {
+        type: 'text' as const,
+        key: 'name',
+        label: 'Name',
+        required: true,
+      },
       {
         type: 'select' as const,
         key: 'type',

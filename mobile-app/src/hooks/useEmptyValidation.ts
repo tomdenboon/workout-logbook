@@ -6,31 +6,21 @@ export function useValidation<T extends Record<string, any>>(
 ) {
   const [errors, setErrors] = useState<(keyof T)[]>([]);
 
-  const isEmpty = (value: any): boolean => {
-    return value === null || value === undefined || value === '';
-  };
+  const isEmpty = (value: any) => value == null || value === '';
 
   const validate = useCallback(
-    (options: { noErrors?: boolean } = {}): boolean => {
+    (options: { noErrors?: boolean } = {}) => {
       const newErrors = fields.filter((field) => isEmpty(data[field]));
-      if (!options.noErrors) {
-        setErrors(newErrors);
-      }
+      if (!options.noErrors) setErrors(newErrors);
       return newErrors.length === 0;
     },
     [data, fields],
   );
 
   const hasError = useCallback(
-    (field: keyof T): boolean => {
-      return errors.includes(field) && isEmpty(data[field]);
-    },
+    (field: keyof T) => errors.includes(field) && isEmpty(data[field]),
     [data, errors],
   );
 
-  return {
-    errors,
-    validate,
-    hasError,
-  };
+  return { errors, validate, hasError };
 }

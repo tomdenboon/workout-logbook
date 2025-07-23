@@ -1,6 +1,5 @@
-import { ScrollView, StyleProp, View, ViewStyle } from 'react-native';
+import { SafeAreaView, ScrollView, View } from 'react-native';
 import WlbText from './WlbText';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '../context/theme';
 import React from 'react';
 import WlbModal, { ModalProps } from 'components/WlbModal';
@@ -22,32 +21,34 @@ export const WlbHeader = ({
 
   return (
     <SafeAreaView
-      edges={['top']}
       style={{
         backgroundColor: theme.bg,
         borderBottomWidth: 1,
-        padding: 12,
         borderBottomColor: theme.subAlt,
       }}
     >
-      <View
-        style={{
-          position: 'relative',
-          flexDirection: 'row',
-          width: '100%',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        {headerLeft && (
-          <View style={{ position: 'absolute', left: 0 }}>{headerLeft}</View>
-        )}
-        <WlbText fontWeight="bold">{title}</WlbText>
-        {headerRight && (
-          <View style={{ position: 'absolute', right: 0 }}>{headerRight}</View>
-        )}
+      <View style={{ paddingHorizontal: 12, paddingVertical: 12 }}>
+        <View
+          style={{
+            position: 'relative',
+            flexDirection: 'row',
+            width: '100%',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          {headerLeft && (
+            <View style={{ position: 'absolute', left: 0 }}>{headerLeft}</View>
+          )}
+          <WlbText fontWeight="bold">{title}</WlbText>
+          {headerRight && (
+            <View style={{ position: 'absolute', right: 0 }}>
+              {headerRight}
+            </View>
+          )}
+        </View>
+        {headerBottom && <View style={{ paddingTop: 12 }}>{headerBottom}</View>}
       </View>
-      {headerBottom && <View style={{ paddingTop: 12 }}>{headerBottom}</View>}
     </SafeAreaView>
   );
 };

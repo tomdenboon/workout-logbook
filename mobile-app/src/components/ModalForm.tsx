@@ -1,16 +1,18 @@
 import { View } from 'react-native';
 import WlbButton from './WlbButton';
 import WlbModal from './WlbModal';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import WlbInput from './WlbInput';
 import WlbText from './WlbText';
 import WlbSelect from 'components/WlbSelect';
 import { WlbModalPage, WlbHeader } from 'components/WlbPage';
+import { useValidation } from 'hooks/useEmptyValidation';
 
 interface InputProps {
   type: 'text' | 'select';
   key: string;
   label: string;
+  required?: boolean;
   options?: {
     label: string;
     value: string;
@@ -29,6 +31,14 @@ interface ModalProps {
 export default function ModalForm(props: ModalProps) {
   const { visible, close, title } = props;
   const [value, setValue] = useState(props.init);
+
+  const requiredFields = useMemo(
+    () =>
+      props.inputs.filter((input) => input.required).map((input) => input.key),
+    [props.inputs],
+  );
+
+  const validation = useValidation(value, requiredFields);
 
   useEffect(() => {
     setValue(props.init);
@@ -53,7 +63,11 @@ export default function ModalForm(props: ModalProps) {
             <WlbButton
               color="text"
               title="Save"
-              onPress={() => props.onSave(value)}
+              onPress={() => {
+                if (validation.validate()) {
+                  props.onSave(value);
+                }
+              }}
             />
           }
         />
@@ -71,6 +85,7 @@ export default function ModalForm(props: ModalProps) {
             <WlbInput
               placeholder={input.label}
               value={value?.[input.key]}
+              error={validation.hasError(input.key)}
               onChangeText={(text) => setValue({ ...value, [input.key]: text })}
             />
           ) : (

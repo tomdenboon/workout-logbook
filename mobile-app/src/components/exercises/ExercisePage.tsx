@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Text, View, Pressable, ScrollView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Text, View, Pressable, ScrollView, SectionList } from 'react-native';
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite';
 import { eq } from 'drizzle-orm';
 import db from 'db';
@@ -15,6 +15,7 @@ import { router } from 'expo-router';
 import { EXERCISE_CATEGORIES } from 'const';
 import WlbInput from 'components/WlbInput';
 import { groupBy } from 'utils/array';
+import WlbEmptyState from 'components/WlbEmptyState';
 
 export default function ExercisePage({
   modal,
@@ -32,6 +33,13 @@ export default function ExercisePage({
   const { data: exercises } = useLiveQuery(
     db.select().from(schema.exercises).orderBy(schema.exercises.name),
   );
+
+  useEffect(() => {
+    if (modal?.visible) {
+      setSearchTerm('');
+      setSelectedExercises([]);
+    }
+  }, [modal?.visible]);
 
   const toggle = (exercise: Exercise) => {
     if (selectedExercises.includes(exercise)) {
@@ -117,50 +125,66 @@ export default function ExercisePage({
     );
 
   return container(
-    <ScrollView>
+    <>
       <ModalForm {...editExerciseModal} />
-      {groupedExercises.map(({ title: letter, data: exercises }) => (
-        <View key={letter}>
+      <SectionList
+        ListEmptyComponent={
+          <View style={{ padding: 12 }}>
+            <WlbEmptyState
+              description="Add new exercise"
+              icon="dumbbell"
+              onPress={() =>
+                editExerciseModal.openModal({
+                  name: searchTerm,
+                  type: 'reps',
+                })
+              }
+            />
+          </View>
+        }
+        stickySectionHeadersEnabled={false}
+        sections={groupedExercises}
+        renderSectionHeader={({ section: { title } }) => (
           <View style={styles.itemContainer}>
             <WlbText size={14} color="sub">
-              {letter}
+              {title}
             </WlbText>
           </View>
-          {exercises.map((exercise) => (
-            <Pressable
-              key={exercise.id}
-              onPress={() =>
-                !modal
-                  ? router.push(`/exercises/${exercise.id}`)
-                  : toggle(exercise)
-              }
-              style={({ pressed }) => [
-                styles.itemContainer,
-                pressed && styles.exerciseItemPressed,
-              ]}
+        )}
+        renderItem={({ item: exercise }) => (
+          <Pressable
+            key={exercise.id}
+            onPress={() =>
+              !modal
+                ? router.push(`/exercises/${exercise.id}`)
+                : toggle(exercise)
+            }
+            style={({ pressed }) => [
+              styles.itemContainer,
+              pressed && styles.exerciseItemPressed,
+            ]}
+          >
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}
             >
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}
-              >
-                <View style={{ gap: 4 }}>
-                  <WlbText fontWeight="bold">{exercise.name}</WlbText>
-                  <WlbText size={14} color="sub">
-                    {EXERCISE_CATEGORIES[exercise.type]}
-                  </WlbText>
-                </View>
-                {selectedExercises.includes(exercise) && (
-                  <WlbText color="main">Selected</WlbText>
-                )}
+              <View style={{ gap: 4 }}>
+                <WlbText fontWeight="bold">{exercise.name}</WlbText>
+                <WlbText size={14} color="sub">
+                  {EXERCISE_CATEGORIES[exercise.type]}
+                </WlbText>
               </View>
-            </Pressable>
-          ))}
-        </View>
-      ))}
-    </ScrollView>,
+              {selectedExercises.includes(exercise) && (
+                <WlbText color="main">Selected</WlbText>
+              )}
+            </View>
+          </Pressable>
+        )}
+      />
+    </>,
   );
 }
 

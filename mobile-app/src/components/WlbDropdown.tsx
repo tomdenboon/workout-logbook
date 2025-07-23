@@ -9,7 +9,6 @@ import {
   Pressable,
 } from 'react-native';
 import WlbIcon, { WlbIconName } from 'components/WlbIcon';
-import { name } from 'drizzle-orm';
 
 interface DropdownMenuProps {
   triggerComponent: (props: { onPress: () => void }) => ReactNode;
